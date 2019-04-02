@@ -13,6 +13,7 @@ export default API => {
   }
 
   return {
+    namespaced: true,
     state: () => ({}),
     actions: {
       // 1. 先检测当前列表是否有数据，如果有数据，清除
@@ -65,6 +66,7 @@ export default API => {
         }
         try {
           const data = await API[func](params)
+          console.log(data)
           commit('SET_DATA', { data, fieldName, count })
         } catch (e) {
           commit('SET_ERROR', fieldName)
