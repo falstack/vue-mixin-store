@@ -1,11 +1,25 @@
 {
   "name": "vue-flow-loader",
   "version": "0.1.0",
-  "private": true,
+  "main": "dist/vue-flow-loader.umd.min.js",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "vue",
+    "list"
+  ],
+  "author": "falstack <icesilt@outlook.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/falstack/vue-flow-loader/issues"
+  },
+  "homepage": "https://github.com/falstack/vue-flow-loader",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build --target lib --name vue-flow-loader src/FlowList.vue",
+    "lint": "vue-cli-service lint",
+    "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
     "core-js": "^2.6.5",
