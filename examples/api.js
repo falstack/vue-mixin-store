@@ -22,6 +22,26 @@ export const getListByPage = ({ page, count }) => {
   })
 }
 
+export const getListByJump = ({ page, count }) => {
+  console.log('page', page)
+  return new Promise(resolve => {
+    const total = 87
+    const hasFetch = (page - 1) * count
+    const getLength = total - hasFetch >= count ? count : total - hasFetch
+    setTimeout(() => {
+      const result = ItemFactory.get(getLength)
+      resolve({
+        result,
+        pageInfo: {
+          page,
+          numPages: Math.ceil(total / count),
+          numResults: total
+        }
+      })
+    }, 500)
+  })
+}
+
 export const getListWithError = ({ page, count }) => {
   return new Promise((resolve, reject) => {
     const total = 87

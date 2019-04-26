@@ -3,22 +3,56 @@
 
 <template>
   <div id="jump">
-    jump 翻页
+    <div>
+      <button @click="load(1)">page-1</button>
+      <button @click="load(2)">page-2</button>
+      <button @click="load(9)">page-9</button>
+    </div>
+    <FlowLoader
+      func="getListByJump"
+      type="jump"
+      :query="query"
+    >
+      <ul class="demo-list" slot-scope="{ flow }">
+        <li v-for="(item, index) in flow" :key="item.id">
+          <div :style="{ backgroundColor: item.style.color }">
+            count：{{ index + 1 }}，id：{{ item.id }}
+          </div>
+        </li>
+      </ul>
+    </FlowLoader>
   </div>
 </template>
 
 <script>
 export default {
-  name: '',
-  components: {},
-  props: {},
   data() {
-    return {}
+    return {
+      query: {
+        count: 10,
+        page: 1
+      }
+    }
   },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
-  methods: {}
+  mounted() {
+    this.initData()
+  },
+  methods: {
+    initData() {
+      this.$store.dispatch('flow/initData', {
+        func: 'getListByJump',
+        type: 'jump',
+        query: this.query
+      })
+    },
+    load(page) {
+      this.query.page = page
+      this.$store.dispatch('flow/loadMore', {
+        func: 'getListByJump',
+        type: 'jump',
+        query: this.query
+      })
+    }
+  }
 }
 </script>

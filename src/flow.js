@@ -20,6 +20,7 @@ export default ({ api, mutations }) => {
   const generateField = (func, type, query = {}) => {
     let result = `${func}-${type}`
     Object.keys(query)
+      .filter(_ => ~_.indexOf(['page', 'count']))
       .sort()
       .forEach(key => {
         result += `-${key}-${query[key]}`
@@ -65,18 +66,18 @@ export default ({ api, mutations }) => {
         }
         try {
           const data = await api[func](Object.assign(params, query))
-          commit('SET_DATA', { data, fieldName, type })
+          commit('SET_DATA', { data, fieldName, type, page: params.page })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
         }
       },
-      async loadMore(
-        { state, commit },
-        { type, func, query }
-      ) {
+      async loadMore({ state, commit }, { type, func, query }) {
         const fieldName = generateField(func, type, query)
         const field = state[fieldName]
         if (field.loading || field.noMore) {
+          return
+        }
+        if (type === 'jump' && query.page === field.page) {
           return
         }
         commit('SET_LOADING', fieldName)
@@ -85,6 +86,7 @@ export default ({ api, mutations }) => {
         if (type === 'page') {
           params.page = field.page
         } else if (type === 'jump') {
+          commit('CLEAR_RESULT', fieldName)
           params.page = query.page
         } else if (type === 'lastId') {
           const lastData = field.result[field.result.length - 1]
@@ -114,7 +116,7 @@ export default ({ api, mutations }) => {
         }
         try {
           const data = await api[func](Object.assign(params, query))
-          commit('SET_DATA', { data, fieldName, type })
+          commit('SET_DATA', { data, fieldName, type, page: params.page })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
         }
@@ -132,7 +134,10 @@ export default ({ api, mutations }) => {
         state[fieldName].loading = true
         state[fieldName].error = null
       },
-      SET_DATA(state, { data, fieldName, type }) {
+      CLEAR_RESULT(state, fieldName) {
+        state[fieldName].result = []
+      },
+      SET_DATA(state, { data, fieldName, type, page }) {
         const { result, pageInfo } = data
         if (!state[fieldName]) {
           return
@@ -153,6 +158,7 @@ export default ({ api, mutations }) => {
           state[fieldName].pageInfo.totalPages = pageInfo.numPages
           state[fieldName].pageInfo.totalItems = pageInfo.numResults
           state[fieldName].total = pageInfo.numResults
+          state[fieldName].page = page
         } else {
           state[fieldName].noMore = data.noMore
           state[fieldName].total = data.total
