@@ -136,16 +136,18 @@ export default ({ api, mutations }) => {
         if (!state[fieldName]) {
           return
         }
-        // jump 模式下的状态，去除 noMore 的返回，还有 jump 模式下是否使用缓存
         if (state[fieldName].init) {
-          state[fieldName].result = state[fieldName].result.concat(result)
+          if (type === 'jump') {
+            state[fieldName].result = result
+          } else {
+            state[fieldName].result = state[fieldName].result.concat(result)
+          }
         } else {
           state[fieldName].init = true
           state[fieldName].result = result
-          state[fieldName].nothing = pageInfo.numResults === 0
+          state[fieldName].nothing = result.length === 0
         }
         if (type === 'jump') {
-          state[fieldName].noMore = false
           state[fieldName].pageInfo.currentPage = pageInfo.page
           state[fieldName].pageInfo.totalPages = pageInfo.numPages
           state[fieldName].pageInfo.totalItems = pageInfo.numResults
