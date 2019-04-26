@@ -22,6 +22,31 @@ export const getListByPage = ({ page, count }) => {
   })
 }
 
+let SINCE_HAS_FETCHED = 0
+export const getListBySinceId = ({ since_id, is_up, count }) => {
+  console.log('since_id', since_id)
+  console.log('is_up', is_up)
+  console.log('count', count)
+  return new Promise(resolve => {
+    const total = 87
+    const hasFetch = SINCE_HAS_FETCHED
+    const getLength = total - hasFetch >= count ? count : total - hasFetch
+    const noMore = getLength + hasFetch >= total
+    setTimeout(() => {
+      SINCE_HAS_FETCHED += count
+      const result = ItemFactory.get(getLength)
+      resolve({
+        result,
+        noMore,
+        pageInfo: {
+          numPages: Math.ceil(total / count),
+          numResults: total
+        }
+      })
+    }, 500)
+  })
+}
+
 export const getListByJump = ({ page, count }) => {
   console.log('page', page)
   return new Promise(resolve => {

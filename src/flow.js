@@ -20,7 +20,7 @@ export default ({ api, mutations }) => {
   const generateField = (func, type, query = {}) => {
     let result = `${func}-${type}`
     Object.keys(query)
-      .filter(_ => !~['page', 'count', 'changing'].indexOf(_))
+      .filter(_ => !~['page', 'count', 'changing', 'isUp'].indexOf(_))
       .sort()
       .forEach(key => {
         result += `-${key}-${query[key]}`
@@ -63,10 +63,19 @@ export default ({ api, mutations }) => {
           params.seen_ids = ''
         } else if (type === 'lastId') {
           params.last_id = 0
+        } else if (type === 'sinceId') {
+          params.since_id = query.sinceId || (query.isUp ? 999999999 : 0)
+          params.is_up = query.isUp || false
         }
         try {
           const data = await api[func](Object.assign(params, query))
-          commit('SET_DATA', { data, fieldName, type, page: params.page })
+          commit('SET_DATA', {
+            data,
+            fieldName,
+            type,
+            page: params.page,
+            insertBefore: query.isUp || false
+          })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
         }
@@ -112,11 +121,32 @@ export default ({ api, mutations }) => {
               })
               return result
             })
-            .toString()
+            .join(',')
+        } else if (type === 'sinceId') {
+          const detectData = query.isUp
+            ? field.result[0]
+            : field.result[field.result.length - 1]
+          let result
+          if (!/\./.test(changing)) {
+            result = detectData[changing]
+          } else {
+            result = detectData
+            changing.split('.').forEach(key => {
+              result = result[key]
+            })
+          }
+          params.since_id = result
+          params.is_up = query.isUp
         }
         try {
           const data = await api[func](Object.assign(params, query))
-          commit('SET_DATA', { data, fieldName, type, page: params.page })
+          commit('SET_DATA', {
+            data,
+            fieldName,
+            type,
+            page: params.page,
+            insertBefore: query.isUp || false
+          })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
         }
@@ -137,7 +167,7 @@ export default ({ api, mutations }) => {
       CLEAR_RESULT(state, fieldName) {
         state[fieldName].result = []
       },
-      SET_DATA(state, { data, fieldName, type, page }) {
+      SET_DATA(state, { data, fieldName, type, page, insertBefore }) {
         const { result, pageInfo } = data
         if (!state[fieldName]) {
           return
@@ -146,7 +176,9 @@ export default ({ api, mutations }) => {
           if (type === 'jump') {
             state[fieldName].result = result
           } else {
-            state[fieldName].result = state[fieldName].result.concat(result)
+            state[fieldName].result = insertBefore
+              ? result.concat(state[fieldName].result)
+              : state[fieldName].result.concat(result)
           }
         } else {
           state[fieldName].init = true
