@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-export default ({ api, mutations }) => {
+export default api => {
   const defaultListObj = {
     result: [],
     page: 1,
@@ -17,7 +17,7 @@ export default ({ api, mutations }) => {
     }
   }
 
-  const generateField = (func, type, query = {}) => {
+  const generateFieldName = (func, type, query = {}) => {
     let result = `${func}-${type}`
     Object.keys(query)
       .filter(_ => !~['page', 'count', 'changing', 'isUp'].indexOf(_))
@@ -25,6 +25,17 @@ export default ({ api, mutations }) => {
       .forEach(key => {
         result += `-${key}-${query[key]}`
       })
+    return result
+  }
+
+  const parseDataUniqueId = (data, changing) => {
+    if (!/\./.test(changing)) {
+      return data[changing]
+    }
+    let result = data
+    changing.split('.').forEach(key => {
+      result = result[key]
+    })
     return result
   }
 
@@ -36,7 +47,7 @@ export default ({ api, mutations }) => {
         { state, commit },
         { func, type, query, refresh = false }
       ) {
-        const fieldName = generateField(func, type, query)
+        const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
         // 如果 error 了，就不再请求
         if (field && field.error && !refresh) {
@@ -81,7 +92,7 @@ export default ({ api, mutations }) => {
         }
       },
       async loadMore({ state, commit }, { type, func, query }) {
-        const fieldName = generateField(func, type, query)
+        const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
         if (field.loading || field.noMore) {
           return
@@ -98,44 +109,21 @@ export default ({ api, mutations }) => {
           commit('CLEAR_RESULT', fieldName)
           params.page = query.page
         } else if (type === 'lastId') {
-          const lastData = field.result[field.result.length - 1]
-          let result
-          if (!/\./.test(changing)) {
-            result = lastData[changing]
-          } else {
-            result = lastData
-            changing.split('.').forEach(key => {
-              result = result[key]
-            })
-          }
-          params.last_id = result
+          params.last_id = parseDataUniqueId(
+            field.result[field.result.length - 1],
+            changing
+          )
         } else if (type === 'seenIds') {
           params.seen_ids = field.result
-            .map(_ => {
-              if (!/\./.test(changing)) {
-                return _[changing]
-              }
-              let result = _
-              changing.split('.').forEach(key => {
-                result = result[key]
-              })
-              return result
-            })
+            .map(_ => parseDataUniqueId(_, changing))
             .join(',')
         } else if (type === 'sinceId') {
-          const detectData = query.isUp
-            ? field.result[0]
-            : field.result[field.result.length - 1]
-          let result
-          if (!/\./.test(changing)) {
-            result = detectData[changing]
-          } else {
-            result = detectData
-            changing.split('.').forEach(key => {
-              result = result[key]
-            })
-          }
-          params.since_id = result
+          params.since_id = parseDataUniqueId(
+            query.isUp
+              ? field.result[0]
+              : field.result[field.result.length - 1],
+            changing
+          )
           params.is_up = query.isUp
         }
         try {
@@ -152,7 +140,7 @@ export default ({ api, mutations }) => {
         }
       }
     },
-    mutations: Object.assign(mutations || {}, {
+    mutations: {
       SET_ERROR(state, { fieldName, error }) {
         state[fieldName].error = error
         state[fieldName].loading = false
@@ -197,11 +185,36 @@ export default ({ api, mutations }) => {
           state[fieldName].page++
         }
         state[fieldName].loading = false
+      },
+      UPDATE_DATA(state, { type, func, query, id, method, key, value }) {
+        const fieldName = generateFieldName(func, type, query)
+        const field = state[fieldName]
+        if (!field || !field.result.length) {
+          return
+        }
+        const changing = query.changing || 'id'
+        for (let i = 0; i < field.result.length; i++) {
+          if (parseDataUniqueId(field.result[i], changing) === id) {
+            const modKeys = key.split('.')
+            let obj = state[fieldName].result[i]
+            while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {}
+            if (/^d+$/.test(method)) {
+              obj[modKeys[0]].splice(method, 1)
+            } else if (method === 'push') {
+              obj[modKeys[0]].push(value)
+            } else if (method === 'unshift') {
+              obj[modKeys[0]].unshift(value)
+            } else {
+              obj[modKeys[0]] = value
+            }
+            break
+          }
+        }
       }
-    }),
+    },
     getters: {
       getFlow: state => (func, type, query) => {
-        return state[generateField(func, type, query)]
+        return state[generateFieldName(func, type, query)]
       }
     }
   }

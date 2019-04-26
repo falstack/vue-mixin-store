@@ -18,8 +18,10 @@ export default new class {
         height,
         data: Object.assign(faker.helpers.createCard(), {
           number_id: faker.random.number(),
-          uuid: faker.random.uuid()
-        })
+          uuid: faker.random.uuid(),
+          follow: false
+        }),
+        like: false
       }
     }
     return items
