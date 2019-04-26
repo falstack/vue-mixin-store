@@ -2,12 +2,11 @@
 </style>
 
 <template>
-  <div id="first-loading">
+  <div id="nothing">
     <FlowLoader
-      func="getListByFirstLoading"
+      func="getListByNothing"
       type="page"
       :query="query"
-      :use-first-loading="true"
     >
       <ul class="demo-list" slot-scope="{ flow }">
         <li v-for="(item, index) in flow" :key="item.id">
@@ -16,7 +15,6 @@
           </div>
         </li>
       </ul>
-      <div slot="first-loading">第一次加载，可以设置独特的 loading…</div>
     </FlowLoader>
   </div>
 </template>
@@ -32,7 +30,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('flow/initData', {
-      func: 'getListByFirstLoading',
+      func: 'getListByNothing',
       type: 'page',
       query: this.query
     })

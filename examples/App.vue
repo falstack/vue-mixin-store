@@ -106,10 +106,10 @@ export default {
         },
         {
           name: 'last_id翻页',
-          route: 'since_id'
+          route: 'last_id'
         },
         {
-          name: '异常处理',
+          name: '模拟异常',
           route: 'error'
         },
         {
@@ -119,6 +119,10 @@ export default {
         {
           name: '首屏加载',
           route: 'first-loading'
+        },
+        {
+          name: '首屏为空',
+          route: 'nothing'
         }
       ]
     }

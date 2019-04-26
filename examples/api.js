@@ -1,6 +1,7 @@
 import ItemFactory from './item-factory'
 
 export const getListByPage = ({ page, count }) => {
+  console.log('page', page)
   return new Promise(resolve => {
     const total = 87
     const hasFetch = (page - 1) * count
@@ -46,5 +47,119 @@ export const getListWithError = ({ page, count }) => {
         })
       }
     }, 1500)
+  })
+}
+
+export const getListByFirstLoading = ({ page, count }) => {
+  return new Promise(resolve => {
+    const total = 87
+    const hasFetch = (page - 1) * count
+    const getLength = total - hasFetch >= count ? count : total - hasFetch
+    const noMore = getLength + hasFetch >= total
+    setTimeout(() => {
+      const result = ItemFactory.get(getLength)
+      resolve({
+        result,
+        noMore,
+        pageInfo: {
+          page,
+          numPages: Math.ceil(total / count),
+          numResults: total
+        }
+      })
+    }, hasFetch ? 500 : 3000)
+  })
+}
+
+let ERROR_COUNT = 0
+export const getListByFirstError = ({ page, count }) => {
+  return new Promise((resolve, reject) => {
+    const total = 87
+    const hasFetch = (page - 1) * count
+    const getLength = total - hasFetch >= count ? count : total - hasFetch
+    const noMore = getLength + hasFetch >= total
+    setTimeout(() => {
+      if (ERROR_COUNT < 3) {
+        ERROR_COUNT++
+        return reject({
+          code: 500,
+          message: 'error'
+        })
+      }
+      const result = ItemFactory.get(getLength)
+      resolve({
+        result,
+        noMore,
+        pageInfo: {
+          page,
+          numPages: Math.ceil(total / count),
+          numResults: total
+        }
+      })
+    }, 500)
+  })
+}
+
+let LAST_FETCHED_COUNT = 0
+export const getListByLastId = ({ last_id, count }) => {
+  console.log('last_id', last_id)
+  if (!last_id) {
+    LAST_FETCHED_COUNT = 0
+  }
+  return new Promise(resolve => {
+    const beginId = 0
+    const total = 87
+    const hasFetch = LAST_FETCHED_COUNT - beginId
+    const getLength = total - hasFetch >= count ? count : total - hasFetch
+    const noMore = getLength + hasFetch >= total
+    setTimeout(() => {
+      const result = ItemFactory.get(getLength)
+      LAST_FETCHED_COUNT += getLength
+      resolve({
+        result,
+        noMore,
+        total
+      })
+    }, 500)
+  })
+}
+
+export const getListBySeenIds = ({ seen_ids, count }) => {
+  console.log('seen_ids', seen_ids)
+  return new Promise(resolve => {
+    const total = 87
+    const hasFetch = seen_ids.split(',').length
+    const getLength = total - hasFetch >= count ? count : total - hasFetch
+    const noMore = getLength + hasFetch >= total
+    setTimeout(() => {
+      const result = ItemFactory.get(getLength)
+      LAST_FETCHED_COUNT += getLength
+      resolve({
+        result,
+        noMore,
+        total
+      })
+    }, 500)
+  })
+}
+
+export const getListByNothing = ({ page, count }) => {
+  return new Promise(resolve => {
+    const total = 0
+    const hasFetch = (page - 1) * count
+    const getLength = total - hasFetch >= count ? count : total - hasFetch
+    const noMore = getLength + hasFetch >= total
+    setTimeout(() => {
+      const result = ItemFactory.get(getLength)
+      resolve({
+        result,
+        noMore,
+        pageInfo: {
+          page,
+          numPages: Math.ceil(total / count),
+          numResults: total
+        }
+      })
+    }, 500)
   })
 }

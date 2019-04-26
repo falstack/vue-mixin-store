@@ -50,6 +50,11 @@ export default new VueRouter({
       path: '/seen_ids',
       name: 'seen_ids',
       component: () => import('./pages/seen_ids')
+    },
+    {
+      path: '/nothing',
+      name: 'nothing',
+      component: () => import('./pages/nothing')
     }
   ]
 })

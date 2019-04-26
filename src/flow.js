@@ -61,7 +61,7 @@ export default ({ api, mutations }) => {
         } else if (type === 'seenIds') {
           params.seen_ids = ''
         } else if (type === 'lastId') {
-          params.max_id = ''
+          params.last_id = 0
         }
         try {
           const data = await api[func](Object.assign(params, query))
@@ -72,7 +72,7 @@ export default ({ api, mutations }) => {
       },
       async loadMore(
         { state, commit },
-        { type, func, query, changing = 'id' }
+        { type, func, query }
       ) {
         const fieldName = generateField(func, type, query)
         const field = state[fieldName]
@@ -80,6 +80,7 @@ export default ({ api, mutations }) => {
           return
         }
         commit('SET_LOADING', fieldName)
+        const changing = query.changing || 'id'
         const params = {}
         if (type === 'page') {
           params.page = field.page
@@ -96,7 +97,7 @@ export default ({ api, mutations }) => {
               result = result[key]
             })
           }
-          params.max_id = result
+          params.last_id = result
         } else if (type === 'seenIds') {
           params.seen_ids = field.result
             .map(_ => {
@@ -151,11 +152,12 @@ export default ({ api, mutations }) => {
           state[fieldName].pageInfo.currentPage = pageInfo.page
           state[fieldName].pageInfo.totalPages = pageInfo.numPages
           state[fieldName].pageInfo.totalItems = pageInfo.numResults
+          state[fieldName].total = pageInfo.numResults
         } else {
           state[fieldName].noMore = data.noMore
+          state[fieldName].total = data.total
           state[fieldName].page++
         }
-        state[fieldName].total = pageInfo.numResults
         state[fieldName].loading = false
       }
     }),

@@ -66,7 +66,7 @@ const off = (elem, type, listener, useCapture = false) => {
   elem.removeEventListener(type, listener, useCapture)
 }
 const checkInView = (dom, preload = 50) => {
-  if (typeof window === 'undefined') {
+  if (typeof window === 'undefined' || !dom) {
     return false
   }
   const rect = dom.getBoundingClientRect()
@@ -102,7 +102,7 @@ export default {
     },
     displayNoMore: {
       type: Boolean,
-      default: true
+      default: false
     },
     useFirstError: {
       type: Boolean,
@@ -120,13 +120,23 @@ export default {
         this.type,
         this.query
       )
-    },
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      if (this.auto) {
+        this.initFlowLoader()
+      }
+    })
+  },
+  methods: {
     getTarget() {
       let el = this.$el
       if (!el) {
         return null
       }
       while (
+        el &&
         el.tagName !== 'HTML' &&
         el.tagName !== 'BOYD' &&
         el.nodeType === 1
@@ -139,18 +149,6 @@ export default {
       }
       return document
     },
-  },
-  mounted() {
-    setTimeout(() => {
-      if (this.auto) {
-        this.initFlowLoader()
-      }
-    }, 20)
-  },
-  beforeDestroy() {
-    off(this.getTarget, 'scroll', this.onScreenScroll)
-  },
-  methods: {
     loadMore() {
       this.$store.dispatch('flow/loadMore', {
         func: this.func,
@@ -166,14 +164,14 @@ export default {
       if (checkInView(this.$refs.state)) {
         this.loadMore()
       }
-      on(this.getTarget, 'scroll', this.onScreenScroll)
+      on(this.getTarget(), 'scroll', this.onScreenScroll)
     },
     onScreenScroll: throttle(200, function() {
       if (this.source.error) {
         return
       }
       if (this.source.noMore || !this.auto) {
-        off(this.getTarget, 'scroll', this.onScreenScroll)
+        off(this.getTarget(), 'scroll', this.onScreenScroll)
         return
       }
       if (checkInView(this.$refs.state)) {
