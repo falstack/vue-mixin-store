@@ -20,7 +20,7 @@ export default ({ api, mutations }) => {
   const generateField = (func, type, query = {}) => {
     let result = `${func}-${type}`
     Object.keys(query)
-      .filter(_ => ~_.indexOf(['page', 'count']))
+      .filter(_ => !~['page', 'count', 'changing'].indexOf(_))
       .sort()
       .forEach(key => {
         result += `-${key}-${query[key]}`
