@@ -1,3 +1,6 @@
+const faker = require('faker')
+faker.locale = 'zh_CN'
+
 export default new class {
   constructor() {
     this.lastIndex = 0
@@ -16,7 +19,8 @@ export default new class {
           color: this.getRandomColor()
         },
         width,
-        height
+        height,
+        data: faker.helpers.createCard()
       }
     }
     return items

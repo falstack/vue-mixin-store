@@ -4,6 +4,29 @@ body {
 }
 
 #app {
+  .container {
+    width: 1160px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .header {
+    .v-switcher {
+      &-header {
+        &-anchor {
+          bottom: 0;
+          height: 100%;
+          background-color: #ff6881;
+          opacity: 0.1;
+        }
+      }
+    }
+  }
+}
+
+#main {
+  width: 600px;
+  margin: 0 auto;
   text-align: center;
   $height: 40px;
   $font-size: 14px;
@@ -46,24 +69,12 @@ body {
 
 <template>
   <div id="app">
-    <FlowLoader
-      func="getListByPage"
-      type="page"
-      :query="query"
-      :display-no-more="false"
-      :use-first-loading="true"
-      :use-first-error="true"
-    >
-      <ul class="demo-list" slot-scope="{ flow }">
-        <li v-for="item in flow" :key="item.id">
-          <div :style="{ backgroundColor: item.style.color }">
-            {{ item.index + 1 }}
-          </div>
-        </li>
-      </ul>
-      <div slot="first-loading">第一次加载</div>
-      <div slot="first-error">第一次错误</div>
-    </FlowLoader>
+    <div class="container header">
+      <v-switcher :headers="headers" :routable="true" align="start"/>
+    </div>
+    <div id="main">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -72,17 +83,45 @@ export default {
   name: 'app',
   data() {
     return {
-      query: {
-        count: 10
-      }
+      headers: [
+        {
+          name: '首页',
+          route: 'index'
+        },
+        {
+          name: '页码翻页',
+          route: 'page'
+        },
+        {
+          name: '跳转翻页',
+          route: 'jump'
+        },
+        {
+          name: 'seenIds翻页',
+          route: 'seen_ids'
+        },
+        {
+          name: 'sinceId翻页',
+          route: 'since_id'
+        },
+        {
+          name: 'last_id翻页',
+          route: 'since_id'
+        },
+        {
+          name: '异常处理',
+          route: 'error'
+        },
+        {
+          name: '首屏异常',
+          route: 'first-error'
+        },
+        {
+          name: '首屏加载',
+          route: 'first-loading'
+        }
+      ]
     }
-  },
-  mounted() {
-    this.$store.dispatch('flow/initData', {
-      func: 'getListByPage',
-      type: 'page',
-      query: this.query
-    })
   }
 }
 </script>
