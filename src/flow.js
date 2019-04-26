@@ -197,7 +197,9 @@ export default api => {
           if (parseDataUniqueId(field.result[i], changing) === id) {
             const modKeys = key.split('.')
             let obj = state[fieldName].result[i]
-            while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {}
+            while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
+              // do nothing
+            }
             if (/^d+$/.test(method)) {
               obj[modKeys[0]].splice(method, 1)
             } else if (method === 'push') {
@@ -210,6 +212,9 @@ export default api => {
             break
           }
         }
+      },
+      SPLICE_DATA() {
+        // todo
       }
     },
     getters: {

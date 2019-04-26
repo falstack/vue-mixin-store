@@ -13,7 +13,7 @@
         <li v-for="(item, index) in flow" :key="item.id">
           <div :style="{ backgroundColor: item.style.color }">
             count：{{ index + 1 }}，id：{{ item.id }}
-            <button @click="modifyDeepValue(item)">{{ item.follow ? '已关注' : '关注' }}</button>
+            <button @click="modifyDeepValue(item)">{{ item.data.follow ? '已关注' : '关注' }}</button>
             <button @click="modifyLightValue(item)">{{ item.like ? '已喜欢' : '喜欢' }}</button>
           </div>
         </li>
