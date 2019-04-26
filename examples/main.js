@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
-import FlowList from '../src/FlowList'
+import FlowLoader from '../src/FlowLoader'
 
 Vue.config.productionTip = false
-Vue.component(FlowList.name, FlowList)
+Vue.component(FlowLoader.name, FlowLoader)
 
 new Vue({
   store,

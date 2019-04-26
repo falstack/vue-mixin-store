@@ -1,41 +1,44 @@
 import Vue from 'vue'
 
-export default API => {
+export default ({ api, mutations }) => {
   const defaultListObj = {
-    list: [],
-    page: 0,
+    result: [],
+    page: 1,
     noMore: false,
-    nothing: false,
+    nothing: true,
     loading: false,
-    error: false,
+    error: null,
     init: false,
-    total: 0
+    total: 0,
+    pageInfo: {
+      currentPage: 0,
+      totalPages: 0,
+      totalItems: 0
+    }
+  }
+
+  const generateField = (func, type, query = {}) => {
+    let result = `${func}-${type}`
+    Object.keys(query)
+      .sort()
+      .forEach(key => {
+        result += `-${key}-${query[key]}`
+      })
+    return result
   }
 
   return {
     namespaced: true,
     state: () => ({}),
     actions: {
-      // 1. 先检测当前列表是否有数据，如果有数据，清除
-      // 2. 如果当前 list 没有初始化，就初始化
-      // 3. 修改状态，获取数据
-      // 4. 装填数据，修改状态
       async initData(
         { state, commit },
-        {
-          id = '',
-          type, // required
-          func, // required
-          count = 12,
-          sort = '',
-          refresh = false,
-          force = false
-        }
+        { func, type, query, refresh = false }
       ) {
-        const fieldName = `${func}-${id}-${sort}`
+        const fieldName = generateField(func, type, query)
         const field = state[fieldName]
         // 如果 error 了，就不再请求
-        if (field && field.error && !force) {
+        if (field && field.error && !refresh) {
           return
         }
         // 正在请求中，return
@@ -50,49 +53,40 @@ export default API => {
         }
         commit('INIT_STATE', fieldName)
         commit('SET_LOADING', fieldName)
-        const params = { count, ctx: this }
+        const params = {}
         if (type === 'page') {
-          params.page = 0
+          params.page = 1
+        } else if (type === 'jump') {
+          params.page = query.page
         } else if (type === 'seenIds') {
           params.seen_ids = ''
         } else if (type === 'lastId') {
           params.max_id = ''
         }
-        if (id) {
-          params.id = id
-        }
-        if (sort) {
-          params.order_by = sort
-        }
         try {
-          const data = await API[func](params)
-          console.log(data)
-          commit('SET_DATA', { data, fieldName, count })
-        } catch (e) {
-          commit('SET_ERROR', fieldName)
+          const data = await api[func](Object.assign(params, query))
+          commit('SET_DATA', { data, fieldName, type })
+        } catch (error) {
+          commit('SET_ERROR', { fieldName, error })
         }
       },
-      // 1.检测数据是否初始化，如果未初始化，报错，如果已初始化，检测参数，不匹配，报错
-      // 2.设置 loading，计算请求参数，发请求
-      // 3.set store，设置 loading
       async loadMore(
         { state, commit },
-        { type, changing = 'id', id = '', func, sort = '', count = 12 }
+        { type, func, query, changing = 'id' }
       ) {
-        const fieldName = `${func}-${id}-${sort}`
+        const fieldName = generateField(func, type, query)
         const field = state[fieldName]
         if (field.loading || field.noMore) {
           return
         }
         commit('SET_LOADING', fieldName)
-        const params = {
-          count,
-          ctx: this
-        }
+        const params = {}
         if (type === 'page') {
           params.page = field.page
+        } else if (type === 'jump') {
+          params.page = query.page
         } else if (type === 'lastId') {
-          const lastData = field.list[field.list.length - 1]
+          const lastData = field.result[field.result.length - 1]
           let result
           if (!/\./.test(changing)) {
             result = lastData[changing]
@@ -104,7 +98,7 @@ export default API => {
           }
           params.max_id = result
         } else if (type === 'seenIds') {
-          params.seen_ids = field.list
+          params.seen_ids = field.result
             .map(_ => {
               if (!/\./.test(changing)) {
                 return _[changing]
@@ -117,23 +111,17 @@ export default API => {
             })
             .toString()
         }
-        if (id) {
-          params.id = id
-        }
-        if (sort) {
-          params.order_by = sort
-        }
         try {
-          const data = await API[func](params)
-          commit('SET_DATA', { data, fieldName, count })
-        } catch (e) {
-          commit('SET_ERROR', fieldName)
+          const data = await api[func](Object.assign(params, query))
+          commit('SET_DATA', { data, fieldName, type })
+        } catch (error) {
+          commit('SET_ERROR', { fieldName, error })
         }
       }
     },
-    mutations: {
-      SET_ERROR(state, fieldName) {
-        state[fieldName].error = true
+    mutations: Object.assign(mutations || {}, {
+      SET_ERROR(state, { fieldName, error }) {
+        state[fieldName].error = error
         state[fieldName].loading = false
       },
       INIT_STATE(state, fieldName) {
@@ -141,40 +129,37 @@ export default API => {
       },
       SET_LOADING(state, fieldName) {
         state[fieldName].loading = true
+        state[fieldName].error = null
       },
-      SET_DATA(state, { data, fieldName, count }) {
-        const checkIsListObj = data => {
-          return !Array.isArray(data)
-        }
+      SET_DATA(state, { data, fieldName, type }) {
+        const { result, pageInfo } = data
         if (!state[fieldName]) {
           return
         }
-        const isListObj = checkIsListObj(data)
+        // jump 模式下的状态，去除 noMore 的返回，还有 jump 模式下是否使用缓存
         if (state[fieldName].init) {
-          state[fieldName].list = isListObj
-            ? state[fieldName].list.concat(data.list)
-            : state[fieldName].list.concat(data)
+          state[fieldName].result = state[fieldName].result.concat(result)
         } else {
           state[fieldName].init = true
-          state[fieldName].list = isListObj ? data.list : data
-          state[fieldName].nothing = isListObj
-            ? data.total === 0
-            : data.length === 0
+          state[fieldName].result = result
+          state[fieldName].nothing = pageInfo.numResults === 0
         }
-        state[fieldName].page++
-        state[fieldName].noMore = isListObj
-          ? data.noMore
-          : state.type === 'seenIds'
-          ? data.length === 0
-          : data.length < count
-        state[fieldName].total = data.total || 0
+        if (type === 'jump') {
+          state[fieldName].noMore = false
+          state[fieldName].pageInfo.currentPage = pageInfo.page
+          state[fieldName].pageInfo.totalPages = pageInfo.numPages
+          state[fieldName].pageInfo.totalItems = pageInfo.numResults
+        } else {
+          state[fieldName].noMore = data.noMore
+          state[fieldName].page++
+        }
+        state[fieldName].total = pageInfo.numResults
         state[fieldName].loading = false
-        state[fieldName].error = false
       }
-    },
+    }),
     getters: {
-      getFlow: state => (func, sort = '', id = '') => {
-        return state[`${func}-${id}-${sort}`]
+      getFlow: state => (func, type, query) => {
+        return state[generateField(func, type, query)]
       }
     }
   }

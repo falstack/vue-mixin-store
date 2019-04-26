@@ -1,5 +1,10 @@
 <style lang="scss">
+body {
+  margin: 0;
+}
+
 #app {
+  text-align: center;
   $height: 40px;
   $font-size: 14px;
   .flow-list {
@@ -41,9 +46,14 @@
 
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-    <FlowList func="getList" type="page">
+    <FlowLoader
+      func="getListByPage"
+      type="page"
+      :query="query"
+      :display-no-more="false"
+      :use-first-loading="true"
+      :use-first-error="true"
+    >
       <ul class="demo-list" slot-scope="{ flow }">
         <li v-for="item in flow" :key="item.id">
           <div :style="{ backgroundColor: item.style.color }">
@@ -51,34 +61,28 @@
           </div>
         </li>
       </ul>
-    </FlowList>
+      <div slot="first-loading">第一次加载</div>
+      <div slot="first-error">第一次错误</div>
+    </FlowLoader>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'app',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      query: {
+        count: 10
+      }
+    }
   },
   mounted() {
     this.$store.dispatch('flow/initData', {
-      func: 'getList',
-      type: 'page'
+      func: 'getListByPage',
+      type: 'page',
+      query: this.query
     })
   }
 }
 </script>
-
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

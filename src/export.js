@@ -1,7 +1,7 @@
 import FlowStore from './flow'
-import FlowList from './FlowList'
+import FlowLoader from './FlowLoader'
 
 module.exports = {
   FlowStore,
-  FlowList
+  FlowLoader
 }
