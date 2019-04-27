@@ -71,7 +71,7 @@ export default api => {
         if (type === 'page') {
           params.page = 1
         } else if (type === 'jump') {
-          params.page = query.page
+          params.page = query.page || 1
         } else if (type === 'seenIds') {
           params.seen_ids = ''
         } else if (type === 'lastId') {
@@ -199,29 +199,51 @@ export default api => {
         if (!field || !field.result.length) {
           return
         }
+        if (~['push', 'unshift', 'concat', 'merge'].indexOf(method)) {
+          let changeTotal = 0
+          switch (method) {
+            case 'push':
+              state[fieldName].result.push(value)
+              changeTotal = 1
+              break
+            case 'unshift':
+              state[fieldName].result.unshift(value)
+              changeTotal = 1
+              break
+            case 'concat':
+              state[fieldName].result = state[fieldName].result.concat(value)
+              changeTotal = value.length
+              break
+            case 'merge':
+              state[fieldName].result = value.concat(state[fieldName].result)
+              changeTotal = value.length
+              break
+          }
+          state[fieldName].total += changeTotal
+          return
+        }
         const changing = query.changing || 'id'
         for (let i = 0; i < field.result.length; i++) {
           if (parseDataUniqueId(field.result[i], changing) === id) {
+            if (method === 'delete') {
+              state[fieldName].result.splice(i, 1)
+              state[fieldName].total--
+              return
+            }
+            if (method === 'insert') {
+              state[fieldName].result.splice(i, 0, value)
+              state[fieldName].total++
+              return
+            }
             const modKeys = key.split('.')
             let obj = state[fieldName].result[i]
             while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
               // do nothing
             }
-            if (/^d+$/.test(method)) {
-              obj[modKeys[0]].splice(method, 1)
-            } else if (method === 'push') {
-              obj[modKeys[0]].push(value)
-            } else if (method === 'unshift') {
-              obj[modKeys[0]].unshift(value)
-            } else {
-              obj[modKeys[0]] = value
-            }
+            obj[modKeys[0]] = value
             break
           }
         }
-      },
-      SPLICE_DATA() {
-        // todo
       }
     },
     getters: {

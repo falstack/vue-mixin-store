@@ -19,12 +19,27 @@ export default new class {
         data: Object.assign(faker.helpers.createCard(), {
           number_id: faker.random.number(),
           uuid: faker.random.uuid(),
-          follow: false
+          follow: false,
+          children: {
+            total: 3,
+            noMore: true,
+            data: [
+              Object.assign(faker.helpers.createCard(), {
+                id: ++GLOBAL_ID
+              }),
+              Object.assign(faker.helpers.createCard(), {
+                id: ++GLOBAL_ID
+              }),
+              Object.assign(faker.helpers.createCard(), {
+                id: ++GLOBAL_ID
+              })
+            ]
+          }
         }),
         like: false
       }
     }
-    return items
+    return count === 1 ? items[0] : items
   }
 
   getRandomColor() {

@@ -130,7 +130,7 @@ export default {
           route: 'nothing'
         },
         {
-          name: '评论列表',
+          name: '动态列表',
           route: 'comment'
         }
       ]
