@@ -3,7 +3,10 @@
 
 <template>
   <div id="since_id">
-    <div><button @click="fetchUp">向上获取</button></div>
+    <div>
+      <button @click="fetchUp">向上获取</button>
+      <button @click="refresh">刷新页面</button>
+    </div>
     <FlowLoader
       func="getListBySinceId"
       type="sinceId"
@@ -39,6 +42,14 @@ export default {
         query: Object.assign(this.query, {
           isUp: true
         })
+      })
+    },
+    refresh() {
+      this.$store.dispatch('flow/initData', {
+        func: 'getListBySinceId',
+        type: 'sinceId',
+        query: this.query,
+        refresh: true
       })
     }
   }

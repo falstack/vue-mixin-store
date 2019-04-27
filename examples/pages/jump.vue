@@ -3,11 +3,6 @@
 
 <template>
   <div id="jump">
-    <div>
-      <button @click="load(1)">page-1</button>
-      <button @click="load(2)">page-2</button>
-      <button @click="load(9)">page-9</button>
-    </div>
     <FlowLoader
       func="getListByJump"
       type="jump"
@@ -20,6 +15,11 @@
           </div>
         </li>
       </ul>
+      <div slot="load">
+        <button @click="load(1)">page-1</button>
+        <button @click="load(2)">page-2</button>
+        <button @click="load(9)">page-9</button>
+      </div>
     </FlowLoader>
   </div>
 </template>

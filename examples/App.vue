@@ -40,7 +40,7 @@ body {
       &-no-more,
       &-loading,
       &-shim,
-      &-btn {
+      &-load {
         text-align: center;
         height: $height;
         line-height: $height;

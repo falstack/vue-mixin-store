@@ -3,7 +3,7 @@ import Vue from 'vue'
 export default api => {
   const defaultListObj = {
     result: [],
-    page: 1,
+    page: 0,
     noMore: false,
     nothing: false,
     loading: false,
@@ -65,7 +65,9 @@ export default api => {
         }
         commit('INIT_STATE', { func, type, query })
         commit('SET_LOADING', fieldName)
-        const params = {}
+        const params = {
+          page: 1
+        }
         if (type === 'page') {
           params.page = 1
         } else if (type === 'jump') {
@@ -102,9 +104,11 @@ export default api => {
         }
         commit('SET_LOADING', fieldName)
         const changing = query.changing || 'id'
-        const params = {}
+        const params = {
+          page: field.page + 1
+        }
         if (type === 'page') {
-          params.page = field.page
+          params.page = field.page + 1
         } else if (type === 'jump') {
           commit('CLEAR_RESULT', fieldName)
           params.page = query.page
@@ -182,12 +186,11 @@ export default api => {
           state[fieldName].pageInfo.totalPages = pageInfo.numPages
           state[fieldName].pageInfo.totalItems = pageInfo.numResults
           state[fieldName].total = pageInfo.numResults
-          state[fieldName].page = page
         } else {
           state[fieldName].noMore = data.noMore
           state[fieldName].total = data.total
-          state[fieldName].page++
         }
+        state[fieldName].page = page
         state[fieldName].loading = false
       },
       UPDATE_DATA(state, { type, func, query, id, method, key, value }) {
@@ -222,7 +225,7 @@ export default api => {
       }
     },
     getters: {
-      getFlow: state => (func, type, query) => {
+      getFlow: state => ({ func, type, query }) => {
         return state[generateFieldName(func, type, query)]
       }
     }

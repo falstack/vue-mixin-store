@@ -12,6 +12,7 @@ export const getListByPage = ({ page, count }) => {
       resolve({
         result,
         noMore,
+        total,
         pageInfo: {
           page,
           numPages: Math.ceil(total / count),
@@ -35,9 +36,13 @@ export const getListBySinceId = ({ since_id, is_up, count }) => {
     setTimeout(() => {
       SINCE_HAS_FETCHED += count
       const result = ItemFactory.get(getLength)
+      if (getLength < count) {
+        SINCE_HAS_FETCHED = 0
+      }
       resolve({
         result,
         noMore,
+        total,
         pageInfo: {
           numPages: Math.ceil(total / count),
           numResults: total
@@ -57,6 +62,7 @@ export const getListByJump = ({ page, count }) => {
       const result = ItemFactory.get(getLength)
       resolve({
         result,
+        total,
         pageInfo: {
           page,
           numPages: Math.ceil(total / count),
@@ -79,6 +85,7 @@ export const getListWithError = ({ page, count }) => {
         resolve({
           result,
           noMore,
+          total,
           pageInfo: {
             page,
             numPages: Math.ceil(total / count),
@@ -106,6 +113,7 @@ export const getListByFirstLoading = ({ page, count }) => {
       resolve({
         result,
         noMore,
+        total,
         pageInfo: {
           page,
           numPages: Math.ceil(total / count),
@@ -135,6 +143,7 @@ export const getListByFirstError = ({ page, count }) => {
       resolve({
         result,
         noMore,
+        total,
         pageInfo: {
           page,
           numPages: Math.ceil(total / count),
@@ -199,6 +208,7 @@ export const getListByNothing = ({ page, count }) => {
       resolve({
         result,
         noMore,
+        total,
         pageInfo: {
           page,
           numPages: Math.ceil(total / count),

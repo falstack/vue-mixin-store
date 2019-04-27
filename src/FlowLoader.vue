@@ -57,10 +57,16 @@
         </div>
         <!--   normal   -->
         <template v-else>
-          <div v-if="auto" class="flow-render-state-shim"></div>
-          <button v-else @click="loadMore" class="flow-render-state-btn">
-            <slot name="load-btn">点击加载更多</slot>
-          </button>
+          <div
+            v-if="isAuto && !isPagination"
+            class="flow-render-state-shim"
+          ></div>
+          <div v-else-if="isPagination" class="flow-render-state-load">
+            <slot name="load">jump</slot>
+          </div>
+          <div v-else @click="loadMore" class="flow-render-state-load">
+            <slot name="load">点击加载更多</slot>
+          </div>
         </template>
       </template>
     </div>
@@ -69,12 +75,11 @@
 
 <script>
 import { throttle } from 'throttle-debounce'
+
 const on = (elem, type, listener, useCapture = false) => {
   elem.addEventListener(type, listener, useCapture)
 }
-const off = (elem, type, listener, useCapture = false) => {
-  elem.removeEventListener(type, listener, useCapture)
-}
+
 const checkInView = (dom, preload = 50) => {
   if (typeof window === 'undefined' || !dom) {
     return false
@@ -102,13 +107,10 @@ export default {
       type: Object,
       default: () => {}
     },
-    changing: {
-      type: String,
-      default: 'id'
-    },
     auto: {
-      type: Boolean,
-      default: true
+      type: Number,
+      default: -1,
+      validate: val => val >= -1
     },
     displayNoMore: {
       type: Boolean,
@@ -125,11 +127,23 @@ export default {
   },
   computed: {
     source() {
-      return this.$store.getters['flow/getFlow'](
-        this.func,
-        this.type,
-        this.query
-      )
+      return this.$store.getters['flow/getFlow'](this.params)
+    },
+    params() {
+      return {
+        func: this.func,
+        type: this.type,
+        query: this.query
+      }
+    },
+    isAuto() {
+      if (!this.source) {
+        return this.auto === -1
+      }
+      return this.auto === -1 || this.auto > this.source.page
+    },
+    isPagination() {
+      return this.type === 'jump'
     }
   },
   mounted() {
@@ -158,44 +172,31 @@ export default {
       return document
     },
     initData() {
-      this.$store.dispatch('flow/initData', {
-        func: this.func,
-        type: this.type,
-        query: this.query,
-        changing: this.changing
-      })
+      this.$store.dispatch('flow/initData', this.params)
     },
     loadMore() {
-      this.$store.dispatch('flow/loadMore', {
-        func: this.func,
-        type: this.type,
-        query: this.query,
-        changing: this.changing
-      })
+      this.$store.dispatch('flow/loadMore', this.params)
     },
     initFlowLoader() {
-      if (this.auto) {
+      if (this.auto === 0) {
+        this.$store.commit('flow/INIT_STATE', this.params)
+      } else {
         if (checkInView(this.$refs.state)) {
           this.initData()
         }
         on(this.getTarget(), 'scroll', this.onScreenScroll)
-      } else {
-        this.$store.commit('flow/INIT_STATE', {
-          func: this.func,
-          type: this.type,
-          query: this.query
-        })
       }
     },
     onScreenScroll: throttle(200, function() {
-      if (this.source.error) {
+      if (
+        this.source.loading ||
+        this.source.nothing ||
+        this.source.noMore ||
+        this.source.error
+      ) {
         return
       }
-      if (this.source.noMore || !this.auto) {
-        off(this.getTarget(), 'scroll', this.onScreenScroll)
-        return
-      }
-      if (checkInView(this.$refs.state)) {
+      if (this.isAuto && checkInView(this.$refs.state)) {
         this.loadMore()
       }
     })
