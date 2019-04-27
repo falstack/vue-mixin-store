@@ -28,13 +28,6 @@ export default {
         changing: 'data.uuid'
       }
     }
-  },
-  mounted() {
-    this.$store.dispatch('flow/initData', {
-      func: 'getListByLastId',
-      type: 'lastId',
-      query: this.query
-    })
   }
 }
 </script>

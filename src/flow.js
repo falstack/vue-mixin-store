@@ -5,7 +5,7 @@ export default api => {
     result: [],
     page: 1,
     noMore: false,
-    nothing: true,
+    nothing: false,
     loading: false,
     error: null,
     init: false,
@@ -63,7 +63,7 @@ export default api => {
             return
           }
         }
-        commit('INIT_STATE', fieldName)
+        commit('INIT_STATE', { func, type, query })
         commit('SET_LOADING', fieldName)
         const params = {}
         if (type === 'page') {
@@ -145,8 +145,12 @@ export default api => {
         state[fieldName].error = error
         state[fieldName].loading = false
       },
-      INIT_STATE(state, fieldName) {
-        Vue.set(state, fieldName, Object.assign({}, defaultListObj))
+      INIT_STATE(state, { func, type, query }) {
+        Vue.set(
+          state,
+          generateFieldName(func, type, query),
+          Object.assign({}, defaultListObj)
+        )
       },
       SET_LOADING(state, fieldName) {
         state[fieldName].loading = true

@@ -55,6 +55,11 @@ export default new VueRouter({
       path: '/nothing',
       name: 'nothing',
       component: () => import('./pages/nothing')
+    },
+    {
+      path: '/comment',
+      name: 'comment',
+      component: () => import('./pages/comment')
     }
   ]
 })

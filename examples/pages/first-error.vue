@@ -29,13 +29,6 @@ export default {
         count: 10
       }
     }
-  },
-  mounted() {
-    this.$store.dispatch('flow/initData', {
-      func: 'getListByFirstError',
-      type: 'page',
-      query: this.query
-    })
   }
 }
 </script>

@@ -34,17 +34,7 @@ export default {
       }
     }
   },
-  mounted() {
-    this.initData()
-  },
   methods: {
-    initData() {
-      this.$store.dispatch('flow/initData', {
-        func: 'getListByJump',
-        type: 'jump',
-        query: this.query
-      })
-    },
     load(page) {
       this.query.page = page
       this.$store.dispatch('flow/loadMore', {

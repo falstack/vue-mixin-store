@@ -27,13 +27,6 @@ export default {
         count: 10
       }
     }
-  },
-  mounted() {
-    this.$store.dispatch('flow/initData', {
-      func: 'getListByNothing',
-      type: 'page',
-      query: this.query
-    })
   }
 }
 </script>

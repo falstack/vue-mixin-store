@@ -28,13 +28,6 @@ export default {
         changing: 'data.number_id'
       }
     }
-  },
-  mounted() {
-    this.$store.dispatch('flow/initData', {
-      func: 'getListBySeenIds',
-      type: 'seenIds',
-      query: this.query
-    })
   }
 }
 </script>

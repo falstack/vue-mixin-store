@@ -19,6 +19,10 @@ body {
           background-color: #ff6881;
           opacity: 0.1;
         }
+
+        &-item {
+          padding: 0 5px;
+        }
       }
     }
   }
@@ -30,12 +34,13 @@ body {
   text-align: center;
   $height: 40px;
   $font-size: 14px;
-  .flow-list {
+  .flow-render {
     &-state {
       &-error,
       &-no-more,
       &-loading,
-      &-shim {
+      &-shim,
+      &-btn {
         text-align: center;
         height: $height;
         line-height: $height;
@@ -123,6 +128,10 @@ export default {
         {
           name: '首屏为空',
           route: 'nothing'
+        },
+        {
+          name: '评论列表',
+          route: 'comment'
         }
       ]
     }

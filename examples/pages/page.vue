@@ -31,13 +31,6 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$store.dispatch('flow/initData', {
-      func: 'getListByPage',
-      type: 'page',
-      query: this.query
-    })
-  },
   methods: {
     modifyDeepValue(item) {
       this.$store.commit('flow/UPDATE_DATA', {

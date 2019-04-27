@@ -31,13 +31,6 @@ export default {
       }
     }
   },
-  mounted() {
-    this.$store.dispatch('flow/initData', {
-      func: 'getListBySinceId',
-      type: 'sinceId',
-      query: this.query
-    })
-  },
   methods: {
     fetchUp() {
       this.$store.dispatch('flow/loadMore', {
