@@ -1,7 +1,7 @@
 {
-  "name": "vue-flow-loader",
+  "name": "vue-mixin-store",
   "version": "0.1.0",
-  "main": "dist/vue-flow-loader.umd.min.js",
+  "main": "dist/vue-mixin-store.umd.min.js",
   "files": [
     "dist"
   ],
@@ -12,20 +12,17 @@
   "author": "falstack <icesilt@outlook.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/falstack/vue-flow-loader/issues"
+    "url": "https://github.com/falstack/vue-mixin-store/issues"
   },
-  "homepage": "https://github.com/falstack/vue-flow-loader",
+  "homepage": "https://github.com/falstack/vue-mixin-store",
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name vue-flow-loader src/export.js",
+    "build": "vue-cli-service build --target lib --name vue-mixin-store src/export.js",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "core-js": "^2.6.5",
-    "throttle-debounce": "^2.1.0",
-    "vue": "^2.6.6",
-    "vuex": "^3.0.1"
+    "throttle-debounce": "^2.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
@@ -41,6 +38,9 @@
     "sass-loader": "^7.1.0",
     "v-switcher": "^0.0.6",
     "vue-router": "^3.0.6",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.5.21",
+    "core-js": "^2.6.5",
+    "vue": "^2.6.6",
+    "vuex": "^3.0.1"
   }
 }

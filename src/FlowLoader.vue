@@ -227,7 +227,6 @@ export default {
       }
     },
     onScreenScroll: throttle(200, function() {
-      console.log('onScreenScroll', this.func, this.params.query)
       if (this.source.loading || this.source.nothing || this.source.error) {
         return
       }
