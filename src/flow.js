@@ -230,8 +230,13 @@ export default api => {
               state[fieldName].total--
               return
             }
-            if (method === 'insert') {
+            if (method === 'insert-before') {
               state[fieldName].result.splice(i, 0, value)
+              state[fieldName].total++
+              return
+            }
+            if (method === 'insert-after') {
+              state[fieldName].result.splice(i + 1, 0, value)
               state[fieldName].total++
               return
             }

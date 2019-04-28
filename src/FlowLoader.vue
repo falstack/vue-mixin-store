@@ -177,13 +177,17 @@ export default {
     loadMore() {
       this.$store.dispatch('flow/loadMore', this.params)
     },
+    initState() {
+      if (this.source) {
+        return
+      }
+      this.$store.commit('flow/INIT_STATE', this.params)
+    },
     initFlowLoader() {
       if (this.auto === 0) {
-        this.$store.commit('flow/INIT_STATE', this.params)
+        this.initState()
       } else {
-        if (checkInView(this.$refs.state)) {
-          this.initData()
-        }
+        checkInView(this.$refs.state) ? this.initData() : this.initState()
         on(this.getTarget(), 'scroll', this.onScreenScroll)
       }
     },

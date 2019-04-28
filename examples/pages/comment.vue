@@ -12,26 +12,19 @@
     <FlowLoader
       func="getListByPage"
       type="page"
-      class="parent-wrap"
       :query="query"
+      :auto="0"
     >
       <div slot="header" slot-scope="{ source }">total：{{ source.total }}</div>
-      <ul class="parent-list" slot-scope="{ flow }">
-        <li v-for="(item, index) in flow" :key="item.id" class="parent">
+      <ul class="demo-list" slot-scope="{ flow }">
+        <li v-for="(item, index) in flow" :key="item.id">
           <div :style="{ backgroundColor: item.style.color }">
             count：{{ index + 1 }}，id：{{ item.id }}
             <button @click="modifyDeepValue(item)">{{ item.data.follow ? '已关注' : '关注' }}</button>
             <button @click="modifyLightValue(item)">{{ item.like ? '已喜欢' : '喜欢' }}</button>
             <button @click="deleteParent(item)">删除</button>
-          </div>
-          <div class="children-wrap">
-            <ul class="children-list">
-              <li v-for="children in item.data.children.data" :key="children.id">
-                <div :style="{ backgroundColor: item.style.color }">
-                  {{ children.id }}
-                </div>
-              </li>
-            </ul>
+            <button @click="insertBefore(item)">前面插入</button>
+            <button @click="insertAfter(item)">后面插入</button>
           </div>
         </li>
       </ul>
@@ -96,6 +89,26 @@ export default {
         query: this.query,
         method: 'delete',
         id: item.id
+      })
+    },
+    insertBefore(item) {
+      this.$store.commit('flow/UPDATE_DATA', {
+        func: 'getListByPage',
+        type: 'page',
+        query: this.query,
+        method: 'insert-before',
+        id: item.id,
+        value: ItemFactory.get(1)
+      })
+    },
+    insertAfter(item) {
+      this.$store.commit('flow/UPDATE_DATA', {
+        func: 'getListByPage',
+        type: 'page',
+        query: this.query,
+        method: 'insert-after',
+        id: item.id,
+        value: ItemFactory.get(1)
       })
     }
   }
