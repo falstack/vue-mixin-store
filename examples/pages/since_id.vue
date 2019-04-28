@@ -11,6 +11,7 @@
       func="getListBySinceId"
       type="sinceId"
       :query="query"
+      ref="loader"
     >
       <ul class="demo-list" slot-scope="{ flow }">
         <li v-for="(item, index) in flow" :key="item.id">
@@ -36,21 +37,10 @@ export default {
   },
   methods: {
     fetchUp() {
-      this.$store.dispatch('flow/loadMore', {
-        func: 'getListBySinceId',
-        type: 'sinceId',
-        query: Object.assign(this.query, {
-          isUp: true
-        })
-      })
+      this.$refs.loader.loadBefore()
     },
     refresh() {
-      this.$store.dispatch('flow/initData', {
-        func: 'getListBySinceId',
-        type: 'sinceId',
-        query: this.query,
-        refresh: true
-      })
+      this.$refs.loader.refresh()
     }
   }
 }

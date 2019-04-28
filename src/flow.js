@@ -9,7 +9,8 @@ export default api => {
     loading: false,
     error: null,
     init: false,
-    total: 0
+    total: 0,
+    extra: null
   }
 
   const generateFieldName = (func, type, query = {}) => {
@@ -159,27 +160,29 @@ export default api => {
         state[fieldName].result = []
       },
       SET_DATA(state, { data, fieldName, type, page, insertBefore }) {
-        const { result } = data
-        if (!state[fieldName]) {
+        const { result, extra } = data
+        const field = state[fieldName]
+        if (!field) {
           return
         }
-        if (state[fieldName].init) {
+        if (field.init) {
           if (type === 'jump') {
-            state[fieldName].result = result
+            field.result = result
           } else {
-            state[fieldName].result = insertBefore
-              ? result.concat(state[fieldName].result)
-              : state[fieldName].result.concat(result)
+            field.result = insertBefore
+              ? result.concat(field.result)
+              : field.result.concat(result)
           }
         } else {
-          state[fieldName].init = true
-          state[fieldName].result = result
-          state[fieldName].nothing = result.length === 0
+          field.init = true
+          field.result = result
+          field.nothing = result.length === 0
         }
-        state[fieldName].noMore = type === 'jump' ? false : data.no_more
-        state[fieldName].total = data.total
-        state[fieldName].page = page
-        state[fieldName].loading = false
+        field.noMore = type === 'jump' ? false : data.no_more
+        field.total = data.total
+        field.page = page
+        extra && Vue.set(field, 'extra', extra)
+        field.loading = false
       },
       UPDATE_DATA(state, { type, func, query, id, method, key, value }) {
         const fieldName = generateFieldName(func, type, query)
@@ -188,7 +191,7 @@ export default api => {
           return
         }
         const modKeys = key ? key.split('.') : []
-        if (~['push', 'unshift', 'concat', 'merge'].indexOf(method)) {
+        if (~['push', 'unshift', 'concat', 'merge', 'extra'].indexOf(method)) {
           let changeTotal = 0
           switch (method) {
             case 'push':

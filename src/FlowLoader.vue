@@ -80,8 +80,12 @@ const on = (elem, type, listener, useCapture = false) => {
   elem.addEventListener(type, listener, useCapture)
 }
 
-const checkInView = (dom, preload = 50) => {
-  if (typeof window === 'undefined' || !dom) {
+const off = (elem, type, listener, useCapture = false) => {
+  elem.removeEventListener(type, listener, useCapture)
+}
+
+const checkInView = (dom, preload) => {
+  if (!dom) {
     return false
   }
   const rect = dom.getBoundingClientRect()
@@ -123,6 +127,11 @@ export default {
     useFirstLoading: {
       type: Boolean,
       default: false
+    },
+    preload: {
+      type: Number,
+      default: 50,
+      validate: val => val >= 0
     }
   },
   computed: {
@@ -152,6 +161,25 @@ export default {
     })
   },
   methods: {
+    refresh() {
+      this.$store.dispatch(
+        'flow/initData',
+        Object.assign(this.params, {
+          refresh: true
+        })
+      )
+      this.initFlowLoader()
+    },
+    jump(page) {
+      const { query } = this.params
+      query.page = page
+      this.$store.dispatch(
+        'flow/loadMore',
+        Object.assign(this.params, {
+          query
+        })
+      )
+    },
     getTarget() {
       let el = this.$el
       if (!el) {
@@ -177,6 +205,11 @@ export default {
     loadMore() {
       this.$store.dispatch('flow/loadMore', this.params)
     },
+    loadBefore() {
+      const { query } = this.params
+      query.isUp = true
+      this.$store.dispatch('flow/loadMore', this.params)
+    },
     initState() {
       if (this.source) {
         return
@@ -187,20 +220,26 @@ export default {
       if (this.auto === 0) {
         this.initState()
       } else {
-        checkInView(this.$refs.state) ? this.initData() : this.initState()
+        checkInView(this.$refs.state, this.preload)
+          ? this.initData()
+          : this.initState()
         on(this.getTarget(), 'scroll', this.onScreenScroll)
       }
     },
     onScreenScroll: throttle(200, function() {
-      if (
-        this.source.loading ||
-        this.source.nothing ||
-        this.source.noMore ||
-        this.source.error
-      ) {
+      console.log('onScreenScroll', this.func, this.params.query)
+      if (this.source.loading || this.source.nothing || this.source.error) {
         return
       }
-      if (this.isAuto && checkInView(this.$refs.state)) {
+      if (
+        !this.isAuto ||
+        this.source.noMore ||
+        (this.isPagination && this.source.init)
+      ) {
+        off(this.getTarget(), 'scroll', this.onScreenScroll)
+        return
+      }
+      if (checkInView(this.$refs.state, this.preload)) {
         this.loadMore()
       }
     })

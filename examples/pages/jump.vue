@@ -7,6 +7,7 @@
       func="getListByJump"
       type="jump"
       :query="query"
+      ref="loader"
     >
       <ul class="demo-list" slot-scope="{ flow }">
         <li v-for="(item, index) in flow" :key="item.id">
@@ -36,12 +37,7 @@ export default {
   },
   methods: {
     load(page) {
-      this.query.page = page
-      this.$store.dispatch('flow/loadMore', {
-        func: 'getListByJump',
-        type: 'jump',
-        query: this.query
-      })
+      this.$refs.loader.jump(page)
     }
   }
 }
