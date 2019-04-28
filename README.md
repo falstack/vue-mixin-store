@@ -1,8 +1,8 @@
-# vue-flow-loader
+# vue-mixin-store
 
 ## Project setup
 ```
-yarn install
+yarn add vue-mixin-store
 ```
 
 ### Compiles and hot-reloads for development
