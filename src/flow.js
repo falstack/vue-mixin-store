@@ -187,49 +187,56 @@ export default api => {
         if (!field || !field.result.length) {
           return
         }
+        const modKeys = key ? key.split('.') : []
         if (~['push', 'unshift', 'concat', 'merge'].indexOf(method)) {
           let changeTotal = 0
           switch (method) {
             case 'push':
-              state[fieldName].result.push(value)
+              field.result.push(value)
               changeTotal = 1
               break
             case 'unshift':
-              state[fieldName].result.unshift(value)
+              field.result.unshift(value)
               changeTotal = 1
               break
             case 'concat':
-              state[fieldName].result = state[fieldName].result.concat(value)
+              field.result = field.result.concat(value)
               changeTotal = value.length
               break
             case 'merge':
-              state[fieldName].result = value.concat(state[fieldName].result)
+              field.result = value.concat(field.result)
               changeTotal = value.length
               break
+            case 'extra':
+              let obj = state[fieldName] // eslint-disable-line
+              while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
+                // do nothing
+              }
+              obj[modKeys[0]] = value
+              break
           }
-          state[fieldName].total += changeTotal
+          field.total += changeTotal
           return
         }
         const changing = query.changing || 'id'
         for (let i = 0; i < field.result.length; i++) {
           if (parseDataUniqueId(field.result[i], changing) === id) {
             if (method === 'delete') {
-              state[fieldName].result.splice(i, 1)
-              state[fieldName].total--
+              field.result.splice(i, 1)
+              field.total--
               return
             }
             if (method === 'insert-before') {
-              state[fieldName].result.splice(i, 0, value)
-              state[fieldName].total++
+              field.result.splice(i, 0, value)
+              field.total++
               return
             }
             if (method === 'insert-after') {
-              state[fieldName].result.splice(i + 1, 0, value)
-              state[fieldName].total++
+              field.result.splice(i + 1, 0, value)
+              field.total++
               return
             }
-            const modKeys = key.split('.')
-            let obj = state[fieldName].result[i]
+            let obj = field.result[i]
             while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
               // do nothing
             }
