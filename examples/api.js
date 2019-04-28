@@ -6,18 +6,13 @@ export const getListByPage = ({ page, count }) => {
     const total = 87
     const hasFetch = (page - 1) * count
     const getLength = total - hasFetch >= count ? count : total - hasFetch
-    const noMore = getLength + hasFetch >= total
+    const no_more = getLength + hasFetch >= total
     setTimeout(() => {
       const result = ItemFactory.get(getLength)
       resolve({
         result,
-        noMore,
-        total,
-        pageInfo: {
-          page,
-          numPages: Math.ceil(total / count),
-          numResults: total
-        }
+        no_more,
+        total
       })
     }, 500)
   })
@@ -32,7 +27,7 @@ export const getListBySinceId = ({ since_id, is_up, count }) => {
     const total = 87
     const hasFetch = SINCE_HAS_FETCHED
     const getLength = total - hasFetch >= count ? count : total - hasFetch
-    const noMore = getLength + hasFetch >= total
+    const no_more = getLength + hasFetch >= total
     setTimeout(() => {
       SINCE_HAS_FETCHED += count
       const result = ItemFactory.get(getLength)
@@ -41,12 +36,8 @@ export const getListBySinceId = ({ since_id, is_up, count }) => {
       }
       resolve({
         result,
-        noMore,
-        total,
-        pageInfo: {
-          numPages: Math.ceil(total / count),
-          numResults: total
-        }
+        no_more,
+        total
       })
     }, 500)
   })
@@ -62,12 +53,7 @@ export const getListByJump = ({ page, count }) => {
       const result = ItemFactory.get(getLength)
       resolve({
         result,
-        total,
-        pageInfo: {
-          page,
-          numPages: Math.ceil(total / count),
-          numResults: total
-        }
+        total
       })
     }, 500)
   })
@@ -78,19 +64,14 @@ export const getListWithError = ({ page, count }) => {
     const total = 87
     const hasFetch = (page - 1) * count
     const getLength = total - hasFetch >= count ? count : total - hasFetch
-    const noMore = getLength + hasFetch >= total
+    const no_more = getLength + hasFetch >= total
     setTimeout(() => {
       if (Date.now() % 2) {
         const result = ItemFactory.get(getLength)
         resolve({
           result,
-          noMore,
-          total,
-          pageInfo: {
-            page,
-            numPages: Math.ceil(total / count),
-            numResults: total
-          }
+          no_more,
+          total
         })
       } else {
         reject({
@@ -107,20 +88,16 @@ export const getListByFirstLoading = ({ page, count }) => {
     const total = 87
     const hasFetch = (page - 1) * count
     const getLength = total - hasFetch >= count ? count : total - hasFetch
-    const noMore = getLength + hasFetch >= total
+    const no_more = getLength + hasFetch >= total
+    const timeout = hasFetch ? 500 : 3000
     setTimeout(() => {
       const result = ItemFactory.get(getLength)
       resolve({
         result,
-        noMore,
-        total,
-        pageInfo: {
-          page,
-          numPages: Math.ceil(total / count),
-          numResults: total
-        }
+        no_more,
+        total
       })
-    }, hasFetch ? 500 : 3000)
+    }, timeout)
   })
 }
 
@@ -130,7 +107,7 @@ export const getListByFirstError = ({ page, count }) => {
     const total = 87
     const hasFetch = (page - 1) * count
     const getLength = total - hasFetch >= count ? count : total - hasFetch
-    const noMore = getLength + hasFetch >= total
+    const no_more = getLength + hasFetch >= total
     setTimeout(() => {
       if (ERROR_COUNT < 3) {
         ERROR_COUNT++
@@ -142,13 +119,8 @@ export const getListByFirstError = ({ page, count }) => {
       const result = ItemFactory.get(getLength)
       resolve({
         result,
-        noMore,
-        total,
-        pageInfo: {
-          page,
-          numPages: Math.ceil(total / count),
-          numResults: total
-        }
+        no_more,
+        total
       })
     }, 500)
   })
@@ -165,13 +137,13 @@ export const getListByLastId = ({ last_id, count }) => {
     const total = 87
     const hasFetch = LAST_FETCHED_COUNT - beginId
     const getLength = total - hasFetch >= count ? count : total - hasFetch
-    const noMore = getLength + hasFetch >= total
+    const no_more = getLength + hasFetch >= total
     setTimeout(() => {
       const result = ItemFactory.get(getLength)
       LAST_FETCHED_COUNT += getLength
       resolve({
         result,
-        noMore,
+        no_more,
         total
       })
     }, 500)
@@ -184,13 +156,13 @@ export const getListBySeenIds = ({ seen_ids, count }) => {
     const total = 87
     const hasFetch = seen_ids.split(',').length
     const getLength = total - hasFetch >= count ? count : total - hasFetch
-    const noMore = getLength + hasFetch >= total
+    const no_more = getLength + hasFetch >= total
     setTimeout(() => {
       const result = ItemFactory.get(getLength)
       LAST_FETCHED_COUNT += getLength
       resolve({
         result,
-        noMore,
+        no_more,
         total
       })
     }, 500)
@@ -202,18 +174,13 @@ export const getListByNothing = ({ page, count }) => {
     const total = 0
     const hasFetch = (page - 1) * count
     const getLength = total - hasFetch >= count ? count : total - hasFetch
-    const noMore = getLength + hasFetch >= total
+    const no_more = getLength + hasFetch >= total
     setTimeout(() => {
       const result = ItemFactory.get(getLength)
       resolve({
         result,
-        noMore,
-        total,
-        pageInfo: {
-          page,
-          numPages: Math.ceil(total / count),
-          numResults: total
-        }
+        no_more,
+        total
       })
     }, 500)
   })

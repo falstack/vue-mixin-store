@@ -9,12 +9,7 @@ export default api => {
     loading: false,
     error: null,
     init: false,
-    total: 0,
-    pageInfo: {
-      currentPage: 0,
-      totalPages: 0,
-      totalItems: 0
-    }
+    total: 0
   }
 
   const generateFieldName = (func, type, query = {}) => {
@@ -164,7 +159,7 @@ export default api => {
         state[fieldName].result = []
       },
       SET_DATA(state, { data, fieldName, type, page, insertBefore }) {
-        const { result, pageInfo } = data
+        const { result } = data
         if (!state[fieldName]) {
           return
         }
@@ -181,15 +176,8 @@ export default api => {
           state[fieldName].result = result
           state[fieldName].nothing = result.length === 0
         }
-        if (type === 'jump') {
-          state[fieldName].pageInfo.currentPage = pageInfo.page
-          state[fieldName].pageInfo.totalPages = pageInfo.numPages
-          state[fieldName].pageInfo.totalItems = pageInfo.numResults
-          state[fieldName].total = pageInfo.numResults
-        } else {
-          state[fieldName].noMore = data.noMore
-          state[fieldName].total = data.total
-        }
+        state[fieldName].noMore = type === 'jump' ? false : data.no_more
+        state[fieldName].total = data.total
         state[fieldName].page = page
         state[fieldName].loading = false
       },
