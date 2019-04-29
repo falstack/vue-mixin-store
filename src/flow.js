@@ -39,12 +39,10 @@ export default api => {
     namespaced: true,
     state: () => ({}),
     actions: {
-      async initData(
-        { state, commit },
-        { func, type, query, refresh = false }
-      ) {
+      async initData({ state, commit }, { func, type, query }) {
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
+        const refresh = !!query.__refresh__
         // 如果 error 了，就不再请求
         if (field && field.error && !refresh) {
           return

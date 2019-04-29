@@ -162,10 +162,12 @@ export default {
   },
   methods: {
     refresh() {
+      const { query } = this.params
+      query.__refresh__ = true
       this.$store.dispatch(
         'flow/initData',
         Object.assign(this.params, {
-          refresh: true
+          query
         })
       )
       this.initFlowLoader()
