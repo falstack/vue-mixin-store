@@ -90,7 +90,8 @@ export default api => {
       async loadMore({ state, commit }, { type, func, query }) {
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
-        if (field.loading || field.noMore) {
+        const isSinceUpFetch = type === 'sinceId' && query && query.isUp
+        if (field.loading || (field.noMore && !isSinceUpFetch)) {
           return
         }
         if (type === 'jump' && query.page === field.page) {
