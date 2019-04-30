@@ -15,6 +15,7 @@
       type="page"
       :query="query"
       :auto="1"
+      ref="loader"
     >
       <div slot="header" slot-scope="{ source }">total：{{ source.total }}</div>
       <ul slot-scope="{ flow }">
@@ -96,22 +97,10 @@ export default {
       })
     },
     unshiftParent(count) {
-      this.$store.commit('flow/UPDATE_DATA', {
-        func: 'getListByPage',
-        type: 'page',
-        query: this.query,
-        method: count === 1 ? 'unshift' : 'merge',
-        value: ItemFactory.get(count)
-      })
+      this.$refs.loader.prepend(ItemFactory.get(count))
     },
     pushParent(count) {
-      this.$store.commit('flow/UPDATE_DATA', {
-        func: 'getListByPage',
-        type: 'page',
-        query: this.query,
-        method: count === 1 ? 'push' : 'concat',
-        value: ItemFactory.get(count)
-      })
+      this.$refs.loader.append(ItemFactory.get(count))
     },
     deleteParent(item) {
       this.$store.commit('flow/UPDATE_DATA', {

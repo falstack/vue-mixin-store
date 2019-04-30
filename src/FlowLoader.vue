@@ -182,6 +182,30 @@ export default {
         })
       )
     },
+    prepend(data) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
+        Object.assign(this.params, {
+          method:
+            Object.prototype.toString.call(data) === '[object Array]'
+              ? 'merge'
+              : 'unshift',
+          value: data
+        })
+      )
+    },
+    append(data) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
+        Object.assign(this.params, {
+          method:
+            Object.prototype.toString.call(data) === '[object Array]'
+              ? 'concat'
+              : 'push',
+          value: data
+        })
+      )
+    },
     getTarget() {
       let el = this.$el
       if (!el) {
