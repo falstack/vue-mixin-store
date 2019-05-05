@@ -8,7 +8,7 @@
       <button @click="pushParent(1)">push 1</button>
       <button @click="pushParent(2)">concat 2</button>
       <button @click="unshiftParent(2)">merge 2</button>
-      <button @click="totalPlus">total = 100</button>
+      <button @click="totalPlus">total++</button>
     </div>
     <FlowLoader
       func="getListByPage"
@@ -67,30 +67,20 @@ export default {
   },
   methods: {
     totalPlus() {
-      this.$store.commit('flow/UPDATE_DATA', {
-        func: 'getListByPage',
-        type: 'page',
-        query: this.query,
-        method: 'extra',
+      this.$refs.loader.modify({
         key: 'total',
-        value: 100
+        value: this.$refs.loader.source.total + 1
       })
     },
     modifyDeepValue(item) {
-      this.$store.commit('flow/UPDATE_DATA', {
-        func: 'getListByPage',
-        type: 'page',
-        query: this.query,
+      this.$refs.loader.update({
         id: item.id,
         key: 'data.follow',
         value: !item.data.follow
       })
     },
     modifyLightValue(item) {
-      this.$store.commit('flow/UPDATE_DATA', {
-        func: 'getListByPage',
-        type: 'page',
-        query: this.query,
+      this.$refs.loader.update({
         id: item.id,
         key: 'like',
         value: !item.like
@@ -103,30 +93,16 @@ export default {
       this.$refs.loader.append(ItemFactory.get(count))
     },
     deleteParent(item) {
-      this.$store.commit('flow/UPDATE_DATA', {
-        func: 'getListByPage',
-        type: 'page',
-        query: this.query,
-        method: 'delete',
-        id: item.id
-      })
+      this.$refs.loader.delete(item.id)
     },
     insertBefore(item) {
-      this.$store.commit('flow/UPDATE_DATA', {
-        func: 'getListByPage',
-        type: 'page',
-        query: this.query,
-        method: 'insert-before',
+      this.$refs.loader.insertBefore({
         id: item.id,
         value: ItemFactory.get(1)
       })
     },
     insertAfter(item) {
-      this.$store.commit('flow/UPDATE_DATA', {
-        func: 'getListByPage',
-        type: 'page',
-        query: this.query,
-        method: 'insert-after',
+      this.$refs.loader.insertAfter({
         id: item.id,
         value: ItemFactory.get(1)
       })

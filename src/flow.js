@@ -190,7 +190,7 @@ export default api => {
           return
         }
         const modKeys = key ? key.split('.') : []
-        if (~['push', 'unshift', 'concat', 'merge', 'extra'].indexOf(method)) {
+        if (~['push', 'unshift', 'concat', 'merge', 'modify'].indexOf(method)) {
           let changeTotal = 0
           switch (method) {
             case 'push':
@@ -209,7 +209,7 @@ export default api => {
               field.result = value.concat(field.result)
               changeTotal = value.length
               break
-            case 'extra':
+            case 'modify':
               let obj = state[fieldName] // eslint-disable-line
               while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
                 // do nothing
@@ -239,9 +239,11 @@ export default api => {
               return
             }
             let obj = field.result[i]
+            console.log(modKeys)
             while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
               // do nothing
             }
+            console.log(modKeys)
             obj[modKeys[0]] = value
             break
           }

@@ -12,7 +12,7 @@
     <div class="flow-render-state" ref="state">
       <template v-if="source">
         <!--   error   -->
-        <div v-if="source.error" @click="loadMore">
+        <div v-if="source.error" @click="_loadMore">
           <slot
             v-if="useFirstError && !source.result.length"
             name="first-error"
@@ -64,7 +64,7 @@
           <div v-else-if="isPagination" class="flow-render-state-load">
             <slot name="load">jump</slot>
           </div>
-          <div v-else @click="loadMore" class="flow-render-state-load">
+          <div v-else @click="_loadMore" class="flow-render-state-load">
             <slot name="load">点击加载更多</slot>
           </div>
         </template>
@@ -157,35 +157,64 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.initFlowLoader()
+      this._initFlowLoader()
     })
   },
   methods: {
+    modify({ key, value }) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
+        Object.assign({}, this.params, {
+          method: 'modify',
+          value,
+          key
+        })
+      )
+    },
     refresh() {
       const { query } = this.params
       query.__refresh__ = true
       this.$store.dispatch(
         'flow/initData',
-        Object.assign(this.params, {
+        Object.assign({}, this.params, {
           query
         })
       )
-      this.initFlowLoader()
+      this._initFlowLoader()
     },
     jump(page) {
       const { query } = this.params
       query.page = page
       this.$store.dispatch(
         'flow/loadMore',
-        Object.assign(this.params, {
+        Object.assign({}, this.params, {
           query
+        })
+      )
+    },
+    delete(id) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
+        Object.assign({}, this.params, {
+          method: 'delete',
+          id
+        })
+      )
+    },
+    update({ id, key, value }) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
+        Object.assign({}, this.params, {
+          id,
+          key,
+          value
         })
       )
     },
     prepend(data) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign(this.params, {
+        Object.assign({}, this.params, {
           method:
             Object.prototype.toString.call(data) === '[object Array]'
               ? 'merge'
@@ -197,7 +226,7 @@ export default {
     append(data) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign(this.params, {
+        Object.assign({}, this.params, {
           method:
             Object.prototype.toString.call(data) === '[object Array]'
               ? 'concat'
@@ -206,7 +235,32 @@ export default {
         })
       )
     },
-    getTarget() {
+    loadBefore() {
+      const { query } = this.params
+      query.isUp = true
+      this.$store.dispatch('flow/loadMore', this.params)
+    },
+    insertBefore({ id, value }) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
+        Object.assign({}, this.params, {
+          method: 'insert-before',
+          id,
+          value
+        })
+      )
+    },
+    insertAfter({ id, value }) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
+        Object.assign({}, this.params, {
+          method: 'insert-after',
+          id,
+          value
+        })
+      )
+    },
+    _getTarget() {
       let el = this.$el
       if (!el) {
         return null
@@ -225,34 +279,29 @@ export default {
       }
       return document
     },
-    initData() {
+    _initData() {
       this.$store.dispatch('flow/initData', this.params)
     },
-    loadMore() {
+    _loadMore() {
       this.$store.dispatch('flow/loadMore', this.params)
     },
-    loadBefore() {
-      const { query } = this.params
-      query.isUp = true
-      this.$store.dispatch('flow/loadMore', this.params)
-    },
-    initState() {
+    _initState() {
       if (this.source) {
         return
       }
       this.$store.commit('flow/INIT_STATE', this.params)
     },
-    initFlowLoader() {
+    _initFlowLoader() {
       if (this.auto === 0) {
-        this.initState()
+        this._initState()
       } else {
         checkInView(this.$refs.state, this.preload)
-          ? this.initData()
-          : this.initState()
-        on(this.getTarget(), 'scroll', this.onScreenScroll)
+          ? this._initData()
+          : this._initState()
+        on(this._getTarget(), 'scroll', this._onScreenScroll)
       }
     },
-    onScreenScroll: throttle(200, function() {
+    _onScreenScroll: throttle(200, function() {
       if (this.source.loading || this.source.nothing || this.source.error) {
         return
       }
@@ -261,11 +310,11 @@ export default {
         this.source.noMore ||
         (this.isPagination && this.source.init)
       ) {
-        off(this.getTarget(), 'scroll', this.onScreenScroll)
+        off(this._getTarget(), 'scroll', this._onScreenScroll)
         return
       }
       if (checkInView(this.$refs.state, this.preload)) {
-        this.loadMore()
+        this._loadMore()
       }
     })
   }
