@@ -239,11 +239,9 @@ export default api => {
               return
             }
             let obj = field.result[i]
-            console.log(modKeys)
             while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
               // do nothing
             }
-            console.log(modKeys)
             obj[modKeys[0]] = value
             break
           }
