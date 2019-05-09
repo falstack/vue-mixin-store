@@ -105,7 +105,9 @@ export default {
     },
     type: {
       required: true,
-      type: String
+      type: String,
+      validate: val =>
+        ~['page', 'jump', 'seenIds', 'lastId', 'sinceId'].indexOf(val)
     },
     query: {
       type: Object,
@@ -238,7 +240,12 @@ export default {
     loadBefore() {
       const { query } = this.params
       query.isUp = true
-      this.$store.dispatch('flow/loadMore', this.params)
+      this.$store.dispatch(
+        'flow/loadMore',
+        Object.assign({}, this.params, {
+          query
+        })
+      )
     },
     insertBefore({ id, value }) {
       this.$store.commit(
@@ -283,7 +290,14 @@ export default {
       this.$store.dispatch('flow/initData', this.params)
     },
     _loadMore() {
-      this.$store.dispatch('flow/loadMore', this.params)
+      const { query } = this.params
+      query.isUp = false
+      this.$store.dispatch(
+        'flow/loadMore',
+        Object.assign({}, this.params, {
+          query
+        })
+      )
     },
     _initState() {
       if (this.source) {

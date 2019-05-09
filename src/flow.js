@@ -123,7 +123,7 @@ export default api => {
               : field.result[field.result.length - 1],
             changing
           )
-          params.is_up = query.isUp
+          params.is_up = !!query.isUp
         }
         try {
           const data = await api[func](Object.assign(params, query))

@@ -30,7 +30,6 @@ export default {
     return {
       query: {
         count: 10,
-        isUp: false,
         changing: 'data.number_id'
       }
     }

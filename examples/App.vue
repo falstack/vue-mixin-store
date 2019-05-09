@@ -1,9 +1,16 @@
 <style lang="scss">
 body {
   margin: 0;
+
+  a {
+    text-decoration: none;
+    color: #222;
+  }
 }
 
 #app {
+  padding-bottom: 30px;
+
   .container {
     width: 1160px;
     max-width: 100%;
@@ -16,12 +23,17 @@ body {
         &-anchor {
           bottom: 0;
           height: 100%;
-          background-color: #ff6881;
+          background-color: #00a1d6;
           opacity: 0.1;
         }
 
         &-item {
-          padding: 0 5px;
+          padding: 0 20px;
+          box-sizing: border-box;
+
+          &.is-active a {
+            color: palevioletred;
+          }
         }
       }
     }
@@ -75,7 +87,19 @@ body {
 <template>
   <div id="app">
     <div class="container header">
-      <v-switcher :headers="headers" :routable="true" align="start"/>
+      <v-switcher
+        :headers="headers"
+        :routable="true"
+        align="start"
+      >
+        <router-link
+          v-for="(item, index) in headers"
+          :key="index"
+          :slot="`tab-${index}`"
+          :to="item.route"
+          v-text="item.name"
+        ></router-link>
+      </v-switcher>
     </div>
     <div id="main">
       <router-view />
@@ -91,47 +115,47 @@ export default {
       headers: [
         {
           name: '首页',
-          route: 'index'
+          route: '/'
         },
         {
           name: '页码翻页',
-          route: 'page'
+          route: '/page'
         },
         {
           name: '跳转翻页',
-          route: 'jump'
+          route: '/jump'
         },
         {
           name: 'seenIds翻页',
-          route: 'seen_ids'
+          route: '/seen_ids'
         },
         {
           name: 'sinceId翻页',
-          route: 'since_id'
+          route: '/since_id'
         },
         {
           name: 'last_id翻页',
-          route: 'last_id'
+          route: '/last_id'
         },
         {
           name: '模拟异常',
-          route: 'error'
+          route: '/error'
         },
         {
           name: '首屏异常',
-          route: 'first-error'
+          route: '/first-error'
         },
         {
           name: '首屏加载',
-          route: 'first-loading'
+          route: '/first-loading'
         },
         {
           name: '首屏为空',
-          route: 'nothing'
+          route: '/nothing'
         },
         {
           name: '动态列表',
-          route: 'comment'
+          route: '/comment'
         }
       ]
     }

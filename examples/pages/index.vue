@@ -1,9 +1,15 @@
 <style lang="scss">
+#index {
+  img {
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+}
 </style>
 
 <template>
   <div id="index">
-    index page
   </div>
 </template>
 
