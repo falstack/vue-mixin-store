@@ -1,4 +1,5 @@
 module.exports = {
+  base: '/vue-mixin-store/',
   title: 'vue-mixin-store',
   description: '一套列表封装方案',
   themeConfig: {
