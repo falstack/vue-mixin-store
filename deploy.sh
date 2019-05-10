@@ -4,10 +4,10 @@
 set -e
 
 # 构建
-npm run build
+npm run docs:build
 
 # cd 到构建输出的目录下
-cd dist
+cd docs/.vuepress/dist
 
 git init
 git add -A
