@@ -1,5 +1,5 @@
 module.exports = {
-  base: '/vue-mixin-store/',
+  base: process.env.NODE_ENV === 'production' ? '/vue-mixin-store/' : '/',
   title: 'vue-mixin-store',
   description: '一套列表封装方案',
   themeConfig: {
