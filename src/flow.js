@@ -18,6 +18,7 @@ export default api => {
     Object.keys(query)
       .filter(
         _ =>
+          /^\w+$/.test(_) &&
           !~[
             'page',
             'count',
