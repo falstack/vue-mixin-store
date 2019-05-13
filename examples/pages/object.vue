@@ -26,7 +26,12 @@ export default {
   data() {
     return {
       query: {
-        count: 10
+        count: 10,
+        query: {
+          a: 1,
+          b: 2,
+          c: 3
+        }
       }
     }
   }
