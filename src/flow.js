@@ -8,7 +8,7 @@ export default api => {
     nothing: false,
     loading: false,
     error: null,
-    init: false,
+    fetched: false,
     total: 0,
     extra: null
   }
@@ -16,7 +16,17 @@ export default api => {
   const generateFieldName = (func, type, query = {}) => {
     let result = `${func}-${type}`
     Object.keys(query)
-      .filter(_ => !~['page', 'count', 'changing', 'isUp'].indexOf(_))
+      .filter(
+        _ =>
+          !~[
+            'page',
+            'count',
+            'changing',
+            'isUp',
+            '__objArr__',
+            '__refresh__'
+          ].indexOf(_)
+      )
       .sort()
       .forEach(key => {
         result += `-${key}-${query[key]}`
@@ -52,7 +62,7 @@ export default api => {
           return
         }
         // 这个 field 已经请求过了
-        if (field && field.init) {
+        if (field && field.fetched) {
           if (!refresh) {
             return
           }
@@ -81,7 +91,8 @@ export default api => {
             fieldName,
             type,
             page: params.page,
-            insertBefore: query.isUp || false
+            insertBefore: query.isUp || false,
+            objArr: query.__objArr__
           })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
@@ -132,7 +143,8 @@ export default api => {
             fieldName,
             type,
             page: params.page,
-            insertBefore: query.isUp || false
+            insertBefore: query.isUp || false,
+            objArr: query.__objArr__
           })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
@@ -158,14 +170,14 @@ export default api => {
       CLEAR_RESULT(state, fieldName) {
         state[fieldName].result = []
       },
-      SET_DATA(state, { data, fieldName, type, page, insertBefore }) {
+      SET_DATA(state, { data, fieldName, type, page, insertBefore, objArr }) {
         const { result, extra } = data
         const field = state[fieldName]
         if (!field) {
           return
         }
-        if (field.init) {
-          if (type === 'jump') {
+        if (field.fetched) {
+          if (type === 'jump' || objArr) {
             field.result = result
           } else {
             field.result = insertBefore
@@ -173,9 +185,17 @@ export default api => {
               : field.result.concat(result)
           }
         } else {
-          field.init = true
+          field.fetched = true
           field.result = result
-          field.nothing = result.length === 0
+          let length = 0
+          if (objArr) {
+            Object.keys(result).forEach(key => {
+              length += result[key].length
+            })
+          } else {
+            length = result.length
+          }
+          field.nothing = length === 0
         }
         field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total

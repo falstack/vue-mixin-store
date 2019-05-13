@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v0.1.8
+ * vue-mixin-store v0.1.9
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -4501,7 +4501,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     nothing: false,
     loading: false,
     error: null,
-    init: false,
+    fetched: false,
     total: 0,
     extra: null
   };
@@ -4510,7 +4510,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     var result = "".concat(func, "-").concat(type);
     Object.keys(query).filter(function (_) {
-      return !~['page', 'count', 'changing', 'isUp'].indexOf(_);
+      return !~['page', 'count', 'changing', 'isUp', '__objArr__', '__refresh__'].indexOf(_);
     }).sort().forEach(function (key) {
       result += "-".concat(key, "-").concat(query[key]);
     });
@@ -4566,7 +4566,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                   return _context.abrupt("return");
 
                 case 9:
-                  if (!(field && field.init)) {
+                  if (!(field && field.fetched)) {
                     _context.next = 12;
                     break;
                   }
@@ -4613,7 +4613,8 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     fieldName: fieldName,
                     type: type,
                     page: params.page,
-                    insertBefore: query.isUp || false
+                    insertBefore: query.isUp || false,
+                    objArr: query.__objArr__
                   });
                   _context.next = 26;
                   break;
@@ -4704,7 +4705,8 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     fieldName: fieldName,
                     type: type,
                     page: params.page,
-                    insertBefore: query.isUp || false
+                    insertBefore: query.isUp || false,
+                    objArr: query.__objArr__
                   });
                   _context2.next = 23;
                   break;
@@ -4757,7 +4759,8 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
             fieldName = _ref7.fieldName,
             type = _ref7.type,
             page = _ref7.page,
-            insertBefore = _ref7.insertBefore;
+            insertBefore = _ref7.insertBefore,
+            objArr = _ref7.objArr;
         var result = data.result,
             extra = data.extra;
         var field = state[fieldName];
@@ -4766,16 +4769,26 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
           return;
         }
 
-        if (field.init) {
-          if (type === 'jump') {
+        if (field.fetched) {
+          if (type === 'jump' || objArr) {
             field.result = result;
           } else {
             field.result = insertBefore ? result.concat(field.result) : field.result.concat(result);
           }
         } else {
-          field.init = true;
+          field.fetched = true;
           field.result = result;
-          field.nothing = result.length === 0;
+          var length = 0;
+
+          if (objArr) {
+            Object.keys(result).forEach(function (key) {
+              length += result[key].length;
+            });
+          } else {
+            length = result.length;
+          }
+
+          field.nothing = length === 0;
         }
 
         field.noMore = type === 'jump' ? false : data.no_more;
@@ -4884,12 +4897,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"5691404a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=08e0052a&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"05f8af86-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=6fb11b97&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._loadMore}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)]):_vm._t("error",[_vm._m(1)])],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm._loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=08e0052a&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=6fb11b97&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
 var es6_regexp_to_string = __webpack_require__("6b54");
@@ -5168,6 +5181,10 @@ var checkInView = function checkInView(dom, preload) {
       type: Boolean,
       default: false
     },
+    objectArray: {
+      type: Boolean,
+      default: false
+    },
     useFirstLoading: {
       type: Boolean,
       default: false
@@ -5188,7 +5205,9 @@ var checkInView = function checkInView(dom, preload) {
       return {
         func: this.func,
         type: this.type,
-        query: this.query
+        query: Object.assign(this.query, {
+          __objArr__: this.objectArray
+        })
       };
     },
     isAuto: function isAuto() {

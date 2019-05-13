@@ -122,6 +122,10 @@ export default {
           route: '/page'
         },
         {
+          name: '对象数组',
+          route: '/object'
+        },
+        {
           name: '跳转翻页',
           route: '/jump'
         },

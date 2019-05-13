@@ -17,6 +17,11 @@ export default new VueRouter({
       component: () => import('./pages/page')
     },
     {
+      path: '/object',
+      name: 'object',
+      component: () => import('./pages/object')
+    },
+    {
       path: '/jump',
       name: 'jump',
       component: () => import('./pages/jump')

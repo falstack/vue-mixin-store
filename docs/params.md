@@ -10,6 +10,7 @@
 | displayNoMore | Boolean | false | false | - | 当列表刷不出更多的时候，是否展示文字提示 |
 | useFirstError | Boolean | false | false | - | 是否在首次加载失败时使用特殊的 slot |
 | useFirstLoading | Boolean | false | false | - | 是否在首次加载loading时使用特殊的 slot |
+| objectArray | Boolean | false | false | - | 返回值是对象数组，默认为一维数组 |
 | preload | Number | false | 50 | >= 0 | 自动加载下一页的预加载高度（px） |
 
 ### query 中的一些关键字

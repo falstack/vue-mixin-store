@@ -12,7 +12,7 @@ const defaultListObj = {
   nothing: false,   // 列表是否为空
   loading: false,   // 列表是否正在加载
   error: null,      // 列表是否加载出错，默认为 null，错误时为 Error 对象
-  init: false,      // 列表是否初始化过
+  fetched: false,   // 列表是否初始化过
   total: 0,         // 整个列表的总条数
   extra: null       // 接口返回的额外数据
 }

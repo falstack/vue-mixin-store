@@ -126,6 +126,10 @@ export default {
       type: Boolean,
       default: false
     },
+    objectArray: {
+      type: Boolean,
+      default: false
+    },
     useFirstLoading: {
       type: Boolean,
       default: false
@@ -144,7 +148,9 @@ export default {
       return {
         func: this.func,
         type: this.type,
-        query: this.query
+        query: Object.assign(this.query, {
+          __objArr__: this.objectArray
+        })
       }
     },
     isAuto() {

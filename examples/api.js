@@ -18,6 +18,28 @@ export const getListByPage = ({ page, count }) => {
   })
 }
 
+export const getObjectByPage = ({ page, count }) => {
+  console.log('page', page)
+  return new Promise(resolve => {
+    const total = 87
+    const hasFetch = (page - 1) * count
+    const getLength = total - hasFetch >= count ? count : total - hasFetch
+    const no_more = getLength + hasFetch >= total
+    setTimeout(() => {
+      const result = {
+        all: [],
+        bangumi: [],
+        pgc: []
+      }
+      resolve({
+        result,
+        no_more,
+        total
+      })
+    }, 500)
+  })
+}
+
 let SINCE_HAS_FETCHED = 0
 export const getListBySinceId = ({ since_id, is_up, count }) => {
   console.log('since_id', since_id)
