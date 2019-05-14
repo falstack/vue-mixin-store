@@ -16,7 +16,10 @@
           </div>
         </li>
       </ul>
-      <div slot="first-error">第一次加载就 error，可以设置独特的 error（点击重试3次）…</div>
+      <div slot="first-error" slot-scope="{ error }">
+        {{ error }}
+        <p>第一次加载就 error，可以设置独特的 error（点击重试3次）…</p>
+      </div>
     </FlowLoader>
   </div>
 </template>

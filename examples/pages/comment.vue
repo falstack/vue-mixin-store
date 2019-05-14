@@ -65,6 +65,11 @@ export default {
       }
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      console.log(this.$refs.loader.getResource('result'))
+    })
+  },
   methods: {
     totalPlus() {
       this.$refs.loader.modify({

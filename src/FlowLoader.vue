@@ -12,16 +12,17 @@
     <div class="flow-render-state" ref="state">
       <template v-if="source">
         <!--   error   -->
-        <div v-if="source.error" @click="_loadMore">
+        <div v-if="source.error" @click="_retryData">
           <slot
             v-if="useFirstError && !source.result.length"
             name="first-error"
+            :error="source.error"
           >
             <div class="flow-render-state-error">
               <span>出错了，点击重试</span>
             </div>
           </slot>
-          <slot v-else name="error">
+          <slot v-else name="error" :error="source.error">
             <div class="flow-render-state-error">
               <span>出错了，点击重试</span>
             </div>
@@ -134,6 +135,10 @@ export default {
       type: Boolean,
       default: false
     },
+    retryOnError: {
+      type: Boolean,
+      default: true
+    },
     preload: {
       type: Number,
       default: 50,
@@ -179,26 +184,28 @@ export default {
         })
       )
     },
-    refresh() {
+    async refresh() {
       const { query } = this.params
       query.__refresh__ = true
-      this.$store.dispatch(
+      const result = await this.$store.dispatch(
         'flow/initData',
         Object.assign({}, this.params, {
           query
         })
       )
       this._initFlowLoader()
+      result && this.$emit('loaded', result)
     },
-    jump(page) {
+    async jump(page) {
       const { query } = this.params
       query.page = page
-      this.$store.dispatch(
+      const result = await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query
         })
       )
+      result && this.$emit('loaded', result)
     },
     delete(id) {
       this.$store.commit(
@@ -243,15 +250,16 @@ export default {
         })
       )
     },
-    loadBefore() {
+    async loadBefore() {
       const { query } = this.params
       query.isUp = true
-      this.$store.dispatch(
+      const result = await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query
         })
       )
+      result && this.$emit('loaded', result)
     },
     insertBefore({ id, value }) {
       this.$store.commit(
@@ -273,6 +281,9 @@ export default {
         })
       )
     },
+    getResource(key = 'extra') {
+      return this.source[key]
+    },
     _getTarget() {
       let el = this.$el
       if (!el) {
@@ -292,18 +303,20 @@ export default {
       }
       return document
     },
-    _initData() {
-      this.$store.dispatch('flow/initData', this.params)
+    async _initData() {
+      const result = await this.$store.dispatch('flow/initData', this.params)
+      result && this.$emit('loaded', result)
     },
-    _loadMore() {
+    async _loadMore() {
       const { query } = this.params
       query.isUp = false
-      this.$store.dispatch(
+      const result = await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query
         })
       )
+      result && this.$emit('loaded', result)
     },
     _initState() {
       if (this.source) {
@@ -319,6 +332,11 @@ export default {
           ? this._initData()
           : this._initState()
         on(this._getTarget(), 'scroll', this._onScreenScroll)
+      }
+    },
+    _retryData() {
+      if (this.retryOnError) {
+        this._loadMore()
       }
     },
     _onScreenScroll: throttle(200, function() {

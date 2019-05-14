@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v0.1.13
+ * vue-mixin-store v0.1.15
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -4643,11 +4643,10 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     insertBefore: query.isUp || false,
                     objArr: query.__objArr__
                   });
-                  _context.next = 30;
-                  break;
+                  return _context.abrupt("return", data.result);
 
-                case 25:
-                  _context.prev = 25;
+                case 26:
+                  _context.prev = 26;
                   _context.t0 = _context["catch"](17);
                   printLog('error', {
                     fieldName: fieldName,
@@ -4659,13 +4658,14 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     fieldName: fieldName,
                     error: _context.t0
                   });
+                  return _context.abrupt("return", null);
 
-                case 30:
+                case 32:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, null, [[17, 25]]);
+          }, _callee, null, [[17, 26]]);
         }));
 
         function initData(_x, _x2) {
@@ -4750,11 +4750,10 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     insertBefore: query.isUp || false,
                     objArr: query.__objArr__
                   });
-                  _context2.next = 27;
-                  break;
+                  return _context2.abrupt("return", data.result);
 
-                case 22:
-                  _context2.prev = 22;
+                case 23:
+                  _context2.prev = 23;
                   _context2.t0 = _context2["catch"](14);
                   printLog('error', {
                     fieldName: fieldName,
@@ -4766,13 +4765,14 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     fieldName: fieldName,
                     error: _context2.t0
                   });
+                  return _context2.abrupt("return", null);
 
-                case 27:
+                case 29:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, _callee2, null, [[14, 22]]);
+          }, _callee2, null, [[14, 23]]);
         }));
 
         function loadMore(_x3, _x4) {
@@ -4954,12 +4954,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"d244b6ae-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=25b1f156&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._loadMore}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)]):_vm._t("error",[_vm._m(1)])],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm._loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4356ab82-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=5fef2784&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm._loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=25b1f156&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=5fef2784&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
 var es6_regexp_to_string = __webpack_require__("6b54");
@@ -5109,6 +5109,9 @@ function debounce (delay, atBegin, callback) {
 
 
 
+
+
+//
 //
 //
 //
@@ -5246,6 +5249,10 @@ var checkInView = function checkInView(dom, preload) {
       type: Boolean,
       default: false
     },
+    retryOnError: {
+      type: Boolean,
+      default: true
+    },
     preload: {
       type: Number,
       default: 50,
@@ -5295,22 +5302,77 @@ var checkInView = function checkInView(dom, preload) {
         key: key
       }));
     },
-    refresh: function refresh() {
-      var query = this.params.query;
-      query.__refresh__ = true;
-      this.$store.dispatch('flow/initData', Object.assign({}, this.params, {
-        query: query
+    refresh: function () {
+      var _refresh = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee() {
+        var query, result;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                query = this.params.query;
+                query.__refresh__ = true;
+                _context.next = 4;
+                return this.$store.dispatch('flow/initData', Object.assign({}, this.params, {
+                  query: query
+                }));
+
+              case 4:
+                result = _context.sent;
+
+                this._initFlowLoader();
+
+                result && this.$emit('loaded', result);
+
+              case 7:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
       }));
 
-      this._initFlowLoader();
-    },
-    jump: function jump(page) {
-      var query = this.params.query;
-      query.page = page;
-      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-        query: query
+      function refresh() {
+        return _refresh.apply(this, arguments);
+      }
+
+      return refresh;
+    }(),
+    jump: function () {
+      var _jump = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee2(page) {
+        var query, result;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                query = this.params.query;
+                query.page = page;
+                _context2.next = 4;
+                return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+                  query: query
+                }));
+
+              case 4:
+                result = _context2.sent;
+                result && this.$emit('loaded', result);
+
+              case 6:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
       }));
-    },
+
+      function jump(_x) {
+        return _jump.apply(this, arguments);
+      }
+
+      return jump;
+    }(),
     delete: function _delete(id) {
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'delete',
@@ -5339,13 +5401,40 @@ var checkInView = function checkInView(dom, preload) {
         value: data
       }));
     },
-    loadBefore: function loadBefore() {
-      var query = this.params.query;
-      query.isUp = true;
-      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-        query: query
+    loadBefore: function () {
+      var _loadBefore = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee3() {
+        var query, result;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                query = this.params.query;
+                query.isUp = true;
+                _context3.next = 4;
+                return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+                  query: query
+                }));
+
+              case 4:
+                result = _context3.sent;
+                result && this.$emit('loaded', result);
+
+              case 6:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
       }));
-    },
+
+      function loadBefore() {
+        return _loadBefore.apply(this, arguments);
+      }
+
+      return loadBefore;
+    }(),
     insertBefore: function insertBefore(_ref3) {
       var id = _ref3.id,
           value = _ref3.value;
@@ -5363,6 +5452,10 @@ var checkInView = function checkInView(dom, preload) {
         id: id,
         value: value
       }));
+    },
+    getResource: function getResource() {
+      var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'extra';
+      return this.source[key];
     },
     _getTarget: function _getTarget() {
       var el = this.$el;
@@ -5383,16 +5476,70 @@ var checkInView = function checkInView(dom, preload) {
 
       return document;
     },
-    _initData: function _initData() {
-      this.$store.dispatch('flow/initData', this.params);
-    },
-    _loadMore: function _loadMore() {
-      var query = this.params.query;
-      query.isUp = false;
-      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-        query: query
+    _initData: function () {
+      var _initData2 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee4() {
+        var result;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return this.$store.dispatch('flow/initData', this.params);
+
+              case 2:
+                result = _context4.sent;
+                result && this.$emit('loaded', result);
+
+              case 4:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
       }));
-    },
+
+      function _initData() {
+        return _initData2.apply(this, arguments);
+      }
+
+      return _initData;
+    }(),
+    _loadMore: function () {
+      var _loadMore2 = _asyncToGenerator(
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function _callee5() {
+        var query, result;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                query = this.params.query;
+                query.isUp = false;
+                _context5.next = 4;
+                return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+                  query: query
+                }));
+
+              case 4:
+                result = _context5.sent;
+                result && this.$emit('loaded', result);
+
+              case 6:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function _loadMore() {
+        return _loadMore2.apply(this, arguments);
+      }
+
+      return _loadMore;
+    }(),
     _initState: function _initState() {
       if (this.source) {
         return;
@@ -5406,6 +5553,11 @@ var checkInView = function checkInView(dom, preload) {
       } else {
         checkInView(this.$refs.state, this.preload) ? this._initData() : this._initState();
         on(this._getTarget(), 'scroll', this._onScreenScroll);
+      }
+    },
+    _retryData: function _retryData() {
+      if (this.retryOnError) {
+        this._loadMore();
       }
     },
     _onScreenScroll: throttle(200, function () {

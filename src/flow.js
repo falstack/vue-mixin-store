@@ -103,10 +103,12 @@ export default (api, debug = false) => {
             insertBefore: query.isUp || false,
             objArr: query.__objArr__
           })
+          return data.result
         } catch (error) {
           printLog('error', { fieldName, error })
           debug && console.log(error) // eslint-disable-line
           commit('SET_ERROR', { fieldName, error })
+          return null
         }
       },
       async loadMore({ state, commit }, { type, func, query }) {
@@ -159,10 +161,12 @@ export default (api, debug = false) => {
             insertBefore: query.isUp || false,
             objArr: query.__objArr__
           })
+          return data.result
         } catch (error) {
           printLog('error', { fieldName, error })
           debug && console.log(error) // eslint-disable-line
           commit('SET_ERROR', { fieldName, error })
+          return null
         }
       }
     },
