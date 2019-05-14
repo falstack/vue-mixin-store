@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v0.1.11
+ * vue-mixin-store v0.1.12
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -4494,6 +4494,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
 
 
 /* harmony default export */ var flow = (function (api) {
+  var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var defaultListObj = {
     result: [],
     page: 0,
@@ -4506,18 +4507,34 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     extra: null
   };
 
+  var printLog = function printLog(field, val) {
+    return debug && console.log("[".concat(field, "]"), val);
+  }; // eslint-disable-line
+
+
   var generateFieldName = function generateFieldName(func, type) {
     var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    printLog('generateFieldName - begin', {
+      func: func,
+      type: type,
+      query: query
+    });
     var result = "".concat(func, "-").concat(type);
     Object.keys(query).filter(function (_) {
       return /^\w+$/.test(query[_]) && !~['page', 'count', 'changing', 'isUp', '__objArr__', '__refresh__'].indexOf(_);
     }).sort().forEach(function (key) {
       result += "-".concat(key, "-").concat(query[key]);
     });
+    printLog('generateFieldName - result', result);
     return result;
   };
 
   var parseDataUniqueId = function parseDataUniqueId(data, changing) {
+    printLog('parseDataUniqueId - begin', {
+      data: data,
+      changing: changing
+    });
+
     if (!/\./.test(changing)) {
       return data[changing];
     }
@@ -4526,6 +4543,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     changing.split('.').forEach(function (key) {
       result = result[key];
     });
+    printLog('parseDataUniqueId - result', result);
     return result;
   };
 
@@ -4546,39 +4564,44 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                 case 0:
                   state = _ref.state, commit = _ref.commit;
                   func = _ref2.func, type = _ref2.type, query = _ref2.query;
+                  printLog('initData', {
+                    func: func,
+                    type: type,
+                    query: query
+                  });
                   fieldName = generateFieldName(func, type, query);
                   field = state[fieldName];
                   refresh = !!query.__refresh__; // 如果 error 了，就不再请求
 
                   if (!(field && field.error && !refresh)) {
-                    _context.next = 7;
+                    _context.next = 8;
                     break;
                   }
 
                   return _context.abrupt("return");
 
-                case 7:
+                case 8:
                   if (!(field && field.loading)) {
-                    _context.next = 9;
+                    _context.next = 10;
                     break;
                   }
 
                   return _context.abrupt("return");
 
-                case 9:
+                case 10:
                   if (!(field && field.fetched)) {
-                    _context.next = 12;
+                    _context.next = 13;
                     break;
                   }
 
                   if (refresh) {
-                    _context.next = 12;
+                    _context.next = 13;
                     break;
                   }
 
                   return _context.abrupt("return");
 
-                case 12:
+                case 13:
                   commit('INIT_STATE', {
                     func: func,
                     type: type,
@@ -4602,11 +4625,15 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     params.is_up = query.isUp || false;
                   }
 
-                  _context.prev = 16;
-                  _context.next = 19;
+                  _context.prev = 17;
+                  printLog('request', {
+                    func: func,
+                    params: Object.assign(params, query)
+                  });
+                  _context.next = 21;
                   return api[func](Object.assign(params, query));
 
-                case 19:
+                case 21:
                   data = _context.sent;
                   commit('SET_DATA', {
                     data: data,
@@ -4616,23 +4643,29 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     insertBefore: query.isUp || false,
                     objArr: query.__objArr__
                   });
-                  _context.next = 26;
+                  _context.next = 30;
                   break;
 
-                case 23:
-                  _context.prev = 23;
-                  _context.t0 = _context["catch"](16);
+                case 25:
+                  _context.prev = 25;
+                  _context.t0 = _context["catch"](17);
+                  printLog('error', {
+                    fieldName: fieldName,
+                    error: _context.t0
+                  });
+                  debug && console.log(_context.t0); // eslint-disable-line
+
                   commit('SET_ERROR', {
                     fieldName: fieldName,
                     error: _context.t0
                   });
 
-                case 26:
+                case 30:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, null, [[16, 23]]);
+          }, _callee, null, [[17, 25]]);
         }));
 
         function initData(_x, _x2) {
@@ -4652,26 +4685,31 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                 case 0:
                   state = _ref3.state, commit = _ref3.commit;
                   type = _ref4.type, func = _ref4.func, query = _ref4.query;
+                  printLog('loadMore', {
+                    type: type,
+                    func: func,
+                    query: query
+                  });
                   fieldName = generateFieldName(func, type, query);
                   field = state[fieldName];
                   isSinceUpFetch = type === 'sinceId' && query && query.isUp;
 
                   if (!(field.loading || field.noMore && !isSinceUpFetch)) {
-                    _context2.next = 7;
+                    _context2.next = 8;
                     break;
                   }
 
                   return _context2.abrupt("return");
 
-                case 7:
+                case 8:
                   if (!(type === 'jump' && query.page === field.page)) {
-                    _context2.next = 9;
+                    _context2.next = 10;
                     break;
                   }
 
                   return _context2.abrupt("return");
 
-                case 9:
+                case 10:
                   commit('SET_LOADING', fieldName);
                   changing = query.changing || 'id';
                   params = {
@@ -4694,11 +4732,15 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     params.is_up = !!query.isUp;
                   }
 
-                  _context2.prev = 13;
-                  _context2.next = 16;
+                  _context2.prev = 14;
+                  printLog('request', {
+                    func: func,
+                    params: Object.assign(params, query)
+                  });
+                  _context2.next = 18;
                   return api[func](Object.assign(params, query));
 
-                case 16:
+                case 18:
                   data = _context2.sent;
                   commit('SET_DATA', {
                     data: data,
@@ -4708,23 +4750,29 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     insertBefore: query.isUp || false,
                     objArr: query.__objArr__
                   });
-                  _context2.next = 23;
+                  _context2.next = 27;
                   break;
 
-                case 20:
-                  _context2.prev = 20;
-                  _context2.t0 = _context2["catch"](13);
+                case 22:
+                  _context2.prev = 22;
+                  _context2.t0 = _context2["catch"](14);
+                  printLog('error', {
+                    fieldName: fieldName,
+                    error: _context2.t0
+                  });
+                  debug && console.log(_context2.t0); // eslint-disable-line
+
                   commit('SET_ERROR', {
                     fieldName: fieldName,
                     error: _context2.t0
                   });
 
-                case 23:
+                case 27:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, _callee2, null, [[13, 20]]);
+          }, _callee2, null, [[14, 22]]);
         }));
 
         function loadMore(_x3, _x4) {
@@ -4761,6 +4809,14 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
             page = _ref7.page,
             insertBefore = _ref7.insertBefore,
             objArr = _ref7.objArr;
+        printLog('SET_DATA - begin', {
+          data: data,
+          fieldName: fieldName,
+          type: type,
+          page: page,
+          insertBefore: insertBefore,
+          objArr: objArr
+        });
         var result = data.result,
             extra = data.extra;
         var field = state[fieldName];
@@ -4796,6 +4852,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
         field.page = page;
         extra && external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field, 'extra', extra);
         field.loading = false;
+        printLog('SET_DATA - result', field);
       },
       UPDATE_DATA: function UPDATE_DATA(state, _ref8) {
         var type = _ref8.type,
@@ -4897,7 +4954,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"0fc08c2e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=6fb11b97&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"7b4a4e98-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=6fb11b97&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._loadMore}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)]):_vm._t("error",[_vm._m(1)])],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm._loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 

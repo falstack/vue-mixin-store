@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-export default api => {
+export default (api, debug = false) => {
   const defaultListObj = {
     result: [],
     page: 0,
@@ -13,7 +13,10 @@ export default api => {
     extra: null
   }
 
+  const printLog = (field, val) => debug && console.log(`[${field}]`, val) // eslint-disable-line
+
   const generateFieldName = (func, type, query = {}) => {
+    printLog('generateFieldName - begin', { func, type, query })
     let result = `${func}-${type}`
     Object.keys(query)
       .filter(
@@ -32,10 +35,12 @@ export default api => {
       .forEach(key => {
         result += `-${key}-${query[key]}`
       })
+    printLog('generateFieldName - result', result)
     return result
   }
 
   const parseDataUniqueId = (data, changing) => {
+    printLog('parseDataUniqueId - begin', { data, changing })
     if (!/\./.test(changing)) {
       return data[changing]
     }
@@ -43,6 +48,7 @@ export default api => {
     changing.split('.').forEach(key => {
       result = result[key]
     })
+    printLog('parseDataUniqueId - result', result)
     return result
   }
 
@@ -51,6 +57,7 @@ export default api => {
     state: () => ({}),
     actions: {
       async initData({ state, commit }, { func, type, query }) {
+        printLog('initData', { func, type, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
         const refresh = !!query.__refresh__
@@ -86,6 +93,7 @@ export default api => {
           params.is_up = query.isUp || false
         }
         try {
+          printLog('request', { func, params: Object.assign(params, query) })
           const data = await api[func](Object.assign(params, query))
           commit('SET_DATA', {
             data,
@@ -96,10 +104,13 @@ export default api => {
             objArr: query.__objArr__
           })
         } catch (error) {
+          printLog('error', { fieldName, error })
+          debug && console.log(error) // eslint-disable-line
           commit('SET_ERROR', { fieldName, error })
         }
       },
       async loadMore({ state, commit }, { type, func, query }) {
+        printLog('loadMore', { type, func, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
         const isSinceUpFetch = type === 'sinceId' && query && query.isUp
@@ -138,6 +149,7 @@ export default api => {
           params.is_up = !!query.isUp
         }
         try {
+          printLog('request', { func, params: Object.assign(params, query) })
           const data = await api[func](Object.assign(params, query))
           commit('SET_DATA', {
             data,
@@ -148,6 +160,8 @@ export default api => {
             objArr: query.__objArr__
           })
         } catch (error) {
+          printLog('error', { fieldName, error })
+          debug && console.log(error) // eslint-disable-line
           commit('SET_ERROR', { fieldName, error })
         }
       }
@@ -172,6 +186,14 @@ export default api => {
         state[fieldName].result = []
       },
       SET_DATA(state, { data, fieldName, type, page, insertBefore, objArr }) {
+        printLog('SET_DATA - begin', {
+          data,
+          fieldName,
+          type,
+          page,
+          insertBefore,
+          objArr
+        })
         const { result, extra } = data
         const field = state[fieldName]
         if (!field) {
@@ -203,6 +225,7 @@ export default api => {
         field.page = page
         extra && Vue.set(field, 'extra', extra)
         field.loading = false
+        printLog('SET_DATA - result', field)
       },
       UPDATE_DATA(state, { type, func, query, id, method, key, value }) {
         const fieldName = generateFieldName(func, type, query)
