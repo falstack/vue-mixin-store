@@ -328,7 +328,7 @@ export default {
       if (
         !this.isAuto ||
         this.source.noMore ||
-        (this.isPagination && this.source.init)
+        (this.isPagination && this.source.fetched)
       ) {
         off(this._getTarget(), 'scroll', this._onScreenScroll)
         return
