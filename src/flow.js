@@ -22,14 +22,7 @@ export default (api, debug = false) => {
       .filter(
         _ =>
           /^\w+$/.test(query[_]) &&
-          !~[
-            'page',
-            'count',
-            'changing',
-            'isUp',
-            '__objArr__',
-            '__refresh__'
-          ].indexOf(_)
+          !~['page', 'count', 'changing', 'isUp', '__refresh__'].indexOf(_)
       )
       .sort()
       .forEach(key => {
@@ -56,7 +49,7 @@ export default (api, debug = false) => {
     namespaced: true,
     state: () => ({}),
     actions: {
-      async initData({ state, commit }, { func, type, query }) {
+      async initData({ state, commit }, { func, type, query, callback }) {
         printLog('initData', { func, type, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
@@ -100,10 +93,10 @@ export default (api, debug = false) => {
             fieldName,
             type,
             page: params.page,
-            insertBefore: query.isUp || false,
-            objArr: query.__objArr__
+            insertBefore: query.isUp || false
           })
-          return data.result
+          callback && callback(data)
+          return data
         } catch (error) {
           printLog('error', { fieldName, error })
           debug && console.log(error) // eslint-disable-line
@@ -111,7 +104,7 @@ export default (api, debug = false) => {
           return null
         }
       },
-      async loadMore({ state, commit }, { type, func, query }) {
+      async loadMore({ state, commit }, { type, func, query, callback }) {
         printLog('loadMore', { type, func, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
@@ -158,10 +151,10 @@ export default (api, debug = false) => {
             fieldName,
             type,
             page: params.page,
-            insertBefore: query.isUp || false,
-            objArr: query.__objArr__
+            insertBefore: query.isUp || false
           })
-          return data.result
+          callback && callback(data)
+          return data
         } catch (error) {
           printLog('error', { fieldName, error })
           debug && console.log(error) // eslint-disable-line
@@ -189,20 +182,21 @@ export default (api, debug = false) => {
       CLEAR_RESULT(state, fieldName) {
         state[fieldName].result = []
       },
-      SET_DATA(state, { data, fieldName, type, page, insertBefore, objArr }) {
+      SET_DATA(state, { data, fieldName, type, page, insertBefore }) {
         printLog('SET_DATA - begin', {
           data,
           fieldName,
           type,
           page,
-          insertBefore,
-          objArr
+          insertBefore
         })
         const { result, extra } = data
         const field = state[fieldName]
         if (!field) {
           return
         }
+        const objArr =
+          Object.prototype.toString.call(result) === '[object Array]'
         if (field.fetched) {
           if (type === 'jump' || objArr) {
             field.result = result

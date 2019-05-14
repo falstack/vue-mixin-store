@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v0.1.15
+ * vue-mixin-store v0.1.16
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -4407,6 +4407,9 @@ if (typeof window !== 'undefined') {
 // Indicate to webpack that this file can be concatenated
 /* harmony default export */ var setPublicPath = (null);
 
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
+var es6_regexp_to_string = __webpack_require__("6b54");
+
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.assign.js
 var es6_object_assign = __webpack_require__("f751");
 
@@ -4484,6 +4487,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
 
 
 
+
 /* harmony default export */ var flow = (function (api) {
   var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var defaultListObj = {
@@ -4512,7 +4516,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     });
     var result = "".concat(func, "-").concat(type);
     Object.keys(query).filter(function (_) {
-      return /^\w+$/.test(query[_]) && !~['page', 'count', 'changing', 'isUp', '__objArr__', '__refresh__'].indexOf(_);
+      return /^\w+$/.test(query[_]) && !~['page', 'count', 'changing', 'isUp', '__refresh__'].indexOf(_);
     }).sort().forEach(function (key) {
       result += "-".concat(key, "-").concat(query[key]);
     });
@@ -4548,13 +4552,13 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
         var _initData = _asyncToGenerator(
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee(_ref, _ref2) {
-          var state, commit, func, type, query, fieldName, field, refresh, params, data;
+          var state, commit, func, type, query, callback, fieldName, field, refresh, params, data;
           return regeneratorRuntime.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
                   state = _ref.state, commit = _ref.commit;
-                  func = _ref2.func, type = _ref2.type, query = _ref2.query;
+                  func = _ref2.func, type = _ref2.type, query = _ref2.query, callback = _ref2.callback;
                   printLog('initData', {
                     func: func,
                     type: type,
@@ -4631,13 +4635,13 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     fieldName: fieldName,
                     type: type,
                     page: params.page,
-                    insertBefore: query.isUp || false,
-                    objArr: query.__objArr__
+                    insertBefore: query.isUp || false
                   });
-                  return _context.abrupt("return", data.result);
+                  callback && callback(data);
+                  return _context.abrupt("return", data);
 
-                case 26:
-                  _context.prev = 26;
+                case 27:
+                  _context.prev = 27;
                   _context.t0 = _context["catch"](17);
                   printLog('error', {
                     fieldName: fieldName,
@@ -4651,12 +4655,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                   });
                   return _context.abrupt("return", null);
 
-                case 32:
+                case 33:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, null, [[17, 26]]);
+          }, _callee, null, [[17, 27]]);
         }));
 
         function initData(_x, _x2) {
@@ -4669,13 +4673,13 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
         var _loadMore = _asyncToGenerator(
         /*#__PURE__*/
         regeneratorRuntime.mark(function _callee2(_ref3, _ref4) {
-          var state, commit, type, func, query, fieldName, field, isSinceUpFetch, changing, params, data;
+          var state, commit, type, func, query, callback, fieldName, field, isSinceUpFetch, changing, params, data;
           return regeneratorRuntime.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
                   state = _ref3.state, commit = _ref3.commit;
-                  type = _ref4.type, func = _ref4.func, query = _ref4.query;
+                  type = _ref4.type, func = _ref4.func, query = _ref4.query, callback = _ref4.callback;
                   printLog('loadMore', {
                     type: type,
                     func: func,
@@ -4738,13 +4742,13 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     fieldName: fieldName,
                     type: type,
                     page: params.page,
-                    insertBefore: query.isUp || false,
-                    objArr: query.__objArr__
+                    insertBefore: query.isUp || false
                   });
-                  return _context2.abrupt("return", data.result);
+                  callback && callback(data);
+                  return _context2.abrupt("return", data);
 
-                case 23:
-                  _context2.prev = 23;
+                case 24:
+                  _context2.prev = 24;
                   _context2.t0 = _context2["catch"](14);
                   printLog('error', {
                     fieldName: fieldName,
@@ -4758,12 +4762,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                   });
                   return _context2.abrupt("return", null);
 
-                case 29:
+                case 30:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, _callee2, null, [[14, 23]]);
+          }, _callee2, null, [[14, 24]]);
         }));
 
         function loadMore(_x3, _x4) {
@@ -4798,15 +4802,13 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
             fieldName = _ref7.fieldName,
             type = _ref7.type,
             page = _ref7.page,
-            insertBefore = _ref7.insertBefore,
-            objArr = _ref7.objArr;
+            insertBefore = _ref7.insertBefore;
         printLog('SET_DATA - begin', {
           data: data,
           fieldName: fieldName,
           type: type,
           page: page,
-          insertBefore: insertBefore,
-          objArr: objArr
+          insertBefore: insertBefore
         });
         var result = data.result,
             extra = data.extra;
@@ -4815,6 +4817,8 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
         if (!field) {
           return;
         }
+
+        var objArr = Object.prototype.toString.call(result) === '[object Array]';
 
         if (field.fetched) {
           if (type === 'jump' || objArr) {
@@ -4945,15 +4949,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4356ab82-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=5fef2784&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"01482fe1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=4e7e4705&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm._loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=5fef2784&
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.regexp.to-string.js
-var es6_regexp_to_string = __webpack_require__("6b54");
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=4e7e4705&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
 var es6_number_constructor = __webpack_require__("c5f6");
@@ -5224,15 +5225,17 @@ var checkInView = function checkInView(dom, preload) {
         return val >= -1;
       }
     },
+    callback: {
+      type: Function,
+      validate: function validate(val) {
+        return val === undefined || typeof val === 'undefined';
+      }
+    },
     displayNoMore: {
       type: Boolean,
       default: false
     },
     useFirstError: {
-      type: Boolean,
-      default: false
-    },
-    objectArray: {
       type: Boolean,
       default: false
     },
@@ -5260,9 +5263,8 @@ var checkInView = function checkInView(dom, preload) {
       return {
         func: this.func,
         type: this.type,
-        query: Object.assign(this.query, {
-          __objArr__: this.objectArray
-        })
+        query: this.query,
+        callback: this.callback
       };
     },
     isAuto: function isAuto() {
@@ -5297,7 +5299,7 @@ var checkInView = function checkInView(dom, preload) {
       var _refresh = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee() {
-        var query, result;
+        var query;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -5310,13 +5312,9 @@ var checkInView = function checkInView(dom, preload) {
                 }));
 
               case 4:
-                result = _context.sent;
-
                 this._initFlowLoader();
 
-                result && this.$emit('loaded', result);
-
-              case 7:
+              case 5:
               case "end":
                 return _context.stop();
             }
@@ -5334,7 +5332,7 @@ var checkInView = function checkInView(dom, preload) {
       var _jump = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee2(page) {
-        var query, result;
+        var query;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -5347,10 +5345,6 @@ var checkInView = function checkInView(dom, preload) {
                 }));
 
               case 4:
-                result = _context2.sent;
-                result && this.$emit('loaded', result);
-
-              case 6:
               case "end":
                 return _context2.stop();
             }
@@ -5396,7 +5390,7 @@ var checkInView = function checkInView(dom, preload) {
       var _loadBefore = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee3() {
-        var query, result;
+        var query;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
@@ -5409,10 +5403,6 @@ var checkInView = function checkInView(dom, preload) {
                 }));
 
               case 4:
-                result = _context3.sent;
-                result && this.$emit('loaded', result);
-
-              case 6:
               case "end":
                 return _context3.stop();
             }
@@ -5471,7 +5461,6 @@ var checkInView = function checkInView(dom, preload) {
       var _initData2 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee4() {
-        var result;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
@@ -5480,10 +5469,6 @@ var checkInView = function checkInView(dom, preload) {
                 return this.$store.dispatch('flow/initData', this.params);
 
               case 2:
-                result = _context4.sent;
-                result && this.$emit('loaded', result);
-
-              case 4:
               case "end":
                 return _context4.stop();
             }
@@ -5501,7 +5486,7 @@ var checkInView = function checkInView(dom, preload) {
       var _loadMore2 = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee5() {
-        var query, result;
+        var query;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
@@ -5514,10 +5499,6 @@ var checkInView = function checkInView(dom, preload) {
                 }));
 
               case 4:
-                result = _context5.sent;
-                result && this.$emit('loaded', result);
-
-              case 6:
               case "end":
                 return _context5.stop();
             }

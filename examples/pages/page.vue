@@ -7,6 +7,7 @@
       func="getListByPage"
       type="page"
       :query="query"
+      :callback="handlePageLoaded"
       :auto="3"
     >
       <ul class="demo-list" slot-scope="{ flow }">
@@ -27,6 +28,11 @@ export default {
       query: {
         count: 10
       }
+    }
+  },
+  methods: {
+    handlePageLoaded(res) {
+      console.log('callback', res)
     }
   }
 }

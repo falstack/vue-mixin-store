@@ -119,15 +119,15 @@ export default {
       default: -1,
       validate: val => val >= -1
     },
+    callback: {
+      type: Function,
+      validate: val => val === undefined || typeof val === 'undefined'
+    },
     displayNoMore: {
       type: Boolean,
       default: false
     },
     useFirstError: {
-      type: Boolean,
-      default: false
-    },
-    objectArray: {
       type: Boolean,
       default: false
     },
@@ -153,9 +153,8 @@ export default {
       return {
         func: this.func,
         type: this.type,
-        query: Object.assign(this.query, {
-          __objArr__: this.objectArray
-        })
+        query: this.query,
+        callback: this.callback
       }
     },
     isAuto() {
@@ -187,25 +186,23 @@ export default {
     async refresh() {
       const { query } = this.params
       query.__refresh__ = true
-      const result = await this.$store.dispatch(
+      await this.$store.dispatch(
         'flow/initData',
         Object.assign({}, this.params, {
           query
         })
       )
       this._initFlowLoader()
-      result && this.$emit('loaded', result)
     },
     async jump(page) {
       const { query } = this.params
       query.page = page
-      const result = await this.$store.dispatch(
+      await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query
         })
       )
-      result && this.$emit('loaded', result)
     },
     delete(id) {
       this.$store.commit(
@@ -253,13 +250,12 @@ export default {
     async loadBefore() {
       const { query } = this.params
       query.isUp = true
-      const result = await this.$store.dispatch(
+      await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query
         })
       )
-      result && this.$emit('loaded', result)
     },
     insertBefore({ id, value }) {
       this.$store.commit(
@@ -304,19 +300,17 @@ export default {
       return document
     },
     async _initData() {
-      const result = await this.$store.dispatch('flow/initData', this.params)
-      result && this.$emit('loaded', result)
+      await this.$store.dispatch('flow/initData', this.params)
     },
     async _loadMore() {
       const { query } = this.params
       query.isUp = false
-      const result = await this.$store.dispatch(
+      await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query
         })
       )
-      result && this.$emit('loaded', result)
     },
     _initState() {
       if (this.source) {

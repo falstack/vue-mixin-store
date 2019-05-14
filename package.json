@@ -1,6 +1,6 @@
 {
   "name": "vue-mixin-store",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "main": "dist/vue-mixin-store.umd.min.js",
   "files": [
     "dist"
