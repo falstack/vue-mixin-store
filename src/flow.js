@@ -21,8 +21,8 @@ export default (api, debug = false) => {
     Object.keys(query)
       .filter(
         _ =>
-          /^\w+$/.test(query[_]) &&
-          !~['page', 'count', 'changing', 'isUp', '__refresh__'].indexOf(_)
+          typeof query[_] !== 'object' &&
+          !~['page', 'changing', 'isUp', '__refresh__'].indexOf(_)
       )
       .sort()
       .forEach(key => {
