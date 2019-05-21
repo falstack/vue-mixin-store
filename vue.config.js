@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const npmCfg = require('./package.json')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const banner = [
   npmCfg.name + ' v' + npmCfg.version,
@@ -17,9 +18,12 @@ module.exports = {
     }
   },
   configureWebpack: {
-    plugins: [new webpack.BannerPlugin(banner)]
-  },
-  css: {
-    extract: true
+    plugins: [
+      new webpack.BannerPlugin(banner),
+      new CopyWebpackPlugin([
+        { from: './src/FlowLoader.vue' },
+        { from: './src/flow.js' }
+      ])
+    ]
   }
 }
