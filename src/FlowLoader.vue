@@ -107,7 +107,7 @@ export default {
     type: {
       required: true,
       type: String,
-      validate: val =>
+      validator: val =>
         ~['page', 'jump', 'seenIds', 'lastId', 'sinceId'].indexOf(val)
     },
     query: {
@@ -117,11 +117,11 @@ export default {
     auto: {
       type: Number,
       default: -1,
-      validate: val => val >= -1
+      validator: val => val >= -1
     },
     callback: {
       type: Function,
-      validate: val => val === undefined || typeof val === 'undefined'
+      validator: val => val === undefined || typeof val === 'function'
     },
     displayNoMore: {
       type: Boolean,
@@ -142,7 +142,7 @@ export default {
     preload: {
       type: Number,
       default: 50,
-      validate: val => val >= 0
+      validator: val => val >= 0
     }
   },
   computed: {

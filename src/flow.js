@@ -196,7 +196,7 @@ export default (api, debug = false) => {
           return
         }
         const objArr =
-          Object.prototype.toString.call(result) === '[object Array]'
+          Object.prototype.toString.call(result) !== '[object Array]'
         if (field.fetched) {
           if (type === 'jump' || objArr) {
             field.result = result
