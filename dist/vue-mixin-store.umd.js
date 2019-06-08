@@ -3277,7 +3277,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     });
     var result = "".concat(func, "-").concat(type);
     Object.keys(query).filter(function (_) {
-      return typeof_typeof(query[_]) !== 'object' && !~['page', 'changing', 'isUp', '__refresh__'].indexOf(_);
+      return typeof_typeof(query[_]) !== 'object' && typeof query[_] !== 'function' && !~['page', 'changing', 'isUp', '__refresh__'].indexOf(_);
     }).sort().forEach(function (key) {
       result += "-".concat(key, "-").concat(query[key]);
     });

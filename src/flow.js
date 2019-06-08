@@ -22,6 +22,7 @@ export default (api, debug = false) => {
       .filter(
         _ =>
           typeof query[_] !== 'object' &&
+          typeof query[_] !== 'function' &&
           !~['page', 'changing', 'isUp', '__refresh__'].indexOf(_)
       )
       .sort()
