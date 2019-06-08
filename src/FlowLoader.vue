@@ -330,7 +330,11 @@ export default {
     },
     _retryData() {
       if (this.retryOnError) {
-        this._loadMore()
+        if (this.source.fetched) {
+          this._initData()
+        } else {
+          this._loadMore()
+        }
       }
     },
     _onScreenScroll: throttle(200, function() {
@@ -346,7 +350,11 @@ export default {
         return
       }
       if (checkInView(this.$refs.state, this.preload)) {
-        this._loadMore()
+        if (this.source.fetched) {
+          this._initData()
+        } else {
+          this._loadMore()
+        }
       }
     })
   }
