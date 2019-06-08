@@ -331,9 +331,9 @@ export default {
     _retryData() {
       if (this.retryOnError) {
         if (this.source.fetched) {
-          this._initData()
-        } else {
           this._loadMore()
+        } else {
+          this._initData()
         }
       }
     },
@@ -351,9 +351,9 @@ export default {
       }
       if (checkInView(this.$refs.state, this.preload)) {
         if (this.source.fetched) {
-          this._initData()
-        } else {
           this._loadMore()
+        } else {
+          this._initData()
         }
       }
     })
