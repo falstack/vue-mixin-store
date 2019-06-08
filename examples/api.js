@@ -29,7 +29,10 @@ export const getObjectByPage = ({ page, count }) => {
       const result = {
         all: [],
         bangumi: [],
-        pgc: []
+        pgc: [
+          { a: 1 },
+          { a: 2 }
+        ]
       }
       resolve({
         result,

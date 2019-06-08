@@ -79,7 +79,7 @@
 | 类型 | 参数 | 默认值 | 翻页值 |
 | --- | --- | --- | --- |
 | page | page | 1 | 自动维护，+1 |
-| sinceId | since_id, is_up | is_up = true, since_id = 999999999； is_up = false, since_id = 0 | 根据翻页方向自动维护 |
+| sinceId | since_id, is_up | is_up = 1, since_id = 999999999； is_up = 0, since_id = 0 | 根据翻页方向自动维护 |
 | jump | page | 1 | 手动传值 |
 | lastId | last_id | 0 | 当前列表最后一个元素的 id 值 |
 | seenIds | seen_ids | '' | 当前列表所有元素的 id 值的数组然后 join(',') |

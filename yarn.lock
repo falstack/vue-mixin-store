@@ -9716,10 +9716,10 @@ sass-loader@^7.1.0:
     pify "^3.0.0"
     semver "^5.5.0"
 
-sass@^1.20.3:
-  version "1.20.3"
-  resolved "https://registry.npm.taobao.org/sass/download/sass-1.20.3.tgz#18284a7bac6eab9cbb80453288473194f29efb84"
-  integrity sha1-GChKe6xuq5y7gEUyiEcxlPKe+4Q=
+sass@^1.21.0:
+  version "1.21.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.21.0.tgz#cc565444e27c2336746b09c45d6e8c46caaf6b04"
+  integrity sha512-67hIIOZZtarbhI2aSgKBPDUgn+VqetduKoD+ZSYeIWg+ksNioTzeX+R2gUdebDoolvKNsQ/GY9NDxctbXluTNA==
   dependencies:
     chokidar "^2.0.0"
 
@@ -11031,10 +11031,10 @@ uuid@^3.0.1, uuid@^3.1.0, uuid@^3.3.2:
   resolved "https://registry.npm.taobao.org/uuid/download/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha1-G0r0lV6zB3xQHCOHL8ZROBFYcTE=
 
-v-switcher@1.0.11:
-  version "1.0.11"
-  resolved "https://registry.npm.taobao.org/v-switcher/download/v-switcher-1.0.11.tgz#d01738c2861f0cc901a9f81884cfb122eb582998"
-  integrity sha1-0Bc4woYfDMkBqfgYhM+xIutYKZg=
+v-switcher@1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/v-switcher/-/v-switcher-1.0.12.tgz#34b645d0b346abf84b9327346d7e4cecf0325cd4"
+  integrity sha512-D0WH+V5aO0kKOUvmYAJLjEPBnvNtdt4gA9r1tkSGCKorWBXtha8oiOtBnoTCiHRdQGqEfdLV9gli3a/+FSb8vA==
   dependencies:
     vue "^2.6.6"
 

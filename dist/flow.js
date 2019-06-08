@@ -83,7 +83,7 @@ export default (api, debug = false) => {
           params.last_id = 0
         } else if (type === 'sinceId') {
           params.since_id = query.sinceId || (query.isUp ? 999999999 : 0)
-          params.is_up = query.isUp || false
+          params.is_up = query.isUp ? 1 : 0
         }
         try {
           printLog('request', { func, params: Object.assign(params, query) })
@@ -93,7 +93,7 @@ export default (api, debug = false) => {
             fieldName,
             type,
             page: params.page,
-            insertBefore: query.isUp || false
+            insertBefore: query.isUp ? 1 : 0
           })
           callback && callback(data)
           return data
@@ -141,7 +141,7 @@ export default (api, debug = false) => {
               : field.result[field.result.length - 1],
             changing
           )
-          params.is_up = !!query.isUp
+          params.is_up = query.isUp ? 1 : 0
         }
         try {
           printLog('request', { func, params: Object.assign(params, query) })
@@ -151,7 +151,7 @@ export default (api, debug = false) => {
             fieldName,
             type,
             page: params.page,
-            insertBefore: query.isUp || false
+            insertBefore: query.isUp ? 1 : 0
           })
           callback && callback(data)
           return data
