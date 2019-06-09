@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.0.5
+ * vue-mixin-store v1.0.6
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -987,6 +987,51 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     return result;
   };
 
+  var cacheNotExpired = function cacheNotExpired(fieldName, timeout) {
+    try {
+      localStorage.setItem('@@', 1);
+      localStorage.removeItem('@@');
+      var cacheSetAt = localStorage.getItem("vue-mixin-store-".concat(fieldName, "-timer"));
+
+      if (!cacheSetAt) {
+        return false;
+      }
+
+      var result = Date.now() - cacheSetAt < timeout;
+
+      if (!result) {
+        localStorage.removeItem("vue-mixin-store-".concat(fieldName));
+        localStorage.removeItem("vue-mixin-store-".concat(fieldName, "-timer"));
+      }
+
+      return result;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  var readDataFromCache = function readDataFromCache(fieldName) {
+    var cacheStr = localStorage.getItem("vue-mixin-store-".concat(fieldName));
+
+    if (!cacheStr) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(cacheStr);
+    } catch (e) {
+      return null;
+    }
+  };
+
+  var setDataToCache = function setDataToCache(fieldName, dataObj) {
+    try {
+      localStorage.setItem("vue-mixin-store-".concat(fieldName), JSON.stringify(dataObj));
+      localStorage.setItem("vue-mixin-store-".concat(fieldName, "-timer"), Date.now());
+    } catch (e) {// do nothing
+    }
+  };
+
   return {
     namespaced: true,
     state: function state() {
@@ -997,13 +1042,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var _initData = _asyncToGenerator(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee(_ref, _ref2) {
-          var state, commit, func, type, query, callback, fieldName, field, refresh, params, data;
+          var state, commit, func, type, query, callback, cacheTimeout, fieldName, field, refresh, params, args, data, fromLocal;
           return regenerator_default.a.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
                   state = _ref.state, commit = _ref.commit;
-                  func = _ref2.func, type = _ref2.type, query = _ref2.query, callback = _ref2.callback;
+                  func = _ref2.func, type = _ref2.type, query = _ref2.query, callback = _ref2.callback, cacheTimeout = _ref2.cacheTimeout;
                   printLog('initData', {
                     func: func,
                     type: type,
@@ -1066,27 +1111,65 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   }
 
                   _context.prev = 17;
+                  args = Object.assign(params, query);
                   printLog('request', {
                     func: func,
-                    params: Object.assign(params, query)
+                    params: args
                   });
-                  _context.next = 21;
-                  return api[func](Object.assign(params, query));
+                  fromLocal = false;
 
-                case 21:
+                  if (!(cacheTimeout && cacheNotExpired(fieldName, cacheTimeout))) {
+                    _context.next = 32;
+                    break;
+                  }
+
+                  data = readDataFromCache(fieldName);
+
+                  if (!data) {
+                    _context.next = 27;
+                    break;
+                  }
+
+                  fromLocal = true;
+                  _context.next = 30;
+                  break;
+
+                case 27:
+                  _context.next = 29;
+                  return api[func](args);
+
+                case 29:
                   data = _context.sent;
+
+                case 30:
+                  _context.next = 35;
+                  break;
+
+                case 32:
+                  _context.next = 34;
+                  return api[func](args);
+
+                case 34:
+                  data = _context.sent;
+
+                case 35:
                   commit('SET_DATA', {
                     data: data,
                     fieldName: fieldName,
                     type: type,
+                    fromLocal: fromLocal,
+                    cacheTimeout: cacheTimeout,
                     page: params.page,
                     insertBefore: query.isUp ? 1 : 0
                   });
-                  callback && callback(data);
+                  callback && callback({
+                    data: data,
+                    args: args
+                  });
                   return _context.abrupt("return", data);
 
-                case 27:
-                  _context.prev = 27;
+                case 40:
+                  _context.prev = 40;
                   _context.t0 = _context["catch"](17);
                   printLog('error', {
                     fieldName: fieldName,
@@ -1100,12 +1183,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   });
                   return _context.abrupt("return", null);
 
-                case 33:
+                case 46:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, null, [[17, 27]]);
+          }, _callee, null, [[17, 40]]);
         }));
 
         function initData(_x, _x2) {
@@ -1118,13 +1201,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var _loadMore = _asyncToGenerator(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee2(_ref3, _ref4) {
-          var state, commit, type, func, query, callback, fieldName, field, isSinceUpFetch, changing, params, data;
+          var state, commit, type, func, query, callback, cacheTimeout, fieldName, field, isSinceUpFetch, changing, params, args, data;
           return regenerator_default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
                   state = _ref3.state, commit = _ref3.commit;
-                  type = _ref4.type, func = _ref4.func, query = _ref4.query, callback = _ref4.callback;
+                  type = _ref4.type, func = _ref4.func, query = _ref4.query, callback = _ref4.callback, cacheTimeout = _ref4.cacheTimeout;
                   printLog('loadMore', {
                     type: type,
                     func: func,
@@ -1173,27 +1256,33 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   }
 
                   _context2.prev = 14;
+                  args = Object.assign(params, query);
                   printLog('request', {
                     func: func,
-                    params: Object.assign(params, query)
+                    params: args
                   });
-                  _context2.next = 18;
-                  return api[func](Object.assign(params, query));
+                  _context2.next = 19;
+                  return api[func](args);
 
-                case 18:
+                case 19:
                   data = _context2.sent;
                   commit('SET_DATA', {
+                    fromLocal: false,
                     data: data,
                     fieldName: fieldName,
                     type: type,
+                    cacheTimeout: cacheTimeout,
                     page: params.page,
                     insertBefore: query.isUp ? 1 : 0
                   });
-                  callback && callback(data);
+                  callback && callback({
+                    data: data,
+                    args: args
+                  });
                   return _context2.abrupt("return", data);
 
-                case 24:
-                  _context2.prev = 24;
+                case 25:
+                  _context2.prev = 25;
                   _context2.t0 = _context2["catch"](14);
                   printLog('error', {
                     fieldName: fieldName,
@@ -1207,12 +1296,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   });
                   return _context2.abrupt("return", null);
 
-                case 30:
+                case 31:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, _callee2, null, [[14, 24]]);
+          }, _callee2, null, [[14, 25]]);
         }));
 
         function loadMore(_x3, _x4) {
@@ -1247,7 +1336,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             fieldName = _ref7.fieldName,
             type = _ref7.type,
             page = _ref7.page,
-            insertBefore = _ref7.insertBefore;
+            insertBefore = _ref7.insertBefore,
+            fromLocal = _ref7.fromLocal,
+            cacheTimeout = _ref7.cacheTimeout;
         printLog('SET_DATA - begin', {
           data: data,
           fieldName: fieldName,
@@ -1255,6 +1346,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           page: page,
           insertBefore: insertBefore
         });
+
+        if (fromLocal) {
+          external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(state, fieldName, data);
+          return;
+        }
+
         var result = data.result,
             extra = data.extra;
         var field = state[fieldName];
@@ -1293,6 +1390,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         extra && external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field, 'extra', extra);
         field.loading = false;
         printLog('SET_DATA - result', field);
+
+        if (cacheTimeout) {
+          setDataToCache(fieldName, state[fieldName]);
+        }
       },
       UPDATE_DATA: function UPDATE_DATA(state, _ref8) {
         var type = _ref8.type,
@@ -1301,7 +1402,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             id = _ref8.id,
             method = _ref8.method,
             key = _ref8.key,
-            value = _ref8.value;
+            value = _ref8.value,
+            cacheTimeout = _ref8.cacheTimeout;
         var fieldName = generateFieldName(func, type, query);
         var field = state[fieldName];
 
@@ -1346,6 +1448,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }
 
           field.total += changeTotal;
+
+          if (cacheTimeout) {
+            setDataToCache(fieldName, state[fieldName]);
+          }
+
           return;
         }
 
@@ -1380,6 +1487,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             break;
           }
         }
+
+        if (cacheTimeout) {
+          setDataToCache(fieldName, state[fieldName]);
+        }
       }
     },
     getters: {
@@ -1394,12 +1505,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"7328e476-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=1cbb6dfb&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2deb8ece-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=331f80ba&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm._loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=1cbb6dfb&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=331f80ba&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -1696,6 +1807,13 @@ var checkInView = function checkInView(dom, preload) {
       validator: function validator(val) {
         return val >= 0;
       }
+    },
+    cacheTimeout: {
+      type: Number,
+      default: 0,
+      validator: function validator(val) {
+        return val >= 0;
+      }
     }
   },
   computed: {
@@ -1707,7 +1825,8 @@ var checkInView = function checkInView(dom, preload) {
         func: this.func,
         type: this.type,
         query: this.query,
-        callback: this.callback
+        callback: this.callback,
+        cacheTimeout: typeof window === 'undefined' ? 0 : this.cacheTimeout
       };
     },
     isAuto: function isAuto() {

@@ -143,6 +143,11 @@ export default {
       type: Number,
       default: 50,
       validator: val => val >= 0
+    },
+    cacheTimeout: {
+      type: Number,
+      default: 0,
+      validator: val => val >= 0
     }
   },
   computed: {
@@ -154,7 +159,8 @@ export default {
         func: this.func,
         type: this.type,
         query: this.query,
-        callback: this.callback
+        callback: this.callback,
+        cacheTimeout: typeof window === 'undefined' ? 0 : this.cacheTimeout
       }
     },
     isAuto() {

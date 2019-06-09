@@ -46,11 +46,59 @@ export default (api, debug = false) => {
     return result
   }
 
+  const cacheNotExpired = (fieldName, timeout) => {
+    try {
+      localStorage.setItem('@@', 1)
+      localStorage.removeItem('@@')
+      const cacheSetAt = localStorage.getItem(
+        `vue-mixin-store-${fieldName}-timer`
+      )
+      if (!cacheSetAt) {
+        return false
+      }
+      const result = Date.now() - cacheSetAt < timeout
+      if (!result) {
+        localStorage.removeItem(`vue-mixin-store-${fieldName}`)
+        localStorage.removeItem(`vue-mixin-store-${fieldName}-timer`)
+      }
+      return result
+    } catch (e) {
+      return false
+    }
+  }
+
+  const readDataFromCache = fieldName => {
+    const cacheStr = localStorage.getItem(`vue-mixin-store-${fieldName}`)
+    if (!cacheStr) {
+      return null
+    }
+    try {
+      return JSON.parse(cacheStr)
+    } catch (e) {
+      return null
+    }
+  }
+
+  const setDataToCache = (fieldName, dataObj) => {
+    try {
+      localStorage.setItem(
+        `vue-mixin-store-${fieldName}`,
+        JSON.stringify(dataObj)
+      )
+      localStorage.setItem(`vue-mixin-store-${fieldName}-timer`, Date.now())
+    } catch (e) {
+      // do nothing
+    }
+  }
+
   return {
     namespaced: true,
     state: () => ({}),
     actions: {
-      async initData({ state, commit }, { func, type, query, callback }) {
+      async initData(
+        { state, commit },
+        { func, type, query, callback, cacheTimeout }
+      ) {
         printLog('initData', { func, type, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
@@ -87,16 +135,30 @@ export default (api, debug = false) => {
           params.is_up = query.isUp ? 1 : 0
         }
         try {
-          printLog('request', { func, params: Object.assign(params, query) })
-          const data = await api[func](Object.assign(params, query))
+          const args = Object.assign(params, query)
+          printLog('request', { func, params: args })
+          let data
+          let fromLocal = false
+          if (cacheTimeout && cacheNotExpired(fieldName, cacheTimeout)) {
+            data = readDataFromCache(fieldName)
+            if (data) {
+              fromLocal = true
+            } else {
+              data = await api[func](args)
+            }
+          } else {
+            data = await api[func](args)
+          }
           commit('SET_DATA', {
             data,
             fieldName,
             type,
+            fromLocal,
+            cacheTimeout,
             page: params.page,
             insertBefore: query.isUp ? 1 : 0
           })
-          callback && callback(data)
+          callback && callback({ data, args })
           return data
         } catch (error) {
           printLog('error', { fieldName, error })
@@ -105,7 +167,10 @@ export default (api, debug = false) => {
           return null
         }
       },
-      async loadMore({ state, commit }, { type, func, query, callback }) {
+      async loadMore(
+        { state, commit },
+        { type, func, query, callback, cacheTimeout }
+      ) {
         printLog('loadMore', { type, func, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
@@ -145,16 +210,19 @@ export default (api, debug = false) => {
           params.is_up = query.isUp ? 1 : 0
         }
         try {
-          printLog('request', { func, params: Object.assign(params, query) })
-          const data = await api[func](Object.assign(params, query))
+          const args = Object.assign(params, query)
+          printLog('request', { func, params: args })
+          const data = await api[func](args)
           commit('SET_DATA', {
+            fromLocal: false,
             data,
             fieldName,
             type,
+            cacheTimeout,
             page: params.page,
             insertBefore: query.isUp ? 1 : 0
           })
-          callback && callback(data)
+          callback && callback({ data, args })
           return data
         } catch (error) {
           printLog('error', { fieldName, error })
@@ -183,7 +251,10 @@ export default (api, debug = false) => {
       CLEAR_RESULT(state, fieldName) {
         state[fieldName].result = []
       },
-      SET_DATA(state, { data, fieldName, type, page, insertBefore }) {
+      SET_DATA(
+        state,
+        { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout }
+      ) {
         printLog('SET_DATA - begin', {
           data,
           fieldName,
@@ -191,6 +262,10 @@ export default (api, debug = false) => {
           page,
           insertBefore
         })
+        if (fromLocal) {
+          Vue.set(state, fieldName, data)
+          return
+        }
         const { result, extra } = data
         const field = state[fieldName]
         if (!field) {
@@ -225,8 +300,14 @@ export default (api, debug = false) => {
         extra && Vue.set(field, 'extra', extra)
         field.loading = false
         printLog('SET_DATA - result', field)
+        if (cacheTimeout) {
+          setDataToCache(fieldName, state[fieldName])
+        }
       },
-      UPDATE_DATA(state, { type, func, query, id, method, key, value }) {
+      UPDATE_DATA(
+        state,
+        { type, func, query, id, method, key, value, cacheTimeout }
+      ) {
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
         if (!field || !field.result.length) {
@@ -261,6 +342,9 @@ export default (api, debug = false) => {
               break
           }
           field.total += changeTotal
+          if (cacheTimeout) {
+            setDataToCache(fieldName, state[fieldName])
+          }
           return
         }
         const changing = query.changing || 'id'
@@ -288,6 +372,9 @@ export default (api, debug = false) => {
             obj[modKeys[0]] = value
             break
           }
+        }
+        if (cacheTimeout) {
+          setDataToCache(fieldName, state[fieldName])
         }
       }
     },
