@@ -300,7 +300,7 @@ export default (api, debug = false) => {
         extra && Vue.set(field, 'extra', extra)
         field.loading = false
         printLog('SET_DATA - result', field)
-        if (cacheTimeout) {
+        if (cacheTimeout && !field.nothing) {
           setDataToCache(fieldName, state[fieldName])
         }
       },
