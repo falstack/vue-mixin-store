@@ -20,6 +20,6 @@ git commit -m 'deploy'
 git push -f git@github.com:falstack/vue-mixin-store.git master:gh-pages
 
 cd -
-git push origin master
 git add -A
-git commit -m 'deploy'
+git commit -m 'update'
+git push origin master
