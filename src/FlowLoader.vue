@@ -148,6 +148,11 @@ export default {
       type: Number,
       default: 0,
       validator: val => val >= 0
+    },
+    sort: {
+      type: String,
+      default: 'desc',
+      validator: val => ~['desc', 'asc'].indexOf(val)
     }
   },
   computed: {
@@ -255,7 +260,7 @@ export default {
     },
     async loadBefore() {
       const { query } = this.params
-      query.isUp = 1
+      query.isUp = this.sort === 'desc' ? 1 : 0
       await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
@@ -306,11 +311,18 @@ export default {
       return document
     },
     async initData() {
-      await this.$store.dispatch('flow/initData', this.params)
+      const { query } = this.params
+      query.isUp = this.sort === 'desc' ? 0 : 1
+      await this.$store.dispatch(
+        'flow/initData',
+        Object.assign({}, this.params, {
+          query
+        })
+      )
     },
     async loadMore() {
       const { query } = this.params
-      query.isUp = 0
+      query.isUp = this.sort === 'desc' ? 0 : 1
       await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
