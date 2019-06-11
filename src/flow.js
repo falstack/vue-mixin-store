@@ -112,13 +112,11 @@ export default (api, debug = false) => {
           return
         }
         // 这个 field 已经请求过了
-        if (field && field.fetched) {
-          if (!refresh) {
-            return
-          }
+        const notFetch = field && field.fetched && !refresh
+        if (!notFetch) {
+          commit('INIT_STATE', { func, type, query })
+          commit('SET_LOADING', fieldName)
         }
-        commit('INIT_STATE', { func, type, query })
-        commit('SET_LOADING', fieldName)
         const params = {
           page: 1
         }
@@ -134,8 +132,20 @@ export default (api, debug = false) => {
           params.since_id = query.sinceId || (query.isUp ? 999999999 : 0)
           params.is_up = query.isUp ? 1 : 0
         }
+        const args = Object.assign(params, query)
+        if (notFetch) {
+          callback &&
+            callback({
+              args,
+              data: {
+                result: field.result,
+                total: field.total,
+                no_more: field.noMore
+              }
+            })
+          return
+        }
         try {
-          const args = Object.assign(params, query)
           printLog('request', { func, params: args })
           let data
           let fromLocal = false
@@ -209,8 +219,8 @@ export default (api, debug = false) => {
           )
           params.is_up = query.isUp ? 1 : 0
         }
+        const args = Object.assign(params, query)
         try {
-          const args = Object.assign(params, query)
           printLog('request', { func, params: args })
           const data = await api[func](args)
           commit('SET_DATA', {

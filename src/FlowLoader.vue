@@ -65,7 +65,7 @@
           <div v-else-if="isPagination" class="flow-render-state-load">
             <slot name="load">jump</slot>
           </div>
-          <div v-else @click="_loadMore" class="flow-render-state-load">
+          <div v-else @click="loadMore" class="flow-render-state-load">
             <slot name="load">点击加载更多</slot>
           </div>
         </template>
@@ -305,10 +305,10 @@ export default {
       }
       return document
     },
-    async _initData() {
+    async initData() {
       await this.$store.dispatch('flow/initData', this.params)
     },
-    async _loadMore() {
+    async loadMore() {
       const { query } = this.params
       query.isUp = 0
       await this.$store.dispatch(
@@ -329,7 +329,7 @@ export default {
         this._initState()
       } else {
         checkInView(this.$refs.state, this.preload)
-          ? this._initData()
+          ? this.initData()
           : this._initState()
         on(this._getTarget(), 'scroll', this._onScreenScroll)
       }
@@ -337,9 +337,9 @@ export default {
     _retryData() {
       if (this.retryOnError) {
         if (this.source.fetched) {
-          this._loadMore()
+          this.loadMore()
         } else {
-          this._initData()
+          this.initData()
         }
       }
     },
@@ -357,9 +357,9 @@ export default {
       }
       if (checkInView(this.$refs.state, this.preload)) {
         if (this.source.fetched) {
-          this._loadMore()
+          this.loadMore()
         } else {
-          this._initData()
+          this.initData()
         }
       }
     })

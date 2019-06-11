@@ -4,6 +4,9 @@
 set -e
 
 # 构建
+npm run lint
+npm run build
+npm publish
 npm run docs:build
 
 # cd 到构建输出的目录下
@@ -17,3 +20,6 @@ git commit -m 'deploy'
 git push -f git@github.com:falstack/vue-mixin-store.git master:gh-pages
 
 cd -
+git push origin master
+git add -A
+git commit -m 'deploy'

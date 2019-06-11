@@ -13,6 +13,7 @@
 | retryOnError | Boolean | false | true | - | 当展示 error 的时候是否点击后重试 |
 | preload | Number | false | 50 | >= 0 | 自动加载下一页的预加载高度（px） |
 | callback | Function | false | undefined | Function | 接口请求成功后可以调用一个 callback 函数 |
+| cacheTimeout | Number | false | 0 | >= 0 | 将数据缓存到 localStorage 里超时的 ms |
 
 ### query 中的一些关键字
 | 参数 | 作用 |
@@ -28,15 +29,21 @@
 以下方法使用 this.$refs.loader.xxx 调用
 :::
 
+#### initData()
+- 手动获取第一页的数据
+
+#### loadMore()
+- 手动获取下一页的数据
+
+#### loadBefore()
+- 当`type`=`sinceId`的时候，用来加载前面的数据
+
 #### refresh()
 - 刷新列表，该列表的原有数据会被清空
 
 #### jump(page)
 - 参数：page
 - 跳转到第几页，只应该在`type` =`jump` 的时候被调用
-
-#### loadBefore()
-- 当`type`=`sinceId`的时候，用来加载前面的数据
 
 #### delete(id)
 - 参数：id（这里是键值，键名由 query 里的 changing 指定）

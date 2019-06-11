@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.1
+ * vue-mixin-store v1.1.4
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1033,7 +1033,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var _initData = _asyncToGenerator(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee(_ref, _ref2) {
-          var state, commit, func, type, query, callback, cacheTimeout, fieldName, field, refresh, params, args, data, fromLocal;
+          var state, commit, func, type, query, callback, cacheTimeout, fieldName, field, refresh, notFetch, params, args, data, fromLocal;
           return regenerator_default.a.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
@@ -1065,25 +1065,18 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   return _context.abrupt("return");
 
                 case 10:
-                  if (!(field && field.fetched)) {
-                    _context.next = 13;
-                    break;
+                  // 这个 field 已经请求过了
+                  notFetch = field && field.fetched && !refresh;
+
+                  if (!notFetch) {
+                    commit('INIT_STATE', {
+                      func: func,
+                      type: type,
+                      query: query
+                    });
+                    commit('SET_LOADING', fieldName);
                   }
 
-                  if (refresh) {
-                    _context.next = 13;
-                    break;
-                  }
-
-                  return _context.abrupt("return");
-
-                case 13:
-                  commit('INIT_STATE', {
-                    func: func,
-                    type: type,
-                    query: query
-                  });
-                  commit('SET_LOADING', fieldName);
                   params = {
                     page: 1
                   };
@@ -1101,8 +1094,25 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                     params.is_up = query.isUp ? 1 : 0;
                   }
 
-                  _context.prev = 17;
                   args = Object.assign(params, query);
+
+                  if (!notFetch) {
+                    _context.next = 18;
+                    break;
+                  }
+
+                  callback && callback({
+                    args: args,
+                    data: {
+                      result: field.result,
+                      total: field.total,
+                      no_more: field.noMore
+                    }
+                  });
+                  return _context.abrupt("return");
+
+                case 18:
+                  _context.prev = 18;
                   printLog('request', {
                     func: func,
                     params: args
@@ -1161,7 +1171,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
                 case 40:
                   _context.prev = 40;
-                  _context.t0 = _context["catch"](17);
+                  _context.t0 = _context["catch"](18);
                   printLog('error', {
                     fieldName: fieldName,
                     error: _context.t0
@@ -1179,7 +1189,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   return _context.stop();
               }
             }
-          }, _callee, null, [[17, 40]]);
+          }, _callee, null, [[18, 40]]);
         }));
 
         function initData(_x, _x2) {
@@ -1246,8 +1256,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                     params.is_up = query.isUp ? 1 : 0;
                   }
 
-                  _context2.prev = 14;
                   args = Object.assign(params, query);
+                  _context2.prev = 15;
                   printLog('request', {
                     func: func,
                     params: args
@@ -1274,7 +1284,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
                 case 25:
                   _context2.prev = 25;
-                  _context2.t0 = _context2["catch"](14);
+                  _context2.t0 = _context2["catch"](15);
                   printLog('error', {
                     fieldName: fieldName,
                     error: _context2.t0
@@ -1292,7 +1302,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   return _context2.stop();
               }
             }
-          }, _callee2, null, [[14, 25]]);
+          }, _callee2, null, [[15, 25]]);
         }));
 
         function loadMore(_x3, _x4) {
@@ -1496,12 +1506,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2a45e7aa-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=331f80ba&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm._loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3820a61e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=1327cfc1&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=331f80ba&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=1327cfc1&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -2010,8 +2020,8 @@ var checkInView = function checkInView(dom, preload) {
 
       return document;
     },
-    _initData: function () {
-      var _initData2 = FlowLoadervue_type_script_lang_js_asyncToGenerator(
+    initData: function () {
+      var _initData = FlowLoadervue_type_script_lang_js_asyncToGenerator(
       /*#__PURE__*/
       regenerator_default.a.mark(function _callee4() {
         return regenerator_default.a.wrap(function _callee4$(_context4) {
@@ -2029,14 +2039,14 @@ var checkInView = function checkInView(dom, preload) {
         }, _callee4, this);
       }));
 
-      function _initData() {
-        return _initData2.apply(this, arguments);
+      function initData() {
+        return _initData.apply(this, arguments);
       }
 
-      return _initData;
+      return initData;
     }(),
-    _loadMore: function () {
-      var _loadMore2 = FlowLoadervue_type_script_lang_js_asyncToGenerator(
+    loadMore: function () {
+      var _loadMore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
       /*#__PURE__*/
       regenerator_default.a.mark(function _callee5() {
         var query;
@@ -2059,11 +2069,11 @@ var checkInView = function checkInView(dom, preload) {
         }, _callee5, this);
       }));
 
-      function _loadMore() {
-        return _loadMore2.apply(this, arguments);
+      function loadMore() {
+        return _loadMore.apply(this, arguments);
       }
 
-      return _loadMore;
+      return loadMore;
     }(),
     _initState: function _initState() {
       if (this.source) {
@@ -2076,16 +2086,16 @@ var checkInView = function checkInView(dom, preload) {
       if (this.auto === 0) {
         this._initState();
       } else {
-        checkInView(this.$refs.state, this.preload) ? this._initData() : this._initState();
+        checkInView(this.$refs.state, this.preload) ? this.initData() : this._initState();
         on(this._getTarget(), 'scroll', this._onScreenScroll);
       }
     },
     _retryData: function _retryData() {
       if (this.retryOnError) {
         if (this.source.fetched) {
-          this._loadMore();
+          this.loadMore();
         } else {
-          this._initData();
+          this.initData();
         }
       }
     },
@@ -2101,9 +2111,9 @@ var checkInView = function checkInView(dom, preload) {
 
       if (checkInView(this.$refs.state, this.preload)) {
         if (this.source.fetched) {
-          this._loadMore();
+          this.loadMore();
         } else {
-          this._initData();
+          this.initData();
         }
       }
     })
