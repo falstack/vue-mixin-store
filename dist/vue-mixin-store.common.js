@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.6
+ * vue-mixin-store v1.1.7
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1202,7 +1202,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var _loadMore = _asyncToGenerator(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee2(_ref3, _ref4) {
-          var state, commit, type, func, query, callback, cacheTimeout, fieldName, field, isSinceUpFetch, changing, params, args, data;
+          var state, commit, type, func, query, callback, cacheTimeout, fieldName, field, changing, params, args, data;
           return regenerator_default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
@@ -1216,24 +1216,23 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   });
                   fieldName = generateFieldName(func, type, query);
                   field = state[fieldName];
-                  isSinceUpFetch = type === 'sinceId' && query && query.isUp;
 
-                  if (!(field.loading || field.noMore && !isSinceUpFetch)) {
-                    _context2.next = 8;
+                  if (!(field.loading || field.noMore)) {
+                    _context2.next = 7;
                     break;
                   }
 
                   return _context2.abrupt("return");
 
-                case 8:
+                case 7:
                   if (!(type === 'jump' && query.page === field.page)) {
-                    _context2.next = 10;
+                    _context2.next = 9;
                     break;
                   }
 
                   return _context2.abrupt("return");
 
-                case 10:
+                case 9:
                   commit('SET_LOADING', fieldName);
                   changing = query.changing || 'id';
                   params = {
@@ -1257,15 +1256,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   }
 
                   args = Object.assign(params, query);
-                  _context2.prev = 15;
+                  _context2.prev = 14;
                   printLog('request', {
                     func: func,
                     params: args
                   });
-                  _context2.next = 19;
+                  _context2.next = 18;
                   return api[func](args);
 
-                case 19:
+                case 18:
                   data = _context2.sent;
                   commit('SET_DATA', {
                     fromLocal: false,
@@ -1282,9 +1281,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   });
                   return _context2.abrupt("return", data);
 
-                case 25:
-                  _context2.prev = 25;
-                  _context2.t0 = _context2["catch"](15);
+                case 24:
+                  _context2.prev = 24;
+                  _context2.t0 = _context2["catch"](14);
                   printLog('error', {
                     fieldName: fieldName,
                     error: _context2.t0
@@ -1297,12 +1296,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   });
                   return _context2.abrupt("return", null);
 
-                case 31:
+                case 30:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, _callee2, null, [[15, 25]]);
+          }, _callee2, null, [[14, 24]]);
         }));
 
         function loadMore(_x3, _x4) {
@@ -1506,7 +1505,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"572ebcaa-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=78b0c128&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"fbd957d0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=78b0c128&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 

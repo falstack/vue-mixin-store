@@ -184,8 +184,7 @@ export default (api, debug = false) => {
         printLog('loadMore', { type, func, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
-        const isSinceUpFetch = type === 'sinceId' && query && query.isUp
-        if (field.loading || (field.noMore && !isSinceUpFetch)) {
+        if (field.loading || field.noMore) {
           return
         }
         if (type === 'jump' && query.page === field.page) {
