@@ -179,12 +179,12 @@ export default (api, debug = false) => {
       },
       async loadMore(
         { state, commit },
-        { type, func, query, callback, cacheTimeout }
+        { type, func, query, callback, cacheTimeout, force }
       ) {
         printLog('loadMore', { type, func, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
-        if (field.loading || field.noMore) {
+        if (field.loading || (field.noMore && !force)) {
           return
         }
         if (type === 'jump' && query.page === field.page) {

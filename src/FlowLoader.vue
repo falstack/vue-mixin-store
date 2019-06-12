@@ -258,13 +258,14 @@ export default {
         })
       )
     },
-    async loadBefore() {
+    async loadBefore({ force } = { force: false }) {
       const { query } = this.params
       query.isUp = 1
       await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
-          query
+          query,
+          force
         })
       )
     },
@@ -320,13 +321,14 @@ export default {
         })
       )
     },
-    async loadMore() {
+    async loadMore({ force } = { force: false }) {
       const { query } = this.params
       query.isUp = 0
       await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
-          query
+          query,
+          force
         })
       )
     },

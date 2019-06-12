@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.7
+ * vue-mixin-store v1.1.8
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1211,13 +1211,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         var _loadMore = _asyncToGenerator(
         /*#__PURE__*/
         regenerator_default.a.mark(function _callee2(_ref3, _ref4) {
-          var state, commit, type, func, query, callback, cacheTimeout, fieldName, field, changing, params, args, data;
+          var state, commit, type, func, query, callback, cacheTimeout, force, fieldName, field, changing, params, args, data;
           return regenerator_default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
                   state = _ref3.state, commit = _ref3.commit;
-                  type = _ref4.type, func = _ref4.func, query = _ref4.query, callback = _ref4.callback, cacheTimeout = _ref4.cacheTimeout;
+                  type = _ref4.type, func = _ref4.func, query = _ref4.query, callback = _ref4.callback, cacheTimeout = _ref4.cacheTimeout, force = _ref4.force;
                   printLog('loadMore', {
                     type: type,
                     func: func,
@@ -1226,7 +1226,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   fieldName = generateFieldName(func, type, query);
                   field = state[fieldName];
 
-                  if (!(field.loading || field.noMore)) {
+                  if (!(field.loading || field.noMore && !force)) {
                     _context2.next = 7;
                     break;
                   }
@@ -1514,12 +1514,12 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"fbd957d0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=78b0c128&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"7b09387d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=1aa8f798&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=78b0c128&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=1aa8f798&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -1968,19 +1968,27 @@ var checkInView = function checkInView(dom, preload) {
       var _loadBefore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
       /*#__PURE__*/
       regenerator_default.a.mark(function _callee3() {
-        var query;
+        var _ref3,
+            force,
+            query,
+            _args3 = arguments;
+
         return regenerator_default.a.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
+                _ref3 = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {
+                  force: false
+                }, force = _ref3.force;
                 query = this.params.query;
                 query.isUp = 1;
-                _context3.next = 4;
+                _context3.next = 5;
                 return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-                  query: query
+                  query: query,
+                  force: force
                 }));
 
-              case 4:
+              case 5:
               case "end":
                 return _context3.stop();
             }
@@ -1994,18 +2002,18 @@ var checkInView = function checkInView(dom, preload) {
 
       return loadBefore;
     }(),
-    insertBefore: function insertBefore(_ref3) {
-      var id = _ref3.id,
-          value = _ref3.value;
+    insertBefore: function insertBefore(_ref4) {
+      var id = _ref4.id,
+          value = _ref4.value;
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'insert-before',
         id: id,
         value: value
       }));
     },
-    insertAfter: function insertAfter(_ref4) {
-      var id = _ref4.id,
-          value = _ref4.value;
+    insertAfter: function insertAfter(_ref5) {
+      var id = _ref5.id,
+          value = _ref5.value;
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'insert-after',
         id: id,
@@ -2069,19 +2077,27 @@ var checkInView = function checkInView(dom, preload) {
       var _loadMore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
       /*#__PURE__*/
       regenerator_default.a.mark(function _callee5() {
-        var query;
+        var _ref6,
+            force,
+            query,
+            _args5 = arguments;
+
         return regenerator_default.a.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
+                _ref6 = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : {
+                  force: false
+                }, force = _ref6.force;
                 query = this.params.query;
                 query.isUp = 0;
-                _context5.next = 4;
+                _context5.next = 5;
                 return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-                  query: query
+                  query: query,
+                  force: force
                 }));
 
-              case 4:
+              case 5:
               case "end":
                 return _context5.stop();
             }
