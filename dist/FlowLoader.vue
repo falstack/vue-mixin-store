@@ -260,7 +260,7 @@ export default {
     },
     async loadBefore() {
       const { query } = this.params
-      query.isUp = this.sort === 'desc' ? 1 : 0
+      query.isUp = 1
       await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
@@ -322,7 +322,7 @@ export default {
     },
     async loadMore() {
       const { query } = this.params
-      query.isUp = this.sort === 'desc' ? 0 : 1
+      query.isUp = 0
       await this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
