@@ -369,7 +369,7 @@ export default {
         off(this._getTarget(), 'scroll', this._onScreenScroll)
         return
       }
-      if (checkInView(this.$refs.state, this.preload)) {
+      if (this.isAuto && checkInView(this.$refs.state, this.preload)) {
         if (this.source.fetched) {
           this.loadMore()
         } else {

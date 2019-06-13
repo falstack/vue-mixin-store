@@ -269,7 +269,9 @@ export default (api, debug = false) => {
           fieldName,
           type,
           page,
-          insertBefore
+          insertBefore,
+          fromLocal,
+          cacheTimeout
         })
         if (fromLocal) {
           Vue.set(state, fieldName, data)
