@@ -9,7 +9,7 @@
       <slot :source="source" name="footer" />
     </template>
     <!--  flow state  -->
-    <div class="flow-render-state" ref="state">
+    <div ref="state" class="flow-render-state">
       <template v-if="source">
         <!--   error   -->
         <div v-if="source.error" @click="_retryData">
@@ -65,7 +65,7 @@
           <div v-else-if="isPagination" class="flow-render-state-load">
             <slot name="load">jump</slot>
           </div>
-          <div v-else @click="loadMore" class="flow-render-state-load">
+          <div v-else class="flow-render-state-load" @click="loadMore">
             <slot name="load">点击加载更多</slot>
           </div>
         </template>
@@ -121,6 +121,7 @@ export default {
     },
     callback: {
       type: Function,
+      default: undefined,
       validator: val => val === undefined || typeof val === 'function'
     },
     displayNoMore: {
@@ -194,27 +195,6 @@ export default {
         })
       )
     },
-    async refresh() {
-      const { query } = this.params
-      query.__refresh__ = true
-      await this.$store.dispatch(
-        'flow/initData',
-        Object.assign({}, this.params, {
-          query
-        })
-      )
-      this._initFlowLoader()
-    },
-    async jump(page) {
-      const { query } = this.params
-      query.page = page
-      await this.$store.dispatch(
-        'flow/loadMore',
-        Object.assign({}, this.params, {
-          query
-        })
-      )
-    },
     delete(id) {
       this.$store.commit(
         'flow/UPDATE_DATA',
@@ -258,14 +238,12 @@ export default {
         })
       )
     },
-    async loadBefore({ force } = { force: false }) {
-      const { query } = this.params
-      query.isUp = 1
-      await this.$store.dispatch(
-        'flow/loadMore',
+    patch(objectArray) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
-          query,
-          force
+          method: 'patch',
+          value: objectArray
         })
       )
     },
@@ -292,24 +270,37 @@ export default {
     getResource(key = 'extra') {
       return this.source[key]
     },
-    _getTarget() {
-      let el = this.$el
-      if (!el) {
-        return null
-      }
-      while (
-        el &&
-        el.tagName !== 'HTML' &&
-        el.tagName !== 'BOYD' &&
-        el.nodeType === 1
-      ) {
-        const overflowY = window.getComputedStyle(el).overflowY
-        if (overflowY === 'scroll' || overflowY === 'auto') {
-          return el
-        }
-        el = el.parentNode
-      }
-      return document
+    async refresh() {
+      const { query } = this.params
+      query.__refresh__ = true
+      await this.$store.dispatch(
+        'flow/initData',
+        Object.assign({}, this.params, {
+          query
+        })
+      )
+      this._initFlowLoader()
+    },
+    async jump(page) {
+      const { query } = this.params
+      query.page = page
+      await this.$store.dispatch(
+        'flow/loadMore',
+        Object.assign({}, this.params, {
+          query
+        })
+      )
+    },
+    async loadBefore({ force } = { force: false }) {
+      const { query } = this.params
+      query.isUp = 1
+      await this.$store.dispatch(
+        'flow/loadMore',
+        Object.assign({}, this.params, {
+          query,
+          force
+        })
+      )
     },
     async initData() {
       const { query } = this.params
@@ -331,6 +322,25 @@ export default {
           force
         })
       )
+    },
+    _getTarget() {
+      let el = this.$el
+      if (!el) {
+        return null
+      }
+      while (
+        el &&
+        el.tagName !== 'HTML' &&
+        el.tagName !== 'BOYD' &&
+        el.nodeType === 1
+      ) {
+        const overflowY = window.getComputedStyle(el).overflowY
+        if (overflowY === 'scroll' || overflowY === 'auto') {
+          return el
+        }
+        el = el.parentNode
+      }
+      return document
     },
     _initState() {
       if (this.source) {

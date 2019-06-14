@@ -319,73 +319,121 @@ export default (api, debug = false) => {
         state,
         { type, func, query, id, method, key, value, cacheTimeout }
       ) {
-        const fieldName = generateFieldName(func, type, query)
-        const field = state[fieldName]
-        if (!field || !field.result.length) {
-          return
-        }
-        const modKeys = key ? key.split('.') : []
-        if (~['push', 'unshift', 'concat', 'merge', 'modify'].indexOf(method)) {
-          let changeTotal = 0
-          switch (method) {
-            case 'push':
-              field.result.push(value)
-              changeTotal = 1
-              break
-            case 'unshift':
-              field.result.unshift(value)
-              changeTotal = 1
-              break
-            case 'concat':
-              field.result = field.result.concat(value)
-              changeTotal = value.length
-              break
-            case 'merge':
-              field.result = value.concat(field.result)
-              changeTotal = value.length
-              break
-            case 'modify':
-              let obj = state[fieldName] // eslint-disable-line
+        try {
+          const fieldName = generateFieldName(func, type, query)
+          const field = state[fieldName]
+          if (!field || !field.result.length) {
+            return
+          }
+          const modKeys = key ? key.split('.') : []
+          const changing = query.changing || 'id'
+          const objArr =
+            Object.prototype.toString.call(value) !== '[object Array]'
+          if (
+            ~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(
+              method
+            )
+          ) {
+            let changeTotal = 0
+            switch (method) {
+              case 'push':
+                field.result.push(value)
+                changeTotal = 1
+                break
+              case 'unshift':
+                field.result.unshift(value)
+                changeTotal = 1
+                break
+              case 'concat':
+                field.result = field.result.concat(value)
+                changeTotal = value.length
+                break
+              case 'merge':
+                field.result = value.concat(field.result)
+                changeTotal = value.length
+                break
+              case 'modify':
+                let obj = state[fieldName] // eslint-disable-line
+                while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
+                  // do nothing
+                }
+                obj[modKeys[0]] = value
+                break
+              case 'patch':
+                if (objArr) {
+                  Object.keys(value).forEach(uniqueId => {
+                    field.result.forEach((item, index) => {
+                      if (parseDataUniqueId(item, changing) === uniqueId) {
+                        Object.keys(value[uniqueId]).forEach(key => {
+                          Vue.set(
+                            field.result[index],
+                            key,
+                            value[uniqueId][key]
+                          )
+                        })
+                      }
+                    })
+                  })
+                } else {
+                  value.forEach(col => {
+                    const uniqueId = parseDataUniqueId(col, changing)
+                    field.result.forEach((item, index) => {
+                      if (parseDataUniqueId(item, changing) === uniqueId) {
+                        Object.keys(col).forEach(key => {
+                          Vue.set(field.result[index], key, col[key])
+                        })
+                      }
+                    })
+                  })
+                }
+                break
+            }
+            field.total += changeTotal
+            if (cacheTimeout) {
+              setDataToCache(fieldName, state[fieldName])
+            }
+            return
+          }
+          for (let i = 0; i < field.result.length; i++) {
+            if (parseDataUniqueId(field.result[i], changing) === id) {
+              if (method === 'delete') {
+                field.result.splice(i, 1)
+                field.total--
+                return
+              }
+              if (method === 'insert-before') {
+                field.result.splice(i, 0, value)
+                field.total++
+                return
+              }
+              if (method === 'insert-after') {
+                field.result.splice(i + 1, 0, value)
+                field.total++
+                return
+              }
+              let obj = field.result[i]
               while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
                 // do nothing
               }
               obj[modKeys[0]] = value
               break
+            }
           }
-          field.total += changeTotal
           if (cacheTimeout) {
             setDataToCache(fieldName, state[fieldName])
           }
-          return
-        }
-        const changing = query.changing || 'id'
-        for (let i = 0; i < field.result.length; i++) {
-          if (parseDataUniqueId(field.result[i], changing) === id) {
-            if (method === 'delete') {
-              field.result.splice(i, 1)
-              field.total--
-              return
-            }
-            if (method === 'insert-before') {
-              field.result.splice(i, 0, value)
-              field.total++
-              return
-            }
-            if (method === 'insert-after') {
-              field.result.splice(i + 1, 0, value)
-              field.total++
-              return
-            }
-            let obj = field.result[i]
-            while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
-              // do nothing
-            }
-            obj[modKeys[0]] = value
-            break
-          }
-        }
-        if (cacheTimeout) {
-          setDataToCache(fieldName, state[fieldName])
+        } catch (error) {
+          printLog('UPDATE_DATA - error', {
+            type,
+            func,
+            query,
+            id,
+            method,
+            key,
+            value,
+            cacheTimeout,
+            error
+          })
         }
       }
     },

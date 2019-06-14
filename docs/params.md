@@ -79,6 +79,10 @@
 - 参数：value（新值）
 - 改变该列表的某个数据
 
+#### patch(array)
+- 参数：value objectArray 或 array
+- 给原有的数据打补丁
+
 #### getResource(key = 'extra')
 - 参数：key（要获取数据的key）
 - 获取列表里的某个数据
