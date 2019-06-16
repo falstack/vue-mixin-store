@@ -184,7 +184,12 @@ export default (api, debug = false) => {
         printLog('loadMore', { type, func, query })
         const fieldName = generateFieldName(func, type, query)
         const field = state[fieldName]
-        if (!field || field.loading || (field.noMore && !force)) {
+        if (
+          !field ||
+          field.loading ||
+          field.nothing ||
+          (field.noMore && !force)
+        ) {
           return
         }
         if (type === 'jump' && query.page === field.page) {

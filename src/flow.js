@@ -187,8 +187,8 @@ export default (api, debug = false) => {
         if (
           !field ||
           field.loading ||
-          (field.noMore && !force) ||
-          !field.result.length
+          field.nothing ||
+          (field.noMore && !force)
         ) {
           return
         }
