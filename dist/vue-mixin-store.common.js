@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.13
+ * vue-mixin-store v1.1.14
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -5051,7 +5051,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     });
     var result = "".concat(func, "-").concat(type);
     Object.keys(query).filter(function (_) {
-      return typeof_typeof(query[_]) !== 'object' && typeof query[_] !== 'function' && !~['page', 'changing', 'isUp', '__refresh__'].indexOf(_);
+      return typeof_typeof(query[_]) !== 'object' && typeof query[_] !== 'function' && !~['page', 'changing', 'is_up', '__refresh__'].indexOf(_);
     }).sort().forEach(function (key) {
       result += "-".concat(key, "-").concat(query[key]);
     });
@@ -5189,8 +5189,8 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                   } else if (type === 'lastId') {
                     params.last_id = 0;
                   } else if (type === 'sinceId') {
-                    params.since_id = query.sinceId || (query.isUp ? 999999999 : 0);
-                    params.is_up = query.isUp ? 1 : 0;
+                    params.since_id = query.sinceId || (query.is_up ? 999999999 : 0);
+                    params.is_up = query.is_up ? 1 : 0;
                   }
 
                   args = Object.assign(params, query);
@@ -5260,7 +5260,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     fromLocal: fromLocal,
                     cacheTimeout: cacheTimeout,
                     page: params.page,
-                    insertBefore: query.isUp ? 1 : 0
+                    insertBefore: query.is_up ? 1 : 0
                   });
                   callback && callback({
                     data: data,
@@ -5350,8 +5350,8 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                       return parseDataUniqueId(_, changing);
                     }).join(',');
                   } else if (type === 'sinceId') {
-                    params.since_id = parseDataUniqueId(query.isUp ? field.result[0] : field.result[field.result.length - 1], changing);
-                    params.is_up = query.isUp ? 1 : 0;
+                    params.since_id = parseDataUniqueId(query.is_up ? field.result[0] : field.result[field.result.length - 1], changing);
+                    params.is_up = query.is_up ? 1 : 0;
                   }
 
                   args = Object.assign(params, query);
@@ -5372,7 +5372,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
                     type: type,
                     cacheTimeout: cacheTimeout,
                     page: params.page,
-                    insertBefore: query.isUp ? 1 : 0
+                    insertBefore: query.is_up ? 1 : 0
                   });
                   callback && callback({
                     data: data,
@@ -5647,12 +5647,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"157f0d72-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=377c2fec&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"1065e01c-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=516c5daa&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-render-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-render-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-render-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-render-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-render-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-render-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-render-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=377c2fec&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=516c5daa&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
 var es6_number_constructor = __webpack_require__("c5f6");
@@ -6146,7 +6146,7 @@ var checkInView = function checkInView(dom, preload) {
                   force: false
                 }, force = _ref5.force;
                 query = this.params.query;
-                query.isUp = 1;
+                query.is_up = 1;
                 _context3.next = 5;
                 return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
                   query: query,
@@ -6177,7 +6177,7 @@ var checkInView = function checkInView(dom, preload) {
             switch (_context4.prev = _context4.next) {
               case 0:
                 query = this.params.query;
-                query.isUp = this.sort === 'desc' ? 0 : 1;
+                query.is_up = this.sort === 'desc' ? 0 : 1;
                 _context4.next = 4;
                 return this.$store.dispatch('flow/initData', Object.assign({}, this.params, {
                   query: query
@@ -6214,7 +6214,7 @@ var checkInView = function checkInView(dom, preload) {
                   force: false
                 }, force = _ref6.force;
                 query = this.params.query;
-                query.isUp = 0;
+                query.is_up = 0;
                 _context5.next = 5;
                 return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
                   query: query,

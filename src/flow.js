@@ -23,7 +23,7 @@ export default (api, debug = false) => {
         _ =>
           typeof query[_] !== 'object' &&
           typeof query[_] !== 'function' &&
-          !~['page', 'changing', 'isUp', '__refresh__'].indexOf(_)
+          !~['page', 'changing', 'is_up', '__refresh__'].indexOf(_)
       )
       .sort()
       .forEach(key => {
@@ -129,8 +129,8 @@ export default (api, debug = false) => {
         } else if (type === 'lastId') {
           params.last_id = 0
         } else if (type === 'sinceId') {
-          params.since_id = query.sinceId || (query.isUp ? 999999999 : 0)
-          params.is_up = query.isUp ? 1 : 0
+          params.since_id = query.sinceId || (query.is_up ? 999999999 : 0)
+          params.is_up = query.is_up ? 1 : 0
         }
         const args = Object.assign(params, query)
         if (notFetch) {
@@ -166,7 +166,7 @@ export default (api, debug = false) => {
             fromLocal,
             cacheTimeout,
             page: params.page,
-            insertBefore: query.isUp ? 1 : 0
+            insertBefore: query.is_up ? 1 : 0
           })
           callback && callback({ data, args })
           return data
@@ -216,12 +216,12 @@ export default (api, debug = false) => {
             .join(',')
         } else if (type === 'sinceId') {
           params.since_id = parseDataUniqueId(
-            query.isUp
+            query.is_up
               ? field.result[0]
               : field.result[field.result.length - 1],
             changing
           )
-          params.is_up = query.isUp ? 1 : 0
+          params.is_up = query.is_up ? 1 : 0
         }
         const args = Object.assign(params, query)
         try {
@@ -234,7 +234,7 @@ export default (api, debug = false) => {
             type,
             cacheTimeout,
             page: params.page,
-            insertBefore: query.isUp ? 1 : 0
+            insertBefore: query.is_up ? 1 : 0
           })
           callback && callback({ data, args })
           return data

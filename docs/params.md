@@ -14,14 +14,14 @@
 | preload | Number | false | 50 | >= 0 | 自动加载下一页的预加载高度（px） |
 | callback | Function | false | undefined | Function | 接口请求成功后可以调用一个 callback 函数 |
 | cacheTimeout | Number | false | 0 | >= 0 | 将数据缓存到 localStorage 里超时的 ms |
-| sort | String | false | desc | desc/asc | isUp的行为设置 |
+| sort | String | false | desc | desc/asc | is_up 的行为设置 |
 
 ### query 中的一些关键字
 | 参数 | 作用 |
 | --- | --- |
 | page | 在首次加载的时候可以传入 page，之后 store 会自动维护 |
 | changing | 列表中每个 item 的 unique_id 的 key，默认是 id，可自定义其它 key，若 unique_id 在 object 的深层，使用`.`来分割 |
-| isUp | 这个 key 由 FlowLoader 自动维护，默认为 false，只用在调用 `loadBefore` 时被设为 true，并透传给 API 层 |
+| is_up | 这个 key 由 FlowLoader 自动维护，默认为 false，只用在调用 `loadBefore` 时被设为 true，并透传给 API 层 |
 | \_\_refresh\_\_ | 当调用 `refresh` 方法的时候会自动传这个 key 来刷新 state，所以你不要使用这个 key |
 
 ## FlowLoader 的方法

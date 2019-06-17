@@ -53,7 +53,7 @@
     - 跳转翻页，使用 page + count 分页
 2. 动态有序列表
     - 有起点，使用 lastId 分页
-    - 无起点，使用 sinceId + isUp 分页
+    - 无起点，使用 sinceId + is_up 分页
 3. 动态无序列表
     - 使用 seenIds 分页
     
