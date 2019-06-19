@@ -302,9 +302,14 @@ export default {
         })
       )
     },
-    async initData() {
-      const { query } = this.params
-      query.is_up = this.sort === 'desc' ? 0 : 1
+    async initData(obj = {}) {
+      const query = Object.assign(
+        {
+          is_up: this.sort === 'desc' ? 0 : 1
+        },
+        this.params.query,
+        obj
+      )
       await this.$store.dispatch(
         'flow/initData',
         Object.assign({}, this.params, {
@@ -363,7 +368,9 @@ export default {
         if (this.source.fetched) {
           this.loadMore()
         } else {
-          this.initData()
+          this.initData({
+            __refresh__: true
+          })
         }
       }
     },
