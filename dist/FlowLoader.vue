@@ -18,7 +18,7 @@
             name="first-error"
             :error="source.error"
           >
-            <div class="flow-render-state-error">
+            <div class="flow-render-state-first-error">
               <span>出错了，点击重试</span>
             </div>
           </slot>
@@ -34,7 +34,7 @@
             v-if="useFirstLoading && !source.result.length"
             name="first-loading"
           >
-            <div class="flow-render-state-loading">加载中…</div>
+            <div class="flow-render-state-first-loading">加载中…</div>
           </slot>
           <slot v-else name="loading">
             <div class="flow-render-state-loading">加载中…</div>
