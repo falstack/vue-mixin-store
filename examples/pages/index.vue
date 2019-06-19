@@ -10,6 +10,63 @@
 
 <template>
   <div id="index">
+    <v-switcher :headers="headers" :swipe="true" @change="handleSwitch">
+      <FlowLoader
+        slot="0"
+        ref="loader0"
+        func="getListByPage"
+        type="page"
+        :query="{ count: 10 }"
+        :auto="0"
+      >
+        <ul class="demo-list" slot-scope="{ flow }">
+          <li v-for="(item, index) in flow" :key="item.id">
+            <div :style="{ backgroundColor: item.style.color }">
+              count：{{ index + 1 }}，id：{{ item.id }}
+            </div>
+          </li>
+        </ul>
+      </FlowLoader>
+      <FlowLoader
+        slot="1"
+        ref="loader1"
+        func="getListBySeenIds"
+        type="seenIds"
+        :query="{
+          count: 10,
+          changing: 'data.number_id'
+        }"
+        :auto="0"
+      >
+        <ul class="demo-list" slot-scope="{ flow }">
+          <li v-for="(item, index) in flow" :key="item.id">
+            <div :style="{ backgroundColor: item.style.color }">
+              count：{{ index + 1 }}，id：{{ item.data.number_id }}
+            </div>
+          </li>
+        </ul>
+      </FlowLoader>
+      <FlowLoader
+        slot="2"
+        ref="loader2"
+        func="getListBySinceId"
+        type="sinceId"
+        :query="{
+          count: 10,
+          changing: 'data.number_id'
+        }"
+        :auto="0"
+      >
+        <ul class="demo-list" slot-scope="{ flow }">
+          <li v-for="(item, index) in flow" :key="item.id">
+            <div :style="{ backgroundColor: item.style.color }">
+              count：{{ index + 1 }}，id：{{ item.data.number_id }}
+            </div>
+          </li>
+        </ul>
+      </FlowLoader>
+    </v-switcher>
+    <button @click="loadData">load data</button>
   </div>
 </template>
 
@@ -19,12 +76,38 @@ export default {
   components: {},
   props: {},
   data() {
-    return {}
+    return {
+      activeIndex: 0
+    }
   },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {},
-  methods: {}
+  computed: {
+    headers() {
+      return ['tab-0', 'tab-1', 'tab-2']
+    }
+  },
+  methods: {
+    handleSwitch(index) {
+      this.activeIndex = index
+      this.initData()
+    },
+    loadData() {
+      if (this.activeIndex === 0) {
+        this.$refs.loader0.loadMore()
+      } else if (this.activeIndex === 1) {
+        this.$refs.loader1.loadMore()
+      } else {
+        this.$refs.loader2.loadMore()
+      }
+    },
+    initData() {
+      if (this.activeIndex === 0) {
+        this.$refs.loader0.initData()
+      } else if (this.activeIndex === 1) {
+        this.$refs.loader1.initData()
+      } else {
+        this.$refs.loader2.initData()
+      }
+    }
+  }
 }
 </script>

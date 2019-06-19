@@ -1808,6 +1808,18 @@ babel-eslint@^10.0.1:
     eslint-scope "3.7.1"
     eslint-visitor-keys "^1.0.0"
 
+babel-eslint@^10.0.2:
+  version "10.0.2"
+  resolved "https://registry.npm.taobao.org/babel-eslint/download/babel-eslint-10.0.2.tgz#182d5ac204579ff0881684b040560fdcc1558456"
+  integrity sha1-GC1awgRXn/CIFoSwQFYP3MFVhFY=
+  dependencies:
+    "@babel/code-frame" "^7.0.0"
+    "@babel/parser" "^7.0.0"
+    "@babel/traverse" "^7.0.0"
+    "@babel/types" "^7.0.0"
+    eslint-scope "3.7.1"
+    eslint-visitor-keys "^1.0.0"
+
 babel-loader@^8.0.4, babel-loader@^8.0.5:
   version "8.0.6"
   resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.0.6.tgz#e33bdb6f362b03f4bb141a0c21ab87c501b70dfb"
@@ -8694,10 +8706,10 @@ uuid@^3.0.1, uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.2.tgz#1b4af4955eb3077c501c23872fc6513811587131"
   integrity sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==
 
-v-switcher@1.0.15:
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/v-switcher/-/v-switcher-1.0.15.tgz#10125b785cd4222e968576181687ee7f8dd01156"
-  integrity sha512-+Vg8aRw4nxBnfPyaJmzRVJiIjSUnNCjLO1XAXsIWJnda0UQz7cInAgAX000IPOzQS8JGzLRbU6qRR+efDGk0LQ==
+v-switcher@1.0.23:
+  version "1.0.23"
+  resolved "https://registry.npm.taobao.org/v-switcher/download/v-switcher-1.0.23.tgz#35c7b20d80215a9768cb5d2eae0408756faeb518"
+  integrity sha1-NceyDYAhWpdoy10urgQIdW+utRg=
   dependencies:
     vue "^2.6.6"
 
