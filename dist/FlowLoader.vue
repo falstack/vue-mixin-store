@@ -328,6 +328,15 @@ export default {
         })
       )
     },
+    retry() {
+      if (this.source.fetched) {
+        this.loadMore()
+      } else {
+        this.initData({
+          __refresh__: true
+        })
+      }
+    },
     _getTarget() {
       let el = this.$el
       if (!el) {

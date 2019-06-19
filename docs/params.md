@@ -42,6 +42,9 @@
 #### refresh()
 - 刷新列表，该列表的原有数据会被清空
 
+#### retry()
+- 接口请求报错的时候，当 error-on-retry 设为 false 的时候手动调用来 retry
+
 #### jump(page)
 - 参数：page
 - 跳转到第几页，只应该在`type` =`jump` 的时候被调用
