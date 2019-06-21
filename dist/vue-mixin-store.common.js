@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.18
+ * vue-mixin-store v1.1.19
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -5647,12 +5647,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6ac20df0-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=041d2686&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"104db049-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=38ef92dd&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state"},[(_vm.source)?[(_vm.source.error)?_c('div',{on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_vm._m(0)],{"error":_vm.source.error}):_vm._t("error",[_vm._m(1)],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('div',{staticClass:"flow-loader-state-first-loading"},[_vm._v("加载中…")])]):_vm._t("loading",[_c('div',{staticClass:"flow-loader-state-loading"},[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',[_vm._t("nothing",[_vm._m(2)])],2):(_vm.source.noMore)?_c('div',[_vm._t("no-more",[(_vm.displayNoMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[_c('span',[_vm._v("没有更多了")])]):_vm._e()])],2):[(_vm.isAuto && !_vm.isPagination)?_c('div',{staticClass:"flow-loader-state-shim"}):(_vm.isPagination)?_c('div',{staticClass:"flow-loader-state-load"},[_vm._t("load",[_vm._v("jump")])],2):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]]:_vm._e()],2)],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader-state-first-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader-state-error"},[_c('span',[_vm._v("出错了，点击重试")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader-state-nothing"},[_c('span',[_vm._v("这里什么都没有")])])}]
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=041d2686&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=38ef92dd&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
 var es6_number_constructor = __webpack_require__("c5f6");
@@ -6167,45 +6167,41 @@ var checkInView = function checkInView(dom, preload) {
 
       return loadBefore;
     }(),
-    initData: function () {
-      var _initData = _asyncToGenerator(
+    initData: function initData() {
+      var _this2 = this;
+
+      var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      this.$nextTick(
+      /*#__PURE__*/
+      _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee4() {
-        var obj,
-            query,
-            _args4 = arguments;
+        var query;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                obj = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : {};
                 query = Object.assign({
-                  is_up: this.sort === 'desc' ? 0 : 1
-                }, this.params.query, obj);
-                _context4.next = 4;
-                return this.$store.dispatch('flow/initData', Object.assign({}, this.params, {
+                  is_up: _this2.sort === 'desc' ? 0 : 1
+                }, _this2.params.query, obj);
+                _context4.next = 3;
+                return _this2.$store.dispatch('flow/initData', Object.assign({}, _this2.params, {
                   query: query
                 }));
 
-              case 4:
+              case 3:
               case "end":
                 return _context4.stop();
             }
           }
-        }, _callee4, this);
-      }));
-
-      function initData() {
-        return _initData.apply(this, arguments);
-      }
-
-      return initData;
-    }(),
+        }, _callee4);
+      })));
+    },
     loadMore: function () {
       var _loadMore = _asyncToGenerator(
       /*#__PURE__*/
       regeneratorRuntime.mark(function _callee5() {
-        var _ref6,
+        var _ref7,
             force,
             query,
             _args5 = arguments;
@@ -6214,9 +6210,9 @@ var checkInView = function checkInView(dom, preload) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                _ref6 = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : {
+                _ref7 = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : {
                   force: false
-                }, force = _ref6.force;
+                }, force = _ref7.force;
                 query = this.params.query;
                 query.is_up = 0;
                 _context5.next = 5;

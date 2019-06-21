@@ -302,20 +302,22 @@ export default {
         })
       )
     },
-    async initData(obj = {}) {
-      const query = Object.assign(
-        {
-          is_up: this.sort === 'desc' ? 0 : 1
-        },
-        this.params.query,
-        obj
-      )
-      await this.$store.dispatch(
-        'flow/initData',
-        Object.assign({}, this.params, {
-          query
-        })
-      )
+    initData(obj = {}) {
+      this.$nextTick(async () => {
+        const query = Object.assign(
+          {
+            is_up: this.sort === 'desc' ? 0 : 1
+          },
+          this.params.query,
+          obj
+        )
+        await this.$store.dispatch(
+          'flow/initData',
+          Object.assign({}, this.params, {
+            query
+          })
+        )
+      })
     },
     async loadMore({ force } = { force: false }) {
       const { query } = this.params

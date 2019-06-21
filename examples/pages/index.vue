@@ -10,13 +10,14 @@
 
 <template>
   <div id="index">
+    <button @click="changeRank">切换 rank</button>
     <v-switcher :headers="headers" :swipe="true" @change="handleSwitch">
       <FlowLoader
         slot="0"
         ref="loader0"
         func="getListByPage"
         type="page"
-        :query="{ count: 10 }"
+        :query="{ count: 10, rank }"
         :auto="0"
       >
         <ul class="demo-list" slot-scope="{ flow }">
@@ -34,7 +35,8 @@
         type="seenIds"
         :query="{
           count: 10,
-          changing: 'data.number_id'
+          changing: 'data.number_id',
+          rank
         }"
         :auto="0"
       >
@@ -53,7 +55,8 @@
         type="sinceId"
         :query="{
           count: 10,
-          changing: 'data.number_id'
+          changing: 'data.number_id',
+          rank
         }"
         :auto="0"
       >
@@ -77,7 +80,8 @@ export default {
   props: {},
   data() {
     return {
-      activeIndex: 0
+      activeIndex: 0,
+      rank: 0
     }
   },
   computed: {
@@ -86,6 +90,10 @@ export default {
     }
   },
   methods: {
+    changeRank() {
+      this.rank++
+      this.initData()
+    },
     handleSwitch(index) {
       this.activeIndex = index
       this.initData()
