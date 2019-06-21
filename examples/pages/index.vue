@@ -91,7 +91,7 @@ export default {
   },
   methods: {
     changeRank() {
-      this.rank++
+      this.rank = this.rank === 1 ? 0 : 1
       this.initData()
     },
     handleSwitch(index) {
