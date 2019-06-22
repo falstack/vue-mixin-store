@@ -9,8 +9,6 @@ body {
 }
 
 #app {
-  padding-bottom: 30px;
-
   .container {
     width: 1160px;
     max-width: 100%;

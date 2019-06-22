@@ -20,13 +20,15 @@
         :query="{ count: 10, rank }"
         :auto="0"
       >
-        <ul class="demo-list" slot-scope="{ flow }">
-          <li v-for="(item, index) in flow" :key="item.id">
-            <div :style="{ backgroundColor: item.style.color }">
-              count：{{ index + 1 }}，id：{{ item.id }}
-            </div>
-          </li>
-        </ul>
+        <template #default="{ flow }">
+          <ul class="demo-list">
+            <li v-for="(item, index) in flow" :key="item.id">
+              <div :style="{ backgroundColor: item.style.color }">
+                count：{{ index + 1 }}，id：{{ item.id }}
+              </div>
+            </li>
+          </ul>
+        </template>
       </FlowLoader>
       <FlowLoader
         slot="1"
@@ -60,26 +62,38 @@
         }"
         :auto="0"
       >
-        <ul class="demo-list" slot-scope="{ flow }">
-          <li v-for="(item, index) in flow" :key="item.id">
-            <div :style="{ backgroundColor: item.style.color }">
-              count：{{ index + 1 }}，id：{{ item.data.number_id }}
-            </div>
-          </li>
-        </ul>
+        <template #default="{ flow, count }">
+          <ul class="demo-list">
+            <virtual-list
+              v-if="count"
+              ref="vlist"
+              :size="110"
+              :remain="10"
+              :item="item"
+              :itemcount="count"
+              :pagemode="true"
+              :itemprops="getItemprops"
+            />
+          </ul>
+        </template>
       </FlowLoader>
     </v-switcher>
-    <button @click="loadData">load data</button>
   </div>
 </template>
 
 <script>
+import virtualList from 'vue-virtual-scroll-list'
+import item from '../components/Item'
+
 export default {
   name: 'Index',
-  components: {},
+  components: {
+    virtualList
+  },
   props: {},
   data() {
     return {
+      item,
       activeIndex: 0,
       rank: 0
     }
@@ -98,15 +112,6 @@ export default {
       this.activeIndex = index
       this.initData()
     },
-    loadData() {
-      if (this.activeIndex === 0) {
-        this.$refs.loader0.loadMore()
-      } else if (this.activeIndex === 1) {
-        this.$refs.loader1.loadMore()
-      } else {
-        this.$refs.loader2.loadMore()
-      }
-    },
     initData() {
       if (this.activeIndex === 0) {
         this.$refs.loader0.initData()
@@ -114,6 +119,14 @@ export default {
         this.$refs.loader1.initData()
       } else {
         this.$refs.loader2.initData()
+      }
+    },
+    getItemprops(index) {
+      return {
+        props: {
+          item: this.$refs.loader2.source.result[index],
+          index
+        }
       }
     }
   }

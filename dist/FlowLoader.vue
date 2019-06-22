@@ -4,7 +4,11 @@
       <!--  flow header  -->
       <slot :source="source" name="header" />
       <!--  flow list  -->
-      <slot :flow="source.result" />
+      <slot
+        :flow="source.result"
+        :total="source.total"
+        :count="source.result.length"
+      />
       <!--  flow footer  -->
       <slot :source="source" name="footer" />
     </template>
