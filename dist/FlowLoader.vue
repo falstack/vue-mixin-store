@@ -343,6 +343,11 @@ export default {
         })
       }
     },
+    clear() {
+      if (this.source) {
+        this.$store.commit('flow/INIT_STATE', this.params)
+      }
+    },
     _getTarget() {
       let el = this.$el
       if (!el) {

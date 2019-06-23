@@ -45,6 +45,9 @@
 #### retry()
 - 接口请求报错的时候，当 error-on-retry 设为 false 的时候手动调用来 retry
 
+#### clear()
+- 手动将数据清空，但不发请求
+
 #### jump(page)
 - 参数：page
 - 跳转到第几页，只应该在`type` =`jump` 的时候被调用
