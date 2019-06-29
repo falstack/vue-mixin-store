@@ -8,6 +8,7 @@
         :flow="source.result"
         :total="source.total"
         :count="source.result.length"
+        :extra="source.extra"
       />
       <!--  flow footer  -->
       <slot :source="source" name="footer" />
