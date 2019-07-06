@@ -339,7 +339,7 @@ export default (api, debug = false) => {
         try {
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
-          if (!field || !field.result.length) {
+          if (!field) {
             return
           }
           const modKeys = key ? key.split('.') : []
