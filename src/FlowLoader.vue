@@ -399,6 +399,10 @@ export default {
       }
     },
     _onScreenScroll: throttle(200, function() {
+      if (!this.source) {
+        this._initState()
+        return
+      }
       if (this.source.loading || this.source.nothing || this.source.error) {
         return
       }
