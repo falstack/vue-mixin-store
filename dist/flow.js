@@ -406,39 +406,33 @@ export default (api, debug = false) => {
                 break
             }
             field.total += changeTotal
-            if (cacheTimeout) {
-              setDataToCache(fieldName, state[fieldName])
-            }
-            return
-          }
-          for (let i = 0; i < field.result.length; i++) {
-            if (parseDataUniqueId(field.result[i], changing) === id) {
-              if (method === 'delete') {
-                field.result.splice(i, 1)
-                field.total--
-                return
+          } else {
+            for (let i = 0; i < field.result.length; i++) {
+              if (parseDataUniqueId(field.result[i], changing) === id) {
+                if (method === 'delete') {
+                  field.result.splice(i, 1)
+                  field.total--
+                } else if (method === 'insert-before') {
+                  field.result.splice(i, 0, value)
+                  field.total++
+                } else if (method === 'insert-after') {
+                  field.result.splice(i + 1, 0, value)
+                  field.total++
+                } else {
+                  let obj = field.result[i]
+                  while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
+                    // do nothing
+                  }
+                  obj[modKeys[0]] = value
+                }
+                break
               }
-              if (method === 'insert-before') {
-                field.result.splice(i, 0, value)
-                field.total++
-                return
-              }
-              if (method === 'insert-after') {
-                field.result.splice(i + 1, 0, value)
-                field.total++
-                return
-              }
-              let obj = field.result[i]
-              while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
-                // do nothing
-              }
-              obj[modKeys[0]] = value
-              break
             }
           }
           if (cacheTimeout) {
             setDataToCache(fieldName, state[fieldName])
           }
+          field.nothing = field.total <= 0
         } catch (error) {
           printLog('UPDATE_DATA - error', {
             type,
