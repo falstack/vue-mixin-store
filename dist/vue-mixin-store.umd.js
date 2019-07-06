@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.32
+ * vue-mixin-store v1.1.34
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1477,7 +1477,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                 if (objArr) {
                   Object.keys(value).forEach(function (uniqueId) {
                     field.result.forEach(function (item, index) {
-                      if (parseDataUniqueId(item, changing) === uniqueId) {
+                      if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
                         Object.keys(value[uniqueId]).forEach(function (key) {
                           external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[index], key, value[uniqueId][key]);
                         });
@@ -1488,7 +1488,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   value.forEach(function (col) {
                     var uniqueId = parseDataUniqueId(col, changing);
                     field.result.forEach(function (item, index) {
-                      if (parseDataUniqueId(item, changing) === uniqueId) {
+                      if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
                         Object.keys(col).forEach(function (key) {
                           external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[index], key, col[key]);
                         });
@@ -1503,7 +1503,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             field.total += changeTotal;
           } else {
             for (var i = 0; i < field.result.length; i++) {
-              if (parseDataUniqueId(field.result[i], changing) === id) {
+              if (parseDataUniqueId(field.result[i], changing).toString() === id.toString()) {
                 if (method === 'delete') {
                   field.result.splice(i, 1);
                   field.total--;
@@ -1559,7 +1559,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"26d097a2-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f26c2d70&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c9d13ff4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f26c2d70&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 

@@ -380,7 +380,10 @@ export default (api, debug = false) => {
                 if (objArr) {
                   Object.keys(value).forEach(uniqueId => {
                     field.result.forEach((item, index) => {
-                      if (parseDataUniqueId(item, changing) === uniqueId) {
+                      if (
+                        parseDataUniqueId(item, changing).toString() ===
+                        uniqueId.toString()
+                      ) {
                         Object.keys(value[uniqueId]).forEach(key => {
                           Vue.set(
                             field.result[index],
@@ -395,7 +398,10 @@ export default (api, debug = false) => {
                   value.forEach(col => {
                     const uniqueId = parseDataUniqueId(col, changing)
                     field.result.forEach((item, index) => {
-                      if (parseDataUniqueId(item, changing) === uniqueId) {
+                      if (
+                        parseDataUniqueId(item, changing).toString() ===
+                        uniqueId.toString()
+                      ) {
                         Object.keys(col).forEach(key => {
                           Vue.set(field.result[index], key, col[key])
                         })
@@ -408,7 +414,10 @@ export default (api, debug = false) => {
             field.total += changeTotal
           } else {
             for (let i = 0; i < field.result.length; i++) {
-              if (parseDataUniqueId(field.result[i], changing) === id) {
+              if (
+                parseDataUniqueId(field.result[i], changing).toString() ===
+                id.toString()
+              ) {
                 if (method === 'delete') {
                   field.result.splice(i, 1)
                   field.total--
