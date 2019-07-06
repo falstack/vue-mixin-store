@@ -313,7 +313,19 @@ export default (api, debug = false) => {
         field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total
         field.page = page
-        extra && Vue.set(field, 'extra', extra)
+        if (extra) {
+          if (field.extra) {
+            if (Object.prototype.toString.call(extra) === '[object Array]') {
+              field.extra = insertBefore
+                ? extra.concat(field.extra)
+                : field.extra.concat(extra)
+            } else {
+              Vue.set(field, 'extra', extra)
+            }
+          } else {
+            Vue.set(field, 'extra', extra)
+          }
+        }
         field.loading = false
         printLog('SET_DATA - result', field)
         if (cacheTimeout && !field.nothing) {
