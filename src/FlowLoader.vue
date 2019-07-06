@@ -17,48 +17,44 @@
     <div ref="state" class="flow-loader-state" :style="{ textAlign: 'center' }">
       <template v-if="source">
         <!--   error   -->
-        <div v-if="source.error" @click="_retryData">
+        <div
+          v-if="source.error"
+          class="flow-loader-state-error"
+          @click="_retryData"
+        >
           <slot
             v-if="useFirstError && !source.result.length"
             name="first-error"
             :error="source.error"
           >
-            <div class="flow-loader-state-first-error">
-              <span>出错了，点击重试</span>
-            </div>
+            <span>出错了，点击重试</span>
           </slot>
           <slot v-else name="error" :error="source.error">
-            <div class="flow-loader-state-error">
-              <span>出错了，点击重试</span>
-            </div>
+            <span>出错了，点击重试</span>
           </slot>
         </div>
         <!--   loading   -->
-        <div v-else-if="source.loading">
+        <div v-else-if="source.loading" class="flow-loader-state-loading">
           <slot
             v-if="useFirstLoading && !source.result.length"
             name="first-loading"
           >
-            <div class="flow-loader-state-first-loading">加载中…</div>
+            <span>加载中…</span>
           </slot>
           <slot v-else name="loading">
-            <div class="flow-loader-state-loading">加载中…</div>
+            <span>加载中…</span>
           </slot>
         </div>
         <!--   nothing   -->
-        <div v-else-if="source.nothing">
+        <div v-else-if="source.nothing" class="flow-loader-state-nothing">
           <slot name="nothing">
-            <div class="flow-loader-state-nothing">
-              <span>这里什么都没有</span>
-            </div>
+            <span>这里什么都没有</span>
           </slot>
         </div>
         <!--   no-more   -->
-        <div v-else-if="source.noMore">
-          <slot name="no-more">
-            <div v-if="displayNoMore" class="flow-loader-state-no-more">
-              <span>没有更多了</span>
-            </div>
+        <div v-else-if="source.noMore" class="flow-loader-state-no-more">
+          <slot v-if="displayNoMore" name="no-more">
+            <span>没有更多了</span>
           </slot>
         </div>
         <!--   normal   -->
