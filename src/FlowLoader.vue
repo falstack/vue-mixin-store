@@ -14,7 +14,7 @@
       <slot :source="source" name="footer" />
     </template>
     <!--  flow state  -->
-    <div ref="state" class="flow-loader-state">
+    <div ref="state" class="flow-loader-state" :style="{ textAlign: 'center' }">
       <template v-if="source">
         <!--   error   -->
         <div v-if="source.error" @click="_retryData">
