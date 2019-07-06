@@ -266,7 +266,7 @@ export default {
       return this.source[key]
     },
     async refresh() {
-      const { query } = this.params
+      const query = Object.assign({}, this.params.query)
       query.__refresh__ = true
       await this.$store.dispatch(
         'flow/initData',
@@ -277,7 +277,7 @@ export default {
       this._initFlowLoader()
     },
     async jump(page) {
-      const { query } = this.params
+      const query = Object.assign({}, this.params.query)
       query.page = page
       await this.$store.dispatch(
         'flow/loadMore',
@@ -287,7 +287,7 @@ export default {
       )
     },
     async loadBefore({ force } = { force: false }) {
-      const { query } = this.params
+      const query = Object.assign({}, this.params.query)
       query.is_up = 1
       await this.$store.dispatch(
         'flow/loadMore',
@@ -318,7 +318,7 @@ export default {
       if (this.isPagination) {
         return
       }
-      const { query } = this.params
+      const query = Object.assign({}, this.params.query)
       query.is_up = 0
       await this.$store.dispatch(
         'flow/loadMore',
