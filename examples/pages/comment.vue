@@ -42,7 +42,7 @@
                 </div>
               </li>
             </ul>
-            <div slot="load">
+            <div slot="footer">
               <button @click="loadChildren(1, item.id)">page-1</button>
               <button @click="loadChildren(2, item.id)">page-2</button>
               <button @click="loadChildren(9, item.id)">page-9</button>

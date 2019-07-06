@@ -62,14 +62,8 @@
           </slot>
         </div>
         <!--   normal   -->
-        <template v-else>
-          <div
-            v-if="isAuto && !isPagination"
-            class="flow-loader-state-shim"
-          ></div>
-          <div v-else-if="isPagination" class="flow-loader-state-load">
-            <slot name="load">jump</slot>
-          </div>
+        <template v-else-if="!isPagination">
+          <div v-if="isAuto" class="flow-loader-state-shim"></div>
           <div v-else class="flow-loader-state-load" @click="loadMore">
             <slot name="load">点击加载更多</slot>
           </div>
@@ -325,6 +319,9 @@ export default {
       })
     },
     async loadMore({ force } = { force: false }) {
+      if (this.isPagination) {
+        return
+      }
       const { query } = this.params
       query.is_up = 0
       await this.$store.dispatch(
