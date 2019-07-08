@@ -74,7 +74,5 @@ export const setDataToCache = (fieldName, dataObj) => {
       JSON.stringify(dataObj)
     )
     localStorage.setItem(`vue-mixin-store-${fieldName}-timer`, Date.now())
-  } catch (e) {
-    // do nothing
-  }
+  } catch (e) {}
 }

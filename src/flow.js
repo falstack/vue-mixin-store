@@ -164,12 +164,6 @@ export default (api, debug = false) => {
       }
     },
     mutations: {
-      SET_ERROR(state, { fieldName, error }) {
-        printLog('error', { fieldName, error })
-        debug && console.log(error) // eslint-disable-line
-        state[fieldName].error = error
-        state[fieldName].loading = false
-      },
       INIT_STATE(state, { func, type, query }) {
         Vue.set(
           state,
@@ -180,6 +174,12 @@ export default (api, debug = false) => {
       SET_LOADING(state, fieldName) {
         state[fieldName].loading = true
         state[fieldName].error = null
+      },
+      SET_ERROR(state, { fieldName, error }) {
+        printLog('error', { fieldName, error })
+        debug && console.log(error) // eslint-disable-line
+        state[fieldName].error = error
+        state[fieldName].loading = false
       },
       CLEAR_RESULT(state, fieldName) {
         state[fieldName].result = []
