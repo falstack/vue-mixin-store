@@ -38,8 +38,6 @@ export const parseDataUniqueId = (data, changing) => {
 
 export const cacheNotExpired = (fieldName, timeout) => {
   try {
-    localStorage.setItem('@@', 1)
-    localStorage.removeItem('@@')
     const cacheSetAt = localStorage.getItem(
       `vue-mixin-store-${fieldName}-timer`
     )
@@ -58,11 +56,11 @@ export const cacheNotExpired = (fieldName, timeout) => {
 }
 
 export const readDataFromCache = fieldName => {
-  const cacheStr = localStorage.getItem(`vue-mixin-store-${fieldName}`)
-  if (!cacheStr) {
-    return null
-  }
   try {
+    const cacheStr = localStorage.getItem(`vue-mixin-store-${fieldName}`)
+    if (!cacheStr) {
+      return null
+    }
     return JSON.parse(cacheStr)
   } catch (e) {
     return null
