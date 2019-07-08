@@ -1,95 +1,16 @@
 import Vue from 'vue'
+import {
+  defaultListObj,
+  generateFieldName,
+  parseDataUniqueId,
+  cacheNotExpired,
+  readDataFromCache,
+  setDataToCache
+} from './utils'
 
 export default (api, debug = false) => {
-  const defaultListObj = {
-    result: [],
-    page: 0,
-    noMore: false,
-    nothing: false,
-    loading: false,
-    error: null,
-    fetched: false,
-    total: 0,
-    extra: null
-  }
 
   const printLog = (field, val) => debug && console.log(`[${field}]`, val) // eslint-disable-line
-
-  const generateFieldName = (func, type, query = {}) => {
-    printLog('generateFieldName - begin', { func, type, query })
-    let result = `${func}-${type}`
-    Object.keys(query)
-      .filter(
-        _ =>
-          typeof query[_] !== 'object' &&
-          typeof query[_] !== 'function' &&
-          !~['page', 'changing', 'is_up', '__refresh__'].indexOf(_)
-      )
-      .sort()
-      .forEach(key => {
-        result += `-${key}-${query[key]}`
-      })
-    printLog('generateFieldName - result', result)
-    return result
-  }
-
-  const parseDataUniqueId = (data, changing) => {
-    printLog('parseDataUniqueId - begin', { data, changing })
-    if (!/\./.test(changing)) {
-      return data[changing]
-    }
-    let result = data
-    changing.split('.').forEach(key => {
-      result = result[key]
-    })
-    printLog('parseDataUniqueId - result', result)
-    return result
-  }
-
-  const cacheNotExpired = (fieldName, timeout) => {
-    try {
-      localStorage.setItem('@@', 1)
-      localStorage.removeItem('@@')
-      const cacheSetAt = localStorage.getItem(
-        `vue-mixin-store-${fieldName}-timer`
-      )
-      if (!cacheSetAt) {
-        return false
-      }
-      const result = Date.now() - cacheSetAt < timeout
-      if (!result) {
-        localStorage.removeItem(`vue-mixin-store-${fieldName}`)
-        localStorage.removeItem(`vue-mixin-store-${fieldName}-timer`)
-      }
-      return result
-    } catch (e) {
-      return false
-    }
-  }
-
-  const readDataFromCache = fieldName => {
-    const cacheStr = localStorage.getItem(`vue-mixin-store-${fieldName}`)
-    if (!cacheStr) {
-      return null
-    }
-    try {
-      return JSON.parse(cacheStr)
-    } catch (e) {
-      return null
-    }
-  }
-
-  const setDataToCache = (fieldName, dataObj) => {
-    try {
-      localStorage.setItem(
-        `vue-mixin-store-${fieldName}`,
-        JSON.stringify(dataObj)
-      )
-      localStorage.setItem(`vue-mixin-store-${fieldName}-timer`, Date.now())
-    } catch (e) {
-      // do nothing
-    }
-  }
 
   return {
     namespaced: true,
@@ -171,8 +92,6 @@ export default (api, debug = false) => {
           callback && callback({ data, args })
           return data
         } catch (error) {
-          printLog('error', { fieldName, error })
-          debug && console.log(error) // eslint-disable-line
           commit('SET_ERROR', { fieldName, error })
           return null
         }
@@ -239,8 +158,6 @@ export default (api, debug = false) => {
           callback && callback({ data, args })
           return data
         } catch (error) {
-          printLog('error', { fieldName, error })
-          debug && console.log(error) // eslint-disable-line
           commit('SET_ERROR', { fieldName, error })
           return null
         }
@@ -248,6 +165,8 @@ export default (api, debug = false) => {
     },
     mutations: {
       SET_ERROR(state, { fieldName, error }) {
+        printLog('error', { fieldName, error })
+        debug && console.log(error) // eslint-disable-line
         state[fieldName].error = error
         state[fieldName].loading = false
       },
@@ -269,7 +188,7 @@ export default (api, debug = false) => {
         state,
         { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout }
       ) {
-        printLog('SET_DATA - begin', {
+        printLog('setData', {
           data,
           fieldName,
           type,
@@ -327,7 +246,6 @@ export default (api, debug = false) => {
           }
         }
         field.loading = false
-        printLog('SET_DATA - result', field)
         if (cacheTimeout && !field.nothing) {
           setDataToCache(fieldName, state[fieldName])
         }
@@ -337,6 +255,9 @@ export default (api, debug = false) => {
         { type, func, query, id, method, key, value, cacheTimeout }
       ) {
         try {
+          printLog('updateData', {
+            type, func, query, id, method, key, value, cacheTimeout
+          })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
           if (!field) {
@@ -443,7 +364,7 @@ export default (api, debug = false) => {
           }
           field.nothing = field.total <= 0
         } catch (error) {
-          printLog('UPDATE_DATA - error', {
+          printLog('error', {
             type,
             func,
             query,
@@ -455,6 +376,7 @@ export default (api, debug = false) => {
             error
           })
         }
+        debug && console.log(error) // eslint-disable-line
       }
     },
     getters: {
