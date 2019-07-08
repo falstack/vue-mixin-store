@@ -3,7 +3,7 @@ import { defaultListObj, generateFieldName } from '@/utils'
 
 const Store = storeInstance({})
 
-describe('store mutation', () => {
+describe('store mutation set state', () => {
   let state
   const func = 'func'
   const type = 'page'
