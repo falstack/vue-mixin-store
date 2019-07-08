@@ -2,6 +2,9 @@
 <p>
   <img src="https://img.shields.io/badge/version-1.1.34-blue.svg?cacheSeconds=2592000" />
   <img src="https://travis-ci.org/falstack/vue-mixin-store.svg?branch=master" />
+  <a href="https://codecov.io/gh/falstack/vue-mixin-store">
+    <img src="https://codecov.io/gh/falstack/vue-mixin-store/branch/master/graph/badge.svg" />
+  </a>
 </p>
 
 ### 🏠 [Homepage](https://github.com/falstack/vue-mixin-store)

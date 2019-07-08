@@ -12,6 +12,7 @@ cache:
 install:
   - yarn install
   - yarn add codecov -g
+  - yarn add istanbul -g
 
 script:
   - yarn run test:unit
