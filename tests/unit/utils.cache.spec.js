@@ -20,4 +20,6 @@ describe('timeout cache', () => {
     const result = readDataFromCache(field)
     expect(result).toEqual(value)
   })
+
+  // TODO 怎么测试 timeout cacheNotExpired
 })
