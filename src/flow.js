@@ -11,6 +11,7 @@ import {
 export default (api, debug = false) => {
 
   const printLog = (field, val) => debug && console.log(`[${field}]`, val) // eslint-disable-line
+  const isArray = data => Object.prototype.toString.call(data) === '[object Array]'
 
   return {
     namespaced: true,
@@ -206,8 +207,7 @@ export default (api, debug = false) => {
         if (!field) {
           return
         }
-        const objArr =
-          Object.prototype.toString.call(result) !== '[object Array]'
+        const objArr = !isArray(result)
         if (field.fetched) {
           if (type === 'jump' || objArr) {
             field.result = result
@@ -234,7 +234,7 @@ export default (api, debug = false) => {
         field.page = page
         if (extra) {
           if (field.extra) {
-            if (Object.prototype.toString.call(extra) === '[object Array]') {
+            if (isArray(extra)) {
               field.extra = insertBefore
                 ? extra.concat(field.extra)
                 : field.extra.concat(extra)
@@ -265,8 +265,7 @@ export default (api, debug = false) => {
           }
           const modKeys = key ? key.split('.') : []
           const changing = query.changing || 'id'
-          const objArr =
-            Object.prototype.toString.call(value) !== '[object Array]'
+          const objArr = !isArray(value)
           if (
             ~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(
               method

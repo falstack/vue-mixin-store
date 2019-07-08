@@ -1,16 +1,10 @@
-import Vuex from 'vuex'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
 import storeInstance from '@/flow'
 import { defaultListObj, generateFieldName } from '@/utils'
 
-const localVue = createLocalVue()
 const Store = storeInstance({})
-
-localVue.use(Vuex)
 
 describe('store mutation', () => {
   let state
-  let store
   const func = 'func'
   const type = 'page'
   const query = {}
@@ -27,16 +21,6 @@ describe('store mutation', () => {
 
   beforeEach(() => {
     state = {}
-    store = new Vuex.Store({
-      modules: {
-        flow: {
-          state: {},
-          actions: Store.actions,
-          mutations: Store.mutations,
-          getters: Store.getters
-        }
-      }
-    })
   })
 
   it('INIT_STATE', () => {
