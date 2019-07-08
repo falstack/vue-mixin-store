@@ -12,9 +12,7 @@ cache:
 install:
   - yarn install
   - yarn add codecov -g
-  - yarn add istanbul -g
 
 script:
   - yarn run test:unit
-  - istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec
   - codecov
