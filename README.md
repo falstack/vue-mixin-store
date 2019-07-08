@@ -1,6 +1,7 @@
 <h1 align="center">Welcome to vue-mixin-store 👋</h1>
 <p>
   <img src="https://img.shields.io/badge/version-1.1.34-blue.svg?cacheSeconds=2592000" />
+  <img src="https://travis-ci.org/falstack/vue-mixin-store.svg?branch=master" />
 </p>
 
 ### 🏠 [Homepage](https://github.com/falstack/vue-mixin-store)
@@ -13,7 +14,7 @@ or
 npm i vue-mixin-store
 ```
 
-## Docs：
+## Docs
 [https://falstack.github.io/vue-mixin-store/](https://falstack.github.io/vue-mixin-store/)
 
 ## Author
