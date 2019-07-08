@@ -13,4 +13,4 @@ before_script:
   - yarn install
 
 script:
-  - yarn run test:e2e
+  - yarn run test:unit
