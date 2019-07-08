@@ -7,7 +7,7 @@
   ],
   "keywords": [
     "vue",
-    "list"
+    "vuex"
   ],
   "author": "falstack <icesilt@outlook.com>",
   "license": "MIT",
@@ -20,6 +20,7 @@
     "build": "vue-cli-service build --target lib --name vue-mixin-store src/export.js",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e",
     "docs:dev": "vuepress dev docs",
     "docs:build": "cross-env NODE_ENV=production vuepress build docs",
     "deploy": "bash deploy.sh"
@@ -28,9 +29,10 @@
     "vue": "^2.6.6"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.9.0",
-    "@vue/cli-plugin-eslint": "^3.9.1",
-    "@vue/cli-service": "^3.9.0",
+    "@vue/cli-plugin-babel": "^3.9.2",
+    "@vue/cli-plugin-e2e-cypress": "^3.9.0",
+    "@vue/cli-plugin-eslint": "^3.9.2",
+    "@vue/cli-service": "^3.9.2",
     "@vue/eslint-config-prettier": "^4.0.1",
     "babel-eslint": "^10.0.2",
     "core-js": "2.6.9",
