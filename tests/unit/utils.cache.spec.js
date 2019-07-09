@@ -36,4 +36,9 @@ describe('timeout cache', () => {
 
     return pendingPromise
   })
+
+  it('unset', () => {
+    const result = cacheNotExpired('not_set_field', 1)
+    expect(result).toBe(false)
+  })
 })
