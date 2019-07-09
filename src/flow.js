@@ -186,6 +186,7 @@ export default (api, debug = false) => {
       },
       CLEAR_RESULT(state, fieldName) {
         state[fieldName].result = []
+        state[fieldName].extra = null
       },
       SET_DATA(
         state,

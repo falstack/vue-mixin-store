@@ -54,7 +54,7 @@ describe('store mutation set data', () => {
       page: 1
     })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
+      [fieldName]: Object.assign({}, defaultListObj, {
         nothing: true,
         fetched: true,
         result: [],
@@ -81,7 +81,7 @@ describe('store mutation set data', () => {
       page: 1
     })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
+      [fieldName]: Object.assign({}, defaultListObj, {
         nothing: true,
         fetched: true,
         result: {
@@ -113,7 +113,7 @@ describe('store mutation set data', () => {
       page: 1
     })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
+      [fieldName]: Object.assign({}, defaultListObj, {
         nothing: true,
         fetched: true,
         result: {
@@ -142,8 +142,7 @@ describe('store mutation set data', () => {
       page: 1
     })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
-        nothing: true,
+      [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
         result: page1.result,
         total: page1.total,
@@ -163,8 +162,7 @@ describe('store mutation set data', () => {
       page: 2
     })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
-        nothing: true,
+      [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
         result: page2.result,
         total: page2.total,
@@ -174,7 +172,7 @@ describe('store mutation set data', () => {
     })
   })
 
-  it('返回的 result 是 object，不缓存上一页', () => {
+  it('返回的 result 是 object-array，不缓存上一页', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     const page1 = {
       result: {
@@ -191,8 +189,7 @@ describe('store mutation set data', () => {
       page: 1
     })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
-        nothing: true,
+      [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
         result: page1.result,
         total: page1.total,
@@ -215,8 +212,7 @@ describe('store mutation set data', () => {
       page: 2
     })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
-        nothing: true,
+      [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
         result: page2.result,
         total: page2.total,
@@ -240,8 +236,7 @@ describe('store mutation set data', () => {
       page: 1
     })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
-        nothing: true,
+      [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
         result: page1.result,
         total: page1.total,
@@ -261,8 +256,155 @@ describe('store mutation set data', () => {
     })
     const result = page1.result.concat(page2.result)
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
-        nothing: true,
+      [fieldName]: Object.assign({}, defaultListObj, {
+        fetched: true,
+        result: result,
+        total: page2.total,
+        page: 2,
+        noMore: page2.no_more
+      })
+    })
+  })
+
+  it('设置 object 类型的 extra', () => {
+    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.CLEAR_RESULT(state, fieldName)
+    const page1 = {
+      result: [1, 2, 3, 4, 5],
+      no_more: false,
+      total: 10,
+      extra: {
+        a: {},
+        b: {}
+      }
+    }
+    Store.mutations.SET_DATA(state, {
+      fieldName,
+      data: page1,
+      page: 1
+    })
+    expect(state).toEqual({
+      [fieldName]: Object.assign({}, defaultListObj, {
+        fetched: true,
+        result: page1.result,
+        total: page1.total,
+        page: 1,
+        noMore: page1.no_more,
+        extra: page1.extra
+      })
+    })
+    const page2 = {
+      result: [11, 12, 13, 14, 15],
+      no_more: true,
+      total: 10,
+      extra: {
+        c: {},
+        d: {}
+      }
+    }
+    Store.mutations.SET_DATA(state, {
+      fieldName,
+      data: page2,
+      page: 2
+    })
+    const result = page1.result.concat(page2.result)
+    expect(state).toEqual({
+      [fieldName]: Object.assign({}, defaultListObj, {
+        fetched: true,
+        result: result,
+        total: page2.total,
+        page: 2,
+        noMore: page2.no_more,
+        extra: page2.extra
+      })
+    })
+  })
+
+  it('设置 array 类型的 extra', () => {
+    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.CLEAR_RESULT(state, fieldName)
+    const page1 = {
+      result: [1, 2, 3, 4, 5],
+      no_more: false,
+      total: 10,
+      extra: [-1, -2, -3, -4, -5]
+    }
+    Store.mutations.SET_DATA(state, {
+      fieldName,
+      data: page1,
+      page: 1
+    })
+    expect(state).toEqual({
+      [fieldName]: Object.assign({}, defaultListObj, {
+        fetched: true,
+        result: page1.result,
+        total: page1.total,
+        page: 1,
+        noMore: page1.no_more,
+        extra: page1.extra
+      })
+    })
+    const page2 = {
+      result: [11, 12, 13, 14, 15],
+      no_more: true,
+      total: 10,
+      extra: [-11, -12, -13, -14, -15]
+    }
+    Store.mutations.SET_DATA(state, {
+      fieldName,
+      data: page2,
+      page: 2
+    })
+    const result = page1.result.concat(page2.result)
+    expect(state).toEqual({
+      [fieldName]: Object.assign({}, defaultListObj, {
+        fetched: true,
+        result: result,
+        total: page2.total,
+        page: 2,
+        noMore: page2.no_more,
+        extra: page1.extra.concat(page2.extra)
+      })
+    })
+  })
+
+  it('指定新数据插入到列表之前', () => {
+    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.CLEAR_RESULT(state, fieldName)
+    const page1 = {
+      result: [1, 2, 3, 4, 5],
+      no_more: false,
+      total: 10
+    }
+    Store.mutations.SET_DATA(state, {
+      fieldName,
+      data: page1,
+      page: 1,
+      insertBefore: true
+    })
+    expect(state).toEqual({
+      [fieldName]: Object.assign({}, defaultListObj, {
+        fetched: true,
+        result: page1.result,
+        total: page1.total,
+        page: 1,
+        noMore: page1.no_more
+      })
+    })
+    const page2 = {
+      result: [11, 12, 13, 14, 15],
+      no_more: true,
+      total: 10
+    }
+    Store.mutations.SET_DATA(state, {
+      fieldName,
+      data: page2,
+      page: 2,
+      insertBefore: true
+    })
+    const result = page2.result.concat(page1.result)
+    expect(state).toEqual({
+      [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
         result: result,
         total: page2.total,

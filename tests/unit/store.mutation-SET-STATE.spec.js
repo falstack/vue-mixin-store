@@ -43,7 +43,7 @@ describe('store mutation set state', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_LOADING(state, fieldName)
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
+      [fieldName]: Object.assign({}, defaultListObj, {
         loading: true,
         error: null
       })
@@ -54,7 +54,7 @@ describe('store mutation set state', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_ERROR(state, { fieldName, error })
     expect(state).toEqual({
-      [fieldName]: Object.assign(defaultListObj, {
+      [fieldName]: Object.assign({}, defaultListObj, {
         loading: false,
         error: error
       })
@@ -72,7 +72,7 @@ describe('store mutation set state', () => {
       cacheTimeout: 0,
       data: data
     })
-    const afterState = Object.assign(defaultListObj, {
+    const afterState = Object.assign({}, defaultListObj, {
       result: data.result,
       total: data.total,
       noMore: data.no_more,
