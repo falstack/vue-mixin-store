@@ -70,7 +70,7 @@ describe('store mutation set state', () => {
       insertBefore: false,
       fromLocal: false,
       cacheTimeout: 0,
-      data: data,
+      data: data
     })
     const afterState = Object.assign(defaultListObj, {
       result: data.result,

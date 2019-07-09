@@ -15,6 +15,8 @@ describe('store getter', () => {
 
   it('getFlow', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
-    expect(Store.getters.getFlow(state)({ func, type, query })).toEqual(defaultListObj)
+    expect(Store.getters.getFlow(state)({ func, type, query })).toEqual(
+      defaultListObj
+    )
   })
 })

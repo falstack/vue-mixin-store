@@ -9,9 +9,9 @@ import {
 } from './utils'
 
 export default (api, debug = false) => {
-
   const printLog = (field, val) => debug && console.log(`[${field}]`, val) // eslint-disable-line
-  const isArray = data => Object.prototype.toString.call(data) === '[object Array]'
+  const isArray = data =>
+    Object.prototype.toString.call(data) === '[object Array]'
 
   return {
     namespaced: true,
@@ -256,7 +256,14 @@ export default (api, debug = false) => {
       ) {
         try {
           printLog('updateData', {
-            type, func, query, id, method, key, value, cacheTimeout
+            type,
+            func,
+            query,
+            id,
+            method,
+            key,
+            value,
+            cacheTimeout
           })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
