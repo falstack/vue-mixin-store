@@ -23,12 +23,12 @@ describe('store mutation set data', () => {
     state = {}
   })
 
-  it('NOT_INIT', () => {
+  it('如果没有调用 init 方法，set data 就无效', () => {
     Store.mutations.SET_DATA(state, { fieldName, data: {} })
     expect(state).toEqual({})
   })
 
-  it('LOAD_LOCAL_CACHE', () => {
+  it('如果从缓存读取数据，则 field 被复写为缓存', () => {
     const cacheData = {
       any: 'any value you cached'
     }
@@ -42,7 +42,7 @@ describe('store mutation set data', () => {
     })
   })
 
-  it('NO_DATA_ARRAY', () => {
+  it('如果返回为空，nothing 为 true', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_DATA(state, {
       fieldName,
@@ -65,7 +65,7 @@ describe('store mutation set data', () => {
     })
   })
 
-  it('NO_DATA_OBJECT', () => {
+  it('如果返回为 object-array，则根据内部 array 来判断是否数据为空', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_DATA(state, {
       fieldName,
@@ -96,7 +96,7 @@ describe('store mutation set data', () => {
     })
   })
 
-  it('JUMP NO_MORE always false', () => {
+  it('type 是 jump，noMore 永远都是 false', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_DATA(state, {
       fieldName,
@@ -128,7 +128,7 @@ describe('store mutation set data', () => {
     })
   })
 
-  it('JUMP LOAD_MORE', () => {
+  it('type 是 jump，不缓存上一页', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     const page1 = {
       result: [1, 2, 3, 4, 5],
@@ -174,19 +174,13 @@ describe('store mutation set data', () => {
     })
   })
 
-  it('返回的 result 是 object，就不缓存上一页', () => {
+  it('返回的 result 是 object，不缓存上一页', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     const page1 = {
       result: {
-        a: [
-          { id: 1 }
-        ],
-        b: [
-          { id: 2 }
-        ],
-        c: [
-          { id: 3 }
-        ]
+        a: [{ id: 1 }],
+        b: [{ id: 2 }],
+        c: [{ id: 3 }]
       },
       no_more: true,
       total: 6
@@ -208,15 +202,9 @@ describe('store mutation set data', () => {
     })
     const page2 = {
       result: {
-        e: [
-          { id: 4 }
-        ],
-        f: [
-          { id: 5 }
-        ],
-        g: [
-          { id: 6 }
-        ]
+        e: [{ id: 4 }],
+        f: [{ id: 5 }],
+        g: [{ id: 6 }]
       },
       no_more: true,
       total: 4

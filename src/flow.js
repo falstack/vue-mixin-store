@@ -116,6 +116,9 @@ export default (api, debug = false) => {
           return
         }
         commit('SET_LOADING', fieldName)
+        if (type === 'jump' || !isArray(field.result)) {
+          commit('CLEAR_RESULT', fieldName)
+        }
         const changing = query.changing || 'id'
         const params = {
           page: field.page + 1
@@ -123,7 +126,6 @@ export default (api, debug = false) => {
         if (type === 'page') {
           params.page = field.page + 1
         } else if (type === 'jump') {
-          commit('CLEAR_RESULT', fieldName)
           params.page = query.page
         } else if (type === 'lastId') {
           params.last_id = parseDataUniqueId(

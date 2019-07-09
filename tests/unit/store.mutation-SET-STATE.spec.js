@@ -23,7 +23,7 @@ describe('store mutation set state', () => {
     state = {}
   })
 
-  it('INIT_STATE', () => {
+  it('初始化 state', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     expect(state).toEqual({
       [fieldName]: defaultListObj
@@ -39,7 +39,7 @@ describe('store mutation set state', () => {
     })
   })
 
-  it('SET_LOADING', () => {
+  it('设置 loading', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_LOADING(state, fieldName)
     expect(state).toEqual({
@@ -50,7 +50,7 @@ describe('store mutation set state', () => {
     })
   })
 
-  it('SET_ERROR', () => {
+  it('设置 error', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_ERROR(state, { fieldName, error })
     expect(state).toEqual({
@@ -61,7 +61,7 @@ describe('store mutation set state', () => {
     })
   })
 
-  it('CLEAR_RESULT', () => {
+  it('如果 type 是 jump 或者 result 是 object-array，在下次请求前清空 result', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_DATA(state, {
       fieldName,
