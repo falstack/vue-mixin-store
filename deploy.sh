@@ -5,6 +5,7 @@ set -e
 
 # 构建
 # npm run lint
+npm run test:unit
 npm run build
 npm publish
 npm run docs:build
