@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 export const defaultListObj = {
   result: [],
   page: 0,
@@ -41,18 +43,15 @@ export const getDateFromCache = (fieldName, curTime) => {
     const expiredAt = localStorage.getItem(
       `vue-mixin-store-${fieldName}-expired-at`
     )
-    if (!expiredAt || curTime - expiredAt > 0) {
+    const cacheStr = localStorage.getItem(`vue-mixin-store-${fieldName}`)
+    if (!expiredAt || !cacheStr || curTime - expiredAt > 0) {
       localStorage.removeItem(`vue-mixin-store-${fieldName}`)
       localStorage.removeItem(`vue-mixin-store-${fieldName}-expired-at`)
       return null
     }
-    const cacheStr = localStorage.getItem(`vue-mixin-store-${fieldName}`)
-    if (!cacheStr) {
-      return null
-    }
     return JSON.parse(cacheStr)
   } catch (e) {
-    return false
+    return null
   }
 }
 
@@ -70,3 +69,27 @@ export const setDataToCache = (fieldName, dataObj, expiredAt) => {
 
 export const isArray = data =>
   Object.prototype.toString.call(data) === '[object Array]'
+
+export const setReactivityField = (field, key, value, type, insertBefore) => {
+  if (field[key]) {
+    if (type === 'jump' || !isArray(value)) {
+      Vue.set(field, key, value)
+    } else {
+      field[key] = insertBefore ? value.concat(field[key]) : field[key].concat(value)
+    }
+  } else {
+    Vue.set(field, key, value)
+  }
+}
+
+export const computeResultLength = data => {
+  let result = 0
+  if (isArray(data)) {
+    result = data.length
+  } else {
+    Object.keys(data).forEach(key => {
+      result += data[key].length
+    })
+  }
+  return result
+}

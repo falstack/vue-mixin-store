@@ -10,16 +10,14 @@ describe('timeout cache', () => {
       e: null,
       g: [{ a: 1 }, { b: 2 }]
     }
-    const date = Date.now()
-    setDataToCache('field-work', value, date + 86400)
-    const result = getDateFromCache('field-work', date)
+    setDataToCache('field-work', value, 86400)
+    const result = getDateFromCache('field-work', 0)
     expect(result).toEqual(value)
   })
 
   it('timeout', () => {
-    const date = Date.now()
-    setDataToCache('field-timeout', { a: 1 }, date + 1000)
-    const result = getDateFromCache('field-timeout', date + 2000)
+    setDataToCache('field-timeout', { a: 1 }, 1000)
+    const result = getDateFromCache('field-timeout', 2000)
     expect(result).toBeNull()
   })
 

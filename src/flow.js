@@ -5,6 +5,8 @@ import {
   parseDataUniqueId,
   setDataToCache,
   getDateFromCache,
+  setReactivityField,
+  computeResultLength,
   isArray
 } from './utils'
 
@@ -207,43 +209,16 @@ export default (api, debug = false) => {
         if (!field) {
           return
         }
-        const objArr = !isArray(result)
-        if (field.fetched) {
-          if (type === 'jump' || objArr) {
-            field.result = result
-          } else {
-            field.result = insertBefore
-              ? result.concat(field.result)
-              : field.result.concat(result)
-          }
-        } else {
+        if (!field.fetched) {
           field.fetched = true
-          field.result = result
-          let length = 0
-          if (objArr) {
-            Object.keys(result).forEach(key => {
-              length += result[key].length
-            })
-          } else {
-            length = result.length
-          }
-          field.nothing = length === 0
+          field.nothing = computeResultLength(result) === 0
         }
         field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total
         field.page = page
+        setReactivityField(field, 'result', result, type, insertBefore)
         if (extra) {
-          if (field.extra) {
-            if (isArray(extra)) {
-              field.extra = insertBefore
-                ? extra.concat(field.extra)
-                : field.extra.concat(extra)
-            } else {
-              Vue.set(field, 'extra', extra)
-            }
-          } else {
-            Vue.set(field, 'extra', extra)
-          }
+          setReactivityField(field, 'extra', extra, type, insertBefore)
         }
         field.loading = false
         if (cacheTimeout && !field.nothing) {
