@@ -38,15 +38,15 @@ export const parseDataUniqueId = (data, changing) => {
   return result
 }
 
-export const getDateFromCache = (fieldName, curTime) => {
+export const getDateFromCache = ({ key, now }) => {
   try {
     const expiredAt = localStorage.getItem(
-      `vue-mixin-store-${fieldName}-expired-at`
+      `vue-mixin-store-${key}-expired-at`
     )
-    const cacheStr = localStorage.getItem(`vue-mixin-store-${fieldName}`)
-    if (!expiredAt || !cacheStr || curTime - expiredAt > 0) {
-      localStorage.removeItem(`vue-mixin-store-${fieldName}`)
-      localStorage.removeItem(`vue-mixin-store-${fieldName}-expired-at`)
+    const cacheStr = localStorage.getItem(`vue-mixin-store-${key}`)
+    if (!expiredAt || !cacheStr || now - expiredAt > 0) {
+      localStorage.removeItem(`vue-mixin-store-${key}`)
+      localStorage.removeItem(`vue-mixin-store-${key}-expired-at`)
       return null
     }
     return JSON.parse(cacheStr)
@@ -55,13 +55,13 @@ export const getDateFromCache = (fieldName, curTime) => {
   }
 }
 
-export const setDataToCache = (fieldName, dataObj, expiredAt) => {
+export const setDataToCache = ({ key, value, expiredAt }) => {
   try {
     localStorage.setItem(
-      `vue-mixin-store-${fieldName}`,
-      JSON.stringify(dataObj)
+      `vue-mixin-store-${key}`,
+      JSON.stringify(value)
     )
-    localStorage.setItem(`vue-mixin-store-${fieldName}-expired-at`, expiredAt)
+    localStorage.setItem(`vue-mixin-store-${key}-expired-at`, expiredAt)
   } catch (e) {
     // do nothing
   }

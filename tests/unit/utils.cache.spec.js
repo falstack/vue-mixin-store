@@ -10,19 +10,36 @@ describe('timeout cache', () => {
       e: null,
       g: [{ a: 1 }, { b: 2 }]
     }
-    setDataToCache('field-work', value, 86400)
-    const result = getDateFromCache('field-work', 0)
+    setDataToCache({
+      key: 'field-work',
+      value,
+      expiredAt: 86400
+    })
+    const result = getDateFromCache({
+      key: 'field-work',
+      now: 0
+    })
     expect(result).toEqual(value)
   })
 
   it('timeout', () => {
-    setDataToCache('field-timeout', { a: 1 }, 1000)
-    const result = getDateFromCache('field-timeout', 2000)
+    setDataToCache({
+      key: 'field-timeout',
+      value: { a: 1 },
+      expiredAt: 1000
+    })
+    const result = getDateFromCache({
+      key: 'field-timeout',
+      now: 2000
+    })
     expect(result).toBeNull()
   })
 
   it('unset', () => {
-    const result = getDateFromCache('field-unset', Date.now())
+    const result = getDateFromCache({
+      key: 'field-unset',
+      now: Date.now()
+    })
     expect(result).toBeNull()
   })
 })

@@ -71,7 +71,10 @@ export default (api, debug = false) => {
           let data
           let fromLocal = false
           if (cacheTimeout) {
-            data = getDateFromCache(fieldName, Date.now())
+            data = getDateFromCache({
+              key: fieldName,
+              now: Date.now()
+            })
             if (data) {
               fromLocal = true
             } else {
@@ -204,11 +207,11 @@ export default (api, debug = false) => {
           Vue.set(state, fieldName, data)
           return
         }
-        const { result, extra } = data
         const field = state[fieldName]
         if (!field) {
           return
         }
+        const { result, extra } = data
         if (!field.fetched) {
           field.fetched = true
           field.nothing = computeResultLength(result) === 0
@@ -222,11 +225,11 @@ export default (api, debug = false) => {
         }
         field.loading = false
         if (cacheTimeout && !field.nothing) {
-          setDataToCache(
-            fieldName,
-            state[fieldName],
-            Date.now() + cacheTimeout * 1000
-          )
+          setDataToCache({
+            key: fieldName,
+            value: state[fieldName],
+            expiredAt: Date.now() + cacheTimeout * 1000
+          })
         }
       },
       UPDATE_DATA(
@@ -345,11 +348,11 @@ export default (api, debug = false) => {
             }
           }
           if (cacheTimeout) {
-            setDataToCache(
-              fieldName,
-              state[fieldName],
-              Date.now() + cacheTimeout * 1000
-            )
+            setDataToCache({
+              key: fieldName,
+              value: state[fieldName],
+              expiredAt: Date.now() + cacheTimeout * 1000
+            })
           }
           field.nothing = field.total <= 0
         } catch (error) {
