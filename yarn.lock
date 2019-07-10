@@ -6713,11 +6713,6 @@ jest-message-util@^24.8.0:
     slash "^2.0.0"
     stack-utils "^1.0.1"
 
-jest-mock-now@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npm.taobao.org/jest-mock-now/download/jest-mock-now-1.2.1.tgz#b2e74c44486a6af786d1ee28e26143411ae18f1f"
-  integrity sha1-sudMREhqaveG0e4o4mFDQRrhjx8=
-
 jest-mock@^23.2.0:
   version "23.2.0"
   resolved "https://registry.npm.taobao.org/jest-mock/download/jest-mock-23.2.0.tgz#ad1c60f29e8719d47c26e1138098b6d18b261134"

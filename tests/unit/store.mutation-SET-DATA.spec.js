@@ -9,15 +9,6 @@ describe('store mutation set data', () => {
   const type = 'page'
   const query = {}
   const fieldName = generateFieldName(func, type, query)
-  const error = {
-    code: 500,
-    message: 'xxx'
-  }
-  const data = {
-    result: [1, 2, 3, 4, 5],
-    no_more: true,
-    total: 5
-  }
 
   beforeEach(() => {
     state = {}

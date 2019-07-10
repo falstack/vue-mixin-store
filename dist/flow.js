@@ -1,96 +1,17 @@
 import Vue from 'vue'
+import {
+  defaultListObj,
+  generateFieldName,
+  parseDataUniqueId,
+  setDataToCache,
+  getDateFromCache,
+  setReactivityField,
+  computeResultLength,
+  isArray
+} from './utils'
 
 export default (api, debug = false) => {
-  const defaultListObj = {
-    result: [],
-    page: 0,
-    noMore: false,
-    nothing: false,
-    loading: false,
-    error: null,
-    fetched: false,
-    total: 0,
-    extra: null
-  }
-
   const printLog = (field, val) => debug && console.log(`[${field}]`, val) // eslint-disable-line
-
-  const generateFieldName = (func, type, query = {}) => {
-    printLog('generateFieldName - begin', { func, type, query })
-    let result = `${func}-${type}`
-    Object.keys(query)
-      .filter(
-        _ =>
-          typeof query[_] !== 'object' &&
-          typeof query[_] !== 'function' &&
-          !~['page', 'changing', 'is_up', '__refresh__'].indexOf(_)
-      )
-      .sort()
-      .forEach(key => {
-        result += `-${key}-${query[key]}`
-      })
-    printLog('generateFieldName - result', result)
-    return result
-  }
-
-  const parseDataUniqueId = (data, changing) => {
-    printLog('parseDataUniqueId - begin', { data, changing })
-    if (!/\./.test(changing)) {
-      return data[changing]
-    }
-    let result = data
-    changing.split('.').forEach(key => {
-      result = result[key]
-    })
-    printLog('parseDataUniqueId - result', result)
-    return result
-  }
-
-  const cacheNotExpired = (fieldName, timeout) => {
-    try {
-      localStorage.setItem('@@', 1)
-      localStorage.removeItem('@@')
-      const cacheSetAt = localStorage.getItem(
-        `vue-mixin-store-${fieldName}-timer`
-      )
-      if (!cacheSetAt) {
-        return false
-      }
-      const result = Date.now() - cacheSetAt < timeout
-      if (!result) {
-        localStorage.removeItem(`vue-mixin-store-${fieldName}`)
-        localStorage.removeItem(`vue-mixin-store-${fieldName}-timer`)
-      }
-      return result
-    } catch (e) {
-      return false
-    }
-  }
-
-  const readDataFromCache = fieldName => {
-    const cacheStr = localStorage.getItem(`vue-mixin-store-${fieldName}`)
-    if (!cacheStr) {
-      return null
-    }
-    try {
-      return JSON.parse(cacheStr)
-    } catch (e) {
-      return null
-    }
-  }
-
-  const setDataToCache = (fieldName, dataObj) => {
-    try {
-      localStorage.setItem(
-        `vue-mixin-store-${fieldName}`,
-        JSON.stringify(dataObj)
-      )
-      localStorage.setItem(`vue-mixin-store-${fieldName}-timer`, Date.now())
-    } catch (e) {
-      // do nothing
-    }
-  }
-
   return {
     namespaced: true,
     state: () => ({}),
@@ -149,8 +70,11 @@ export default (api, debug = false) => {
           printLog('request', { func, params: args })
           let data
           let fromLocal = false
-          if (cacheTimeout && cacheNotExpired(fieldName, cacheTimeout)) {
-            data = readDataFromCache(fieldName)
+          if (cacheTimeout) {
+            data = getDateFromCache({
+              key: fieldName,
+              now: Date.now()
+            })
             if (data) {
               fromLocal = true
             } else {
@@ -171,8 +95,6 @@ export default (api, debug = false) => {
           callback && callback({ data, args })
           return data
         } catch (error) {
-          printLog('error', { fieldName, error })
-          debug && console.log(error) // eslint-disable-line
           commit('SET_ERROR', { fieldName, error })
           return null
         }
@@ -196,6 +118,9 @@ export default (api, debug = false) => {
           return
         }
         commit('SET_LOADING', fieldName)
+        if (type === 'jump' || !isArray(field.result)) {
+          commit('CLEAR_RESULT', fieldName)
+        }
         const changing = query.changing || 'id'
         const params = {
           page: field.page + 1
@@ -203,7 +128,6 @@ export default (api, debug = false) => {
         if (type === 'page') {
           params.page = field.page + 1
         } else if (type === 'jump') {
-          commit('CLEAR_RESULT', fieldName)
           params.page = query.page
         } else if (type === 'lastId') {
           params.last_id = parseDataUniqueId(
@@ -239,18 +163,12 @@ export default (api, debug = false) => {
           callback && callback({ data, args })
           return data
         } catch (error) {
-          printLog('error', { fieldName, error })
-          debug && console.log(error) // eslint-disable-line
           commit('SET_ERROR', { fieldName, error })
           return null
         }
       }
     },
     mutations: {
-      SET_ERROR(state, { fieldName, error }) {
-        state[fieldName].error = error
-        state[fieldName].loading = false
-      },
       INIT_STATE(state, { func, type, query }) {
         Vue.set(
           state,
@@ -262,14 +180,21 @@ export default (api, debug = false) => {
         state[fieldName].loading = true
         state[fieldName].error = null
       },
+      SET_ERROR(state, { fieldName, error }) {
+        printLog('error', { fieldName, error })
+        debug && console.log(error) // eslint-disable-line
+        state[fieldName].error = error
+        state[fieldName].loading = false
+      },
       CLEAR_RESULT(state, fieldName) {
         state[fieldName].result = []
+        state[fieldName].extra = null
       },
       SET_DATA(
         state,
         { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout }
       ) {
-        printLog('SET_DATA - begin', {
+        printLog('setData', {
           data,
           fieldName,
           type,
@@ -282,54 +207,29 @@ export default (api, debug = false) => {
           Vue.set(state, fieldName, data)
           return
         }
-        const { result, extra } = data
         const field = state[fieldName]
         if (!field) {
           return
         }
-        const objArr =
-          Object.prototype.toString.call(result) !== '[object Array]'
-        if (field.fetched) {
-          if (type === 'jump' || objArr) {
-            field.result = result
-          } else {
-            field.result = insertBefore
-              ? result.concat(field.result)
-              : field.result.concat(result)
-          }
-        } else {
+        const { result, extra } = data
+        if (!field.fetched) {
           field.fetched = true
-          field.result = result
-          let length = 0
-          if (objArr) {
-            Object.keys(result).forEach(key => {
-              length += result[key].length
-            })
-          } else {
-            length = result.length
-          }
-          field.nothing = length === 0
+          field.nothing = computeResultLength(result) === 0
         }
         field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total
         field.page = page
+        setReactivityField(field, 'result', result, type, insertBefore)
         if (extra) {
-          if (field.extra) {
-            if (Object.prototype.toString.call(extra) === '[object Array]') {
-              field.extra = insertBefore
-                ? extra.concat(field.extra)
-                : field.extra.concat(extra)
-            } else {
-              Vue.set(field, 'extra', extra)
-            }
-          } else {
-            Vue.set(field, 'extra', extra)
-          }
+          setReactivityField(field, 'extra', extra, type, insertBefore)
         }
         field.loading = false
-        printLog('SET_DATA - result', field)
         if (cacheTimeout && !field.nothing) {
-          setDataToCache(fieldName, state[fieldName])
+          setDataToCache({
+            key: fieldName,
+            value: state[fieldName],
+            expiredAt: Date.now() + cacheTimeout * 1000
+          })
         }
       },
       UPDATE_DATA(
@@ -337,6 +237,16 @@ export default (api, debug = false) => {
         { type, func, query, id, method, key, value, cacheTimeout }
       ) {
         try {
+          printLog('updateData', {
+            type,
+            func,
+            query,
+            id,
+            method,
+            key,
+            value,
+            cacheTimeout
+          })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
           if (!field) {
@@ -344,8 +254,7 @@ export default (api, debug = false) => {
           }
           const modKeys = key ? key.split('.') : []
           const changing = query.changing || 'id'
-          const objArr =
-            Object.prototype.toString.call(value) !== '[object Array]'
+          const objArr = !isArray(value)
           if (
             ~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(
               method
@@ -439,11 +348,15 @@ export default (api, debug = false) => {
             }
           }
           if (cacheTimeout) {
-            setDataToCache(fieldName, state[fieldName])
+            setDataToCache({
+              key: fieldName,
+              value: state[fieldName],
+              expiredAt: Date.now() + cacheTimeout * 1000
+            })
           }
           field.nothing = field.total <= 0
         } catch (error) {
-          printLog('UPDATE_DATA - error', {
+          printLog('error', {
             type,
             func,
             query,
@@ -455,6 +368,7 @@ export default (api, debug = false) => {
             error
           })
         }
+        debug && console.log(error) // eslint-disable-line
       }
     },
     getters: {

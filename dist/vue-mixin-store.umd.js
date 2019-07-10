@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.34
+ * vue-mixin-store v1.1.35
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -923,6 +923,99 @@ var regenerator_default = /*#__PURE__*/__webpack_require__.n(regenerator);
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpack_require__.n(external_commonjs_vue_commonjs2_vue_root_Vue_);
 
+// CONCATENATED MODULE: ./src/utils.js
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+
+var defaultListObj = {
+  result: [],
+  page: 0,
+  noMore: false,
+  nothing: false,
+  loading: false,
+  error: null,
+  fetched: false,
+  total: 0,
+  extra: null
+};
+var generateFieldName = function generateFieldName(func, type) {
+  var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var result = "".concat(func, "-").concat(type);
+  Object.keys(query).filter(function (_) {
+    return !~['undefined', 'object', 'function'].indexOf(_typeof(query[_])) && !~['page', 'changing', 'is_up', '__refresh__'].indexOf(_);
+  }).sort().forEach(function (key) {
+    result += "-".concat(key, "-").concat(query[key]);
+  });
+  return result;
+};
+var parseDataUniqueId = function parseDataUniqueId(data, changing) {
+  if (!/\./.test(changing)) {
+    return data[changing];
+  }
+
+  var result = data;
+  changing.split('.').forEach(function (key) {
+    result = result[key];
+  });
+  return result;
+};
+var getDateFromCache = function getDateFromCache(_ref) {
+  var key = _ref.key,
+      now = _ref.now;
+
+  try {
+    var expiredAt = localStorage.getItem("vue-mixin-store-".concat(key, "-expired-at"));
+    var cacheStr = localStorage.getItem("vue-mixin-store-".concat(key));
+
+    if (!expiredAt || !cacheStr || now - expiredAt > 0) {
+      localStorage.removeItem("vue-mixin-store-".concat(key));
+      localStorage.removeItem("vue-mixin-store-".concat(key, "-expired-at"));
+      return null;
+    }
+
+    return JSON.parse(cacheStr);
+  } catch (e) {
+    return null;
+  }
+};
+var setDataToCache = function setDataToCache(_ref2) {
+  var key = _ref2.key,
+      value = _ref2.value,
+      expiredAt = _ref2.expiredAt;
+
+  try {
+    localStorage.setItem("vue-mixin-store-".concat(key), JSON.stringify(value));
+    localStorage.setItem("vue-mixin-store-".concat(key, "-expired-at"), expiredAt);
+  } catch (e) {// do nothing
+  }
+};
+var isArray = function isArray(data) {
+  return Object.prototype.toString.call(data) === '[object Array]';
+};
+var utils_setReactivityField = function setReactivityField(field, key, value, type, insertBefore) {
+  if (field[key]) {
+    if (type === 'jump' || !isArray(value)) {
+      external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field, key, value);
+    } else {
+      field[key] = insertBefore ? value.concat(field[key]) : field[key].concat(value);
+    }
+  } else {
+    external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field, key, value);
+  }
+};
+var computeResultLength = function computeResultLength(data) {
+  var result = 0;
+
+  if (isArray(data)) {
+    result = data.length;
+  } else {
+    Object.keys(data).forEach(function (key) {
+      result += data[key].length;
+    });
+  }
+
+  return result;
+};
 // CONCATENATED MODULE: ./src/flow.js
 
 
@@ -930,107 +1023,15 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
 /* harmony default export */ var flow = (function (api) {
   var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-  var defaultListObj = {
-    result: [],
-    page: 0,
-    noMore: false,
-    nothing: false,
-    loading: false,
-    error: null,
-    fetched: false,
-    total: 0,
-    extra: null
-  };
 
   var printLog = function printLog(field, val) {
     return debug && console.log("[".concat(field, "]"), val);
   }; // eslint-disable-line
 
-
-  var generateFieldName = function generateFieldName(func, type) {
-    var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    printLog('generateFieldName - begin', {
-      func: func,
-      type: type,
-      query: query
-    });
-    var result = "".concat(func, "-").concat(type);
-    Object.keys(query).filter(function (_) {
-      return _typeof(query[_]) !== 'object' && typeof query[_] !== 'function' && !~['page', 'changing', 'is_up', '__refresh__'].indexOf(_);
-    }).sort().forEach(function (key) {
-      result += "-".concat(key, "-").concat(query[key]);
-    });
-    printLog('generateFieldName - result', result);
-    return result;
-  };
-
-  var parseDataUniqueId = function parseDataUniqueId(data, changing) {
-    printLog('parseDataUniqueId - begin', {
-      data: data,
-      changing: changing
-    });
-
-    if (!/\./.test(changing)) {
-      return data[changing];
-    }
-
-    var result = data;
-    changing.split('.').forEach(function (key) {
-      result = result[key];
-    });
-    printLog('parseDataUniqueId - result', result);
-    return result;
-  };
-
-  var cacheNotExpired = function cacheNotExpired(fieldName, timeout) {
-    try {
-      localStorage.setItem('@@', 1);
-      localStorage.removeItem('@@');
-      var cacheSetAt = localStorage.getItem("vue-mixin-store-".concat(fieldName, "-timer"));
-
-      if (!cacheSetAt) {
-        return false;
-      }
-
-      var result = Date.now() - cacheSetAt < timeout;
-
-      if (!result) {
-        localStorage.removeItem("vue-mixin-store-".concat(fieldName));
-        localStorage.removeItem("vue-mixin-store-".concat(fieldName, "-timer"));
-      }
-
-      return result;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  var readDataFromCache = function readDataFromCache(fieldName) {
-    var cacheStr = localStorage.getItem("vue-mixin-store-".concat(fieldName));
-
-    if (!cacheStr) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(cacheStr);
-    } catch (e) {
-      return null;
-    }
-  };
-
-  var setDataToCache = function setDataToCache(fieldName, dataObj) {
-    try {
-      localStorage.setItem("vue-mixin-store-".concat(fieldName), JSON.stringify(dataObj));
-      localStorage.setItem("vue-mixin-store-".concat(fieldName, "-timer"), Date.now());
-    } catch (e) {// do nothing
-    }
-  };
 
   return {
     namespaced: true,
@@ -1128,12 +1129,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   });
                   fromLocal = false;
 
-                  if (!(cacheTimeout && cacheNotExpired(fieldName, cacheTimeout))) {
+                  if (!cacheTimeout) {
                     _context.next = 32;
                     break;
                   }
 
-                  data = readDataFromCache(fieldName);
+                  data = getDateFromCache({
+                    key: fieldName,
+                    now: Date.now()
+                  });
 
                   if (!data) {
                     _context.next = 27;
@@ -1181,19 +1185,13 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                 case 40:
                   _context.prev = 40;
                   _context.t0 = _context["catch"](18);
-                  printLog('error', {
-                    fieldName: fieldName,
-                    error: _context.t0
-                  });
-                  debug && console.log(_context.t0); // eslint-disable-line
-
                   commit('SET_ERROR', {
                     fieldName: fieldName,
                     error: _context.t0
                   });
                   return _context.abrupt("return", null);
 
-                case 46:
+                case 44:
                 case "end":
                   return _context.stop();
               }
@@ -1243,6 +1241,11 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
                 case 9:
                   commit('SET_LOADING', fieldName);
+
+                  if (type === 'jump' || !isArray(field.result)) {
+                    commit('CLEAR_RESULT', fieldName);
+                  }
+
                   changing = query.changing || 'id';
                   params = {
                     page: field.page + 1
@@ -1251,7 +1254,6 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   if (type === 'page') {
                     params.page = field.page + 1;
                   } else if (type === 'jump') {
-                    commit('CLEAR_RESULT', fieldName);
                     params.page = query.page;
                   } else if (type === 'lastId') {
                     params.last_id = parseDataUniqueId(field.result[field.result.length - 1], changing);
@@ -1265,15 +1267,15 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   }
 
                   args = Object.assign(params, query);
-                  _context2.prev = 14;
+                  _context2.prev = 15;
                   printLog('request', {
                     func: func,
                     params: args
                   });
-                  _context2.next = 18;
+                  _context2.next = 19;
                   return api[func](args);
 
-                case 18:
+                case 19:
                   data = _context2.sent;
                   commit('SET_DATA', {
                     fromLocal: false,
@@ -1290,27 +1292,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
                   });
                   return _context2.abrupt("return", data);
 
-                case 24:
-                  _context2.prev = 24;
-                  _context2.t0 = _context2["catch"](14);
-                  printLog('error', {
-                    fieldName: fieldName,
-                    error: _context2.t0
-                  });
-                  debug && console.log(_context2.t0); // eslint-disable-line
-
+                case 25:
+                  _context2.prev = 25;
+                  _context2.t0 = _context2["catch"](15);
                   commit('SET_ERROR', {
                     fieldName: fieldName,
                     error: _context2.t0
                   });
                   return _context2.abrupt("return", null);
 
-                case 30:
+                case 29:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, _callee2, null, [[14, 24]]);
+          }, _callee2, null, [[15, 25]]);
         }));
 
         function loadMore(_x3, _x4) {
@@ -1321,24 +1317,31 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       }()
     },
     mutations: {
-      SET_ERROR: function SET_ERROR(state, _ref5) {
-        var fieldName = _ref5.fieldName,
-            error = _ref5.error;
-        state[fieldName].error = error;
-        state[fieldName].loading = false;
-      },
-      INIT_STATE: function INIT_STATE(state, _ref6) {
-        var func = _ref6.func,
-            type = _ref6.type,
-            query = _ref6.query;
+      INIT_STATE: function INIT_STATE(state, _ref5) {
+        var func = _ref5.func,
+            type = _ref5.type,
+            query = _ref5.query;
         external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(state, generateFieldName(func, type, query), Object.assign({}, defaultListObj));
       },
       SET_LOADING: function SET_LOADING(state, fieldName) {
         state[fieldName].loading = true;
         state[fieldName].error = null;
       },
+      SET_ERROR: function SET_ERROR(state, _ref6) {
+        var fieldName = _ref6.fieldName,
+            error = _ref6.error;
+        printLog('error', {
+          fieldName: fieldName,
+          error: error
+        });
+        debug && console.log(error); // eslint-disable-line
+
+        state[fieldName].error = error;
+        state[fieldName].loading = false;
+      },
       CLEAR_RESULT: function CLEAR_RESULT(state, fieldName) {
         state[fieldName].result = [];
+        state[fieldName].extra = null;
       },
       SET_DATA: function SET_DATA(state, _ref7) {
         var data = _ref7.data,
@@ -1348,7 +1351,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             insertBefore = _ref7.insertBefore,
             fromLocal = _ref7.fromLocal,
             cacheTimeout = _ref7.cacheTimeout;
-        printLog('SET_DATA - begin', {
+        printLog('setData', {
           data: data,
           fieldName: fieldName,
           type: type,
@@ -1363,59 +1366,37 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           return;
         }
 
-        var result = data.result,
-            extra = data.extra;
         var field = state[fieldName];
 
         if (!field) {
           return;
         }
 
-        var objArr = Object.prototype.toString.call(result) !== '[object Array]';
+        var result = data.result,
+            extra = data.extra;
 
-        if (field.fetched) {
-          if (type === 'jump' || objArr) {
-            field.result = result;
-          } else {
-            field.result = insertBefore ? result.concat(field.result) : field.result.concat(result);
-          }
-        } else {
+        if (!field.fetched) {
           field.fetched = true;
-          field.result = result;
-          var length = 0;
-
-          if (objArr) {
-            Object.keys(result).forEach(function (key) {
-              length += result[key].length;
-            });
-          } else {
-            length = result.length;
-          }
-
-          field.nothing = length === 0;
+          field.nothing = computeResultLength(result) === 0;
         }
 
         field.noMore = type === 'jump' ? false : data.no_more;
         field.total = data.total;
         field.page = page;
+        utils_setReactivityField(field, 'result', result, type, insertBefore);
 
         if (extra) {
-          if (field.extra) {
-            if (Object.prototype.toString.call(extra) === '[object Array]') {
-              field.extra = insertBefore ? extra.concat(field.extra) : field.extra.concat(extra);
-            } else {
-              external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field, 'extra', extra);
-            }
-          } else {
-            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field, 'extra', extra);
-          }
+          utils_setReactivityField(field, 'extra', extra, type, insertBefore);
         }
 
         field.loading = false;
-        printLog('SET_DATA - result', field);
 
         if (cacheTimeout && !field.nothing) {
-          setDataToCache(fieldName, state[fieldName]);
+          setDataToCache({
+            key: fieldName,
+            value: state[fieldName],
+            expiredAt: Date.now() + cacheTimeout * 1000
+          });
         }
       },
       UPDATE_DATA: function UPDATE_DATA(state, _ref8) {
@@ -1429,6 +1410,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             cacheTimeout = _ref8.cacheTimeout;
 
         try {
+          printLog('updateData', {
+            type: type,
+            func: func,
+            query: query,
+            id: id,
+            method: method,
+            key: key,
+            value: value,
+            cacheTimeout: cacheTimeout
+          });
           var fieldName = generateFieldName(func, type, query);
           var field = state[fieldName];
 
@@ -1438,7 +1429,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
           var modKeys = key ? key.split('.') : [];
           var changing = query.changing || 'id';
-          var objArr = Object.prototype.toString.call(value) !== '[object Array]';
+          var objArr = !isArray(value);
 
           if (~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(method)) {
             var changeTotal = 0;
@@ -1528,12 +1519,16 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           }
 
           if (cacheTimeout) {
-            setDataToCache(fieldName, state[fieldName]);
+            setDataToCache({
+              key: fieldName,
+              value: state[fieldName],
+              expiredAt: Date.now() + cacheTimeout * 1000
+            });
           }
 
           field.nothing = field.total <= 0;
         } catch (error) {
-          printLog('UPDATE_DATA - error', {
+          printLog('error', {
             type: type,
             func: func,
             query: query,
@@ -1545,6 +1540,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
             error: error
           });
         }
+
+        debug && console.log(error); // eslint-disable-line
       }
     },
     getters: {
@@ -1559,7 +1556,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c9d13ff4-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f26c2d70&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"58793778-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f26c2d70&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 

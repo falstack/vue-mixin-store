@@ -40,9 +40,7 @@ export const parseDataUniqueId = (data, changing) => {
 
 export const getDateFromCache = ({ key, now }) => {
   try {
-    const expiredAt = localStorage.getItem(
-      `vue-mixin-store-${key}-expired-at`
-    )
+    const expiredAt = localStorage.getItem(`vue-mixin-store-${key}-expired-at`)
     const cacheStr = localStorage.getItem(`vue-mixin-store-${key}`)
     if (!expiredAt || !cacheStr || now - expiredAt > 0) {
       localStorage.removeItem(`vue-mixin-store-${key}`)
@@ -57,10 +55,7 @@ export const getDateFromCache = ({ key, now }) => {
 
 export const setDataToCache = ({ key, value, expiredAt }) => {
   try {
-    localStorage.setItem(
-      `vue-mixin-store-${key}`,
-      JSON.stringify(value)
-    )
+    localStorage.setItem(`vue-mixin-store-${key}`, JSON.stringify(value))
     localStorage.setItem(`vue-mixin-store-${key}-expired-at`, expiredAt)
   } catch (e) {
     // do nothing
@@ -75,7 +70,9 @@ export const setReactivityField = (field, key, value, type, insertBefore) => {
     if (type === 'jump' || !isArray(value)) {
       Vue.set(field, key, value)
     } else {
-      field[key] = insertBefore ? value.concat(field[key]) : field[key].concat(value)
+      field[key] = insertBefore
+        ? value.concat(field[key])
+        : field[key].concat(value)
     }
   } else {
     Vue.set(field, key, value)
