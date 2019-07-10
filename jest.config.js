@@ -14,7 +14,7 @@ module.exports = {
   testMatch: [
     '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)'
   ],
-  setupFiles: ['jest-localstorage-mock', 'jest-mock-now'],
+  setupFiles: ['jest-localstorage-mock'],
   testURL: 'http://localhost/',
   watchPlugins: [
     'jest-watch-typeahead/filename',

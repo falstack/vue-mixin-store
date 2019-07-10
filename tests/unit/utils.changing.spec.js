@@ -12,22 +12,22 @@ describe('parse data unique id', () => {
     }
   }
 
-  it('changing is id', () => {
+  it('changing 是 id', () => {
     const name = parseDataUniqueId(data, 'id')
     expect(name).toBe(123)
   })
 
-  it('changing is slug', () => {
+  it('changing 是 slug', () => {
     const name = parseDataUniqueId(data, 'slug')
     expect(name).toBe('abc')
   })
 
-  it('changing is object key', () => {
+  it('changing 是 object key', () => {
     const name = parseDataUniqueId(data, 'data.unique_id')
     expect(name).toBe(456)
   })
 
-  it('changing is nest key', () => {
+  it('changing 是 nest key', () => {
     const name = parseDataUniqueId(data, 'data.nest.key')
     expect(name).toBe('dio')
   })

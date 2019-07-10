@@ -1,8 +1,9 @@
 module.exports = {
   root: true,
   env: {
-    node: false,
-    browser: true
+    node: true,
+    browser: true,
+    jest: true
   },
   extends: ['plugin:vue/recommended', '@vue/prettier'],
   rules: {

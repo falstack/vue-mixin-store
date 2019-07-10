@@ -3,16 +3,13 @@ import {
   defaultListObj,
   generateFieldName,
   parseDataUniqueId,
-  cacheNotExpired,
-  readDataFromCache,
-  setDataToCache
+  setDataToCache,
+  getDateFromCache,
+  isArray
 } from './utils'
 
 export default (api, debug = false) => {
   const printLog = (field, val) => debug && console.log(`[${field}]`, val) // eslint-disable-line
-  const isArray = data =>
-    Object.prototype.toString.call(data) === '[object Array]'
-
   return {
     namespaced: true,
     state: () => ({}),
@@ -71,8 +68,8 @@ export default (api, debug = false) => {
           printLog('request', { func, params: args })
           let data
           let fromLocal = false
-          if (cacheTimeout && cacheNotExpired(fieldName, cacheTimeout)) {
-            data = readDataFromCache(fieldName)
+          if (cacheTimeout) {
+            data = getDateFromCache(fieldName, Date.now())
             if (data) {
               fromLocal = true
             } else {
@@ -250,7 +247,11 @@ export default (api, debug = false) => {
         }
         field.loading = false
         if (cacheTimeout && !field.nothing) {
-          setDataToCache(fieldName, state[fieldName])
+          setDataToCache(
+            fieldName,
+            state[fieldName],
+            Date.now() + cacheTimeout * 1000
+          )
         }
       },
       UPDATE_DATA(
@@ -369,7 +370,11 @@ export default (api, debug = false) => {
             }
           }
           if (cacheTimeout) {
-            setDataToCache(fieldName, state[fieldName])
+            setDataToCache(
+              fieldName,
+              state[fieldName],
+              Date.now() + cacheTimeout * 1000
+            )
           }
           field.nothing = field.total <= 0
         } catch (error) {
