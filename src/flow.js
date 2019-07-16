@@ -44,7 +44,7 @@ export default (api, debug = false) => {
         if (type === 'page') {
           params.page = 1
         } else if (type === 'jump') {
-          params.page = +query.page || 1
+          params.page = query.page || 1
         } else if (type === 'seenIds') {
           params.seen_ids = ''
         } else if (type === 'lastId') {
@@ -128,7 +128,7 @@ export default (api, debug = false) => {
         if (type === 'page') {
           params.page = field.page + 1
         } else if (type === 'jump') {
-          params.page = +query.page
+          params.page = query.page
         } else if (type === 'lastId') {
           params.last_id = parseDataUniqueId(
             field.result[field.result.length - 1],
@@ -218,7 +218,8 @@ export default (api, debug = false) => {
         }
         field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total
-        field.page = +page
+        field.page =
+          typeof page === 'number' ? page : typeof page === 'string' ? +page : 1
         setReactivityField(field, 'result', result, type, insertBefore)
         if (extra) {
           setReactivityField(field, 'extra', extra, type, insertBefore)
