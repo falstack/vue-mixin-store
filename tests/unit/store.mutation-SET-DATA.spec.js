@@ -150,7 +150,7 @@ describe('store mutation set data', () => {
       fieldName,
       data: page2,
       type: 'jump',
-      page: 2
+      page: '2'
     })
     expect(state).toEqual({
       [fieldName]: Object.assign({}, defaultListObj, {

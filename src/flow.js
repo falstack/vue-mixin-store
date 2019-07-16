@@ -218,7 +218,7 @@ export default (api, debug = false) => {
         }
         field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total
-        field.page = page
+        field.page = +page
         setReactivityField(field, 'result', result, type, insertBefore)
         if (extra) {
           setReactivityField(field, 'extra', extra, type, insertBefore)

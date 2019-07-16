@@ -1382,7 +1382,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
         field.noMore = type === 'jump' ? false : data.no_more;
         field.total = data.total;
-        field.page = page;
+        field.page = +page;
         utils_setReactivityField(field, 'result', result, type, insertBefore);
 
         if (extra) {
