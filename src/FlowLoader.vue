@@ -125,11 +125,6 @@ export default {
       type: Number,
       default: 0,
       validator: val => val >= 0
-    },
-    sort: {
-      type: String,
-      default: 'desc',
-      validator: val => ~['desc', 'asc'].indexOf(val)
     }
   },
   computed: {
@@ -267,8 +262,22 @@ export default {
         })
       )
     },
-    async loadBefore({ force } = { force: false }) {
-      const query = Object.assign({}, this.params.query)
+    initData(obj = {}) {
+      this.$nextTick(async () => {
+        const query = Object.assign({}, this.params.query, obj)
+        await this.$store.dispatch(
+          'flow/initData',
+          Object.assign({}, this.params, {
+            query
+          })
+        )
+      })
+    },
+    async loadBefore(obj = {}, force = false) {
+      if (this.isPagination) {
+        return
+      }
+      const query = Object.assign({}, this.params.query, obj)
       query.is_up = 1
       await this.$store.dispatch(
         'flow/loadMore',
@@ -278,28 +287,11 @@ export default {
         })
       )
     },
-    initData(obj = {}) {
-      this.$nextTick(async () => {
-        const query = Object.assign(
-          {
-            is_up: this.sort === 'desc' ? 0 : 1
-          },
-          this.params.query,
-          obj
-        )
-        await this.$store.dispatch(
-          'flow/initData',
-          Object.assign({}, this.params, {
-            query
-          })
-        )
-      })
-    },
-    async loadMore({ force } = { force: false }) {
+    async loadMore(obj = {}, force = false) {
       if (this.isPagination) {
         return
       }
-      const query = Object.assign({}, this.params.query)
+      const query = Object.assign({}, this.params.query, obj)
       query.is_up = 0
       await this.$store.dispatch(
         'flow/loadMore',

@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.41
+ * vue-mixin-store v1.1.43
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1040,9 +1040,7 @@ var generateRequestParams = function generateRequestParams(field, query, type) {
     } else if (type === 'lastId') {
       result.last_id = parseDataUniqueId(field.result[field.result.length - 1], changing);
     } else if (type === 'sinceId') {
-      result.seen_ids = field.result.map(function (_) {
-        return parseDataUniqueId(_, changing);
-      }).join(',');
+      result.since_id = parseDataUniqueId(query.is_up ? field.result[0] : field.result[field.result.length - 1], changing);
       result.is_up = query.is_up ? 1 : 0;
     } else if (type === 'jump') {
       result.page = query.page || 1;
@@ -1555,12 +1553,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"25eabe1c-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=720ba4f1&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"ac174138-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=64eff2ad&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=720ba4f1&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=64eff2ad&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -1841,13 +1839,6 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       validator: function validator(val) {
         return val >= 0;
       }
-    },
-    sort: {
-      type: String,
-      default: 'desc',
-      validator: function validator(val) {
-        return ~['desc', 'asc'].indexOf(val);
-      }
     }
   },
   computed: {
@@ -2010,44 +2001,6 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
 
       return jump;
     }(),
-    loadBefore: function () {
-      var _loadBefore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee3() {
-        var _ref5,
-            force,
-            query,
-            _args3 = arguments;
-
-        return regenerator_default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _ref5 = _args3.length > 0 && _args3[0] !== undefined ? _args3[0] : {
-                  force: false
-                }, force = _ref5.force;
-                query = Object.assign({}, this.params.query);
-                query.is_up = 1;
-                _context3.next = 5;
-                return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-                  query: query,
-                  force: force
-                }));
-
-              case 5:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-
-      function loadBefore() {
-        return _loadBefore.apply(this, arguments);
-      }
-
-      return loadBefore;
-    }(),
     initData: function initData() {
       var _this2 = this;
 
@@ -2056,62 +2009,103 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       /*#__PURE__*/
       FlowLoadervue_type_script_lang_js_asyncToGenerator(
       /*#__PURE__*/
-      regenerator_default.a.mark(function _callee4() {
+      regenerator_default.a.mark(function _callee3() {
         var query;
-        return regenerator_default.a.wrap(function _callee4$(_context4) {
+        return regenerator_default.a.wrap(function _callee3$(_context3) {
           while (1) {
-            switch (_context4.prev = _context4.next) {
+            switch (_context3.prev = _context3.next) {
               case 0:
-                query = Object.assign({
-                  is_up: _this2.sort === 'desc' ? 0 : 1
-                }, _this2.params.query, obj);
-                _context4.next = 3;
+                query = Object.assign({}, _this2.params.query, obj);
+                _context3.next = 3;
                 return _this2.$store.dispatch('flow/initData', Object.assign({}, _this2.params, {
                   query: query
                 }));
 
               case 3:
               case "end":
-                return _context4.stop();
+                return _context3.stop();
             }
           }
-        }, _callee4);
+        }, _callee3);
       })));
     },
-    loadMore: function () {
-      var _loadMore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
+    loadBefore: function () {
+      var _loadBefore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
       /*#__PURE__*/
-      regenerator_default.a.mark(function _callee5() {
-        var _ref7,
+      regenerator_default.a.mark(function _callee4() {
+        var obj,
             force,
             query,
-            _args5 = arguments;
-
-        return regenerator_default.a.wrap(function _callee5$(_context5) {
+            _args4 = arguments;
+        return regenerator_default.a.wrap(function _callee4$(_context4) {
           while (1) {
-            switch (_context5.prev = _context5.next) {
+            switch (_context4.prev = _context4.next) {
               case 0:
-                _ref7 = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : {
-                  force: false
-                }, force = _ref7.force;
+                obj = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : {};
+                force = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : false;
 
                 if (!this.isPagination) {
-                  _context5.next = 3;
+                  _context4.next = 4;
                   break;
                 }
 
-                return _context5.abrupt("return");
+                return _context4.abrupt("return");
 
-              case 3:
-                query = Object.assign({}, this.params.query);
-                query.is_up = 0;
-                _context5.next = 7;
+              case 4:
+                query = Object.assign({}, this.params.query, obj);
+                query.is_up = 1;
+                _context4.next = 8;
                 return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
                   query: query,
                   force: force
                 }));
 
-              case 7:
+              case 8:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function loadBefore() {
+        return _loadBefore.apply(this, arguments);
+      }
+
+      return loadBefore;
+    }(),
+    loadMore: function () {
+      var _loadMore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
+      /*#__PURE__*/
+      regenerator_default.a.mark(function _callee5() {
+        var obj,
+            force,
+            query,
+            _args5 = arguments;
+        return regenerator_default.a.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                obj = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : {};
+                force = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : false;
+
+                if (!this.isPagination) {
+                  _context5.next = 4;
+                  break;
+                }
+
+                return _context5.abrupt("return");
+
+              case 4:
+                query = Object.assign({}, this.params.query, obj);
+                query.is_up = 0;
+                _context5.next = 8;
+                return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+                  query: query,
+                  force: force
+                }));
+
+              case 8:
               case "end":
                 return _context5.stop();
             }

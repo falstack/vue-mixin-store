@@ -131,9 +131,10 @@ export const generateRequestParams = (field, query, type) => {
         changing
       )
     } else if (type === 'sinceId') {
-      result.seen_ids = field.result
-        .map(_ => parseDataUniqueId(_, changing))
-        .join(',')
+      result.since_id = parseDataUniqueId(
+        query.is_up ? field.result[0] : field.result[field.result.length - 1],
+        changing
+      )
       result.is_up = query.is_up ? 1 : 0
     } else if (type === 'jump') {
       result.page = query.page || 1
