@@ -55,15 +55,7 @@ export default (api, debug = false) => {
         }
         const args = Object.assign(params, query)
         if (notFetch) {
-          callback &&
-            callback({
-              args,
-              data: {
-                result: field.result,
-                total: field.total,
-                no_more: field.noMore
-              }
-            })
+          callback && callback({ args, data: field })
           return
         }
         try {
