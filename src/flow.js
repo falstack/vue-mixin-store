@@ -7,7 +7,8 @@ import {
   getDateFromCache,
   setReactivityField,
   computeResultLength,
-  isArray
+  isArray,
+  generateRequestParams
 } from './utils'
 
 export default (api, debug = false) => {
@@ -38,28 +39,13 @@ export default (api, debug = false) => {
           commit('INIT_STATE', { func, type, query })
           commit('SET_LOADING', fieldName)
         }
-        const params = {
-          page: 1
-        }
-        if (type === 'page') {
-          params.page = 1
-        } else if (type === 'jump') {
-          params.page = query.page || 1
-        } else if (type === 'seenIds') {
-          params.seen_ids = ''
-        } else if (type === 'lastId') {
-          params.last_id = 0
-        } else if (type === 'sinceId') {
-          params.since_id = query.sinceId || (query.is_up ? 999999999 : 0)
-          params.is_up = query.is_up ? 1 : 0
-        }
-        const args = Object.assign(params, query)
+        const params = generateRequestParams({ fetched: false }, query, type)
         if (notFetch) {
-          callback && callback({ args, data: field })
+          callback && callback({ params, data: field })
           return
         }
         try {
-          printLog('request', { func, params: args })
+          printLog('request', { func, params })
           let data
           let fromLocal = false
           if (cacheTimeout) {
@@ -70,10 +56,10 @@ export default (api, debug = false) => {
             if (data) {
               fromLocal = true
             } else {
-              data = await api[func](args)
+              data = await api[func](params)
             }
           } else {
-            data = await api[func](args)
+            data = await api[func](params)
           }
           commit('SET_DATA', {
             data,
@@ -82,9 +68,9 @@ export default (api, debug = false) => {
             fromLocal,
             cacheTimeout,
             page: params.page,
-            insertBefore: query.is_up ? 1 : 0
+            insertBefore: !!query.is_up
           })
-          callback && callback({ data, args })
+          callback && callback({ data, params })
           return data
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
@@ -113,36 +99,10 @@ export default (api, debug = false) => {
         if (type === 'jump' || !isArray(field.result)) {
           commit('CLEAR_RESULT', fieldName)
         }
-        const changing = query.changing || 'id'
-        const params = {
-          page: field.page + 1
-        }
-        if (type === 'page') {
-          params.page = field.page + 1
-        } else if (type === 'jump') {
-          params.page = query.page
-        } else if (type === 'lastId') {
-          params.last_id = parseDataUniqueId(
-            field.result[field.result.length - 1],
-            changing
-          )
-        } else if (type === 'seenIds') {
-          params.seen_ids = field.result
-            .map(_ => parseDataUniqueId(_, changing))
-            .join(',')
-        } else if (type === 'sinceId') {
-          params.since_id = parseDataUniqueId(
-            query.is_up
-              ? field.result[0]
-              : field.result[field.result.length - 1],
-            changing
-          )
-          params.is_up = query.is_up ? 1 : 0
-        }
-        const args = Object.assign(params, query)
+        const params = generateRequestParams(field, query, type)
         try {
-          printLog('request', { func, params: args })
-          const data = await api[func](args)
+          printLog('request', { func, params })
+          const data = await api[func](params)
           commit('SET_DATA', {
             fromLocal: false,
             data,
@@ -150,9 +110,9 @@ export default (api, debug = false) => {
             type,
             cacheTimeout,
             page: params.page,
-            insertBefore: query.is_up ? 1 : 0
+            insertBefore: !!query.is_up
           })
-          callback && callback({ data, args })
+          callback && callback({ data, params })
           return data
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
@@ -349,19 +309,8 @@ export default (api, debug = false) => {
           }
           field.nothing = field.total <= 0
         } catch (error) {
-          printLog('error', {
-            type,
-            func,
-            query,
-            id,
-            method,
-            key,
-            value,
-            cacheTimeout,
-            error
-          })
+          debug && console.log(error) // eslint-disable-line
         }
-        debug && console.log(error) // eslint-disable-line
       }
     },
     getters: {

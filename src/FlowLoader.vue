@@ -71,26 +71,7 @@
 
 <script>
 import { throttle } from 'throttle-debounce'
-
-const on = (elem, type, listener, useCapture = false) => {
-  elem.addEventListener(type, listener, useCapture)
-}
-
-const off = (elem, type, listener, useCapture = false) => {
-  elem.removeEventListener(type, listener, useCapture)
-}
-
-const checkInView = (dom, preload) => {
-  if (!dom) {
-    return false
-  }
-  const rect = dom.getBoundingClientRect()
-  return (
-    rect.top < window.innerHeight + preload &&
-    rect.bottom + preload > 0 &&
-    (rect.left < window.innerWidth + preload && rect.right + preload > 0)
-  )
-}
+import { on, off, checkInView } from './utils'
 
 export default {
   name: 'FlowLoader',

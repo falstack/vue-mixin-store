@@ -90,3 +90,69 @@ export const computeResultLength = data => {
   }
   return result
 }
+
+export const on = (elem, type, listener) => {
+  elem.addEventListener(type, listener, {
+    capture: false,
+    passive: true
+  })
+}
+
+export const off = (elem, type, listener) => {
+  elem.removeEventListener(type, listener, {
+    capture: false,
+    passive: true
+  })
+}
+
+export const checkInView = (dom, preload) => {
+  if (!dom) {
+    return false
+  }
+  const rect = dom.getBoundingClientRect()
+  return (
+    rect.top < window.innerHeight + preload &&
+    rect.bottom + preload > 0 &&
+    (rect.left < window.innerWidth + preload && rect.right + preload > 0)
+  )
+}
+
+export const generateRequestParams = (field, query, type) => {
+  const result = {}
+  if (field.fetched) {
+    const changing = query.changing || 'id'
+    if (type === 'seenIds') {
+      result.seen_ids = field.result
+        .map(_ => parseDataUniqueId(_, changing))
+        .join(',')
+    } else if (type === 'lastId') {
+      result.last_id = parseDataUniqueId(
+        field.result[field.result.length - 1],
+        changing
+      )
+    } else if (type === 'sinceId') {
+      result.seen_ids = field.result
+        .map(_ => parseDataUniqueId(_, changing))
+        .join(',')
+      result.is_up = query.is_up ? 1 : 0
+    } else if (type === 'jump') {
+      result.page = query.page || 1
+    } else {
+      result.page = field.page + 1
+    }
+  } else {
+    if (type === 'seenIds') {
+      result.seen_ids = ''
+    } else if (type === 'lastId') {
+      result.last_id = 0
+    } else if (type === 'sinceId') {
+      result.since_id = query.sinceId || (query.is_up ? 999999999 : 0)
+      result.is_up = query.is_up ? 1 : 0
+    } else if (type === 'jump') {
+      result.page = query.page || 1
+    } else {
+      result.page = 1
+    }
+  }
+  return Object.assign(result, query)
+}
