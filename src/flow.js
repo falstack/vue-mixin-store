@@ -44,7 +44,7 @@ export default (api, debug = false) => {
         if (type === 'page') {
           params.page = 1
         } else if (type === 'jump') {
-          params.page = query.page || 1
+          params.page = +query.page || 1
         } else if (type === 'seenIds') {
           params.seen_ids = ''
         } else if (type === 'lastId') {
@@ -114,7 +114,7 @@ export default (api, debug = false) => {
         ) {
           return
         }
-        if (type === 'jump' && query.page === field.page) {
+        if (type === 'jump' && +query.page === field.page) {
           return
         }
         commit('SET_LOADING', fieldName)
@@ -128,7 +128,7 @@ export default (api, debug = false) => {
         if (type === 'page') {
           params.page = field.page + 1
         } else if (type === 'jump') {
-          params.page = query.page
+          params.page = +query.page
         } else if (type === 'lastId') {
           params.last_id = parseDataUniqueId(
             field.result[field.result.length - 1],

@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.36
+ * vue-mixin-store v1.1.37
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1094,7 +1094,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   if (type === 'page') {
                     params.page = 1;
                   } else if (type === 'jump') {
-                    params.page = query.page || 1;
+                    params.page = +query.page || 1;
                   } else if (type === 'seenIds') {
                     params.seen_ids = '';
                   } else if (type === 'lastId') {
@@ -1232,7 +1232,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   return _context2.abrupt("return");
 
                 case 7:
-                  if (!(type === 'jump' && query.page === field.page)) {
+                  if (!(type === 'jump' && +query.page === field.page)) {
                     _context2.next = 9;
                     break;
                   }
@@ -1254,7 +1254,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   if (type === 'page') {
                     params.page = field.page + 1;
                   } else if (type === 'jump') {
-                    params.page = query.page;
+                    params.page = +query.page;
                   } else if (type === 'lastId') {
                     params.last_id = parseDataUniqueId(field.result[field.result.length - 1], changing);
                   } else if (type === 'seenIds') {
@@ -1556,7 +1556,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"5ee81b47-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f26c2d70&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"d95f0f48-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f26c2d70&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
