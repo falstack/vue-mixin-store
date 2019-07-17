@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.43
+ * vue-mixin-store v1.1.44
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1206,26 +1206,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     insertBefore: !!query.is_up
                   });
                   callback && callback({
-                    data: data,
+                    data: field,
                     params: params
                   });
-                  return _context.abrupt("return", data);
+                  _context.next = 40;
+                  break;
 
-                case 38:
-                  _context.prev = 38;
+                case 37:
+                  _context.prev = 37;
                   _context.t0 = _context["catch"](16);
                   commit('SET_ERROR', {
                     fieldName: fieldName,
                     error: _context.t0
                   });
-                  return _context.abrupt("return", null);
 
-                case 42:
+                case 40:
                 case "end":
                   return _context.stop();
               }
             }
-          }, _callee, null, [[16, 38]]);
+          }, _callee, null, [[16, 37]]);
         }));
 
         function initData(_x, _x2) {
@@ -1296,26 +1296,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     insertBefore: !!query.is_up
                   });
                   callback && callback({
-                    data: data,
+                    data: field,
                     params: params
                   });
-                  return _context2.abrupt("return", data);
+                  _context2.next = 24;
+                  break;
 
-                case 22:
-                  _context2.prev = 22;
+                case 21:
+                  _context2.prev = 21;
                   _context2.t0 = _context2["catch"](12);
                   commit('SET_ERROR', {
                     fieldName: fieldName,
                     error: _context2.t0
                   });
-                  return _context2.abrupt("return", null);
 
-                case 26:
+                case 24:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, _callee2, null, [[12, 22]]);
+          }, _callee2, null, [[12, 21]]);
         }));
 
         function loadMore(_x3, _x4) {
@@ -1553,12 +1553,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"ac174138-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=64eff2ad&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"43cc06be-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=10b1f1ee&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=64eff2ad&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=10b1f1ee&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -1841,6 +1841,11 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       }
     }
   },
+  data: function data() {
+    return {
+      firstBind: true
+    };
+  },
   computed: {
     source: function source() {
       return this.$store.getters['flow/getFlow'](this.params);
@@ -1868,11 +1873,27 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
   mounted: function mounted() {
     var _this = this;
 
+    this._fireSSRCallback();
+
     this.$nextTick(function () {
       _this._initFlowLoader();
     });
   },
   methods: {
+    _fireSSRCallback: function _fireSSRCallback() {
+      if (this.firstBind) {
+        this.firstBind = false;
+
+        if (this.source && this.source.fetched) {
+          this.callback && this.callback({
+            params: generateRequestParams({
+              fetched: false
+            }, this.params.query, this.type),
+            data: this.source
+          });
+        }
+      }
+    },
     modify: function modify(_ref) {
       var key = _ref.key,
           value = _ref.value;

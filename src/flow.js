@@ -70,11 +70,9 @@ export default (api, debug = false) => {
             page: params.page,
             insertBefore: !!query.is_up
           })
-          callback && callback({ data, params })
-          return data
+          callback && callback({ data: field, params })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
-          return null
         }
       },
       async loadMore(
@@ -112,11 +110,9 @@ export default (api, debug = false) => {
             page: params.page,
             insertBefore: !!query.is_up
           })
-          callback && callback({ data, params })
-          return data
+          callback && callback({ data: field, params })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
-          return null
         }
       }
     },
