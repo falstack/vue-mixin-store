@@ -41,7 +41,14 @@ export default (api, debug = false) => {
         }
         const params = generateRequestParams({ fetched: false }, query, type)
         if (notFetch) {
-          callback && callback({ params, data: field })
+          callback &&
+            callback({
+              params,
+              data: {
+                result: field.result,
+                extra: field.extra
+              }
+            })
           return
         }
         try {
@@ -70,7 +77,14 @@ export default (api, debug = false) => {
             page: params.page,
             insertBefore: !!query.is_up
           })
-          callback && callback({ data: field, params })
+          callback &&
+            callback({
+              params,
+              data: {
+                result: data.result,
+                extra: data.extra
+              }
+            })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
         }
@@ -110,7 +124,14 @@ export default (api, debug = false) => {
             page: params.page,
             insertBefore: !!query.is_up
           })
-          callback && callback({ data: field, params })
+          callback &&
+            callback({
+              params,
+              data: {
+                result: data.result,
+                extra: data.extra
+              }
+            })
         } catch (error) {
           commit('SET_ERROR', { fieldName, error })
         }

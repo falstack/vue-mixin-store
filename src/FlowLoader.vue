@@ -173,7 +173,10 @@ export default {
                 this.params.query,
                 this.type
               ),
-              data: this.source
+              data: {
+                result: this.source.result,
+                extra: this.source.extra
+              }
             })
         }
       }
