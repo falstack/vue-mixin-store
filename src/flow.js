@@ -225,6 +225,7 @@ export default (api, debug = false) => {
           const modKeys = key ? key.split('.') : []
           const changing = query.changing || 'id'
           const objArr = !isArray(value)
+          // 修改这个 field
           if (
             ~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(
               method
@@ -253,7 +254,7 @@ export default (api, debug = false) => {
                 while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
                   // do nothing
                 }
-                obj[modKeys[0]] = value
+                Vue.set(obj, modKeys[0], value)
                 break
               case 'patch':
                 if (objArr) {
@@ -292,6 +293,7 @@ export default (api, debug = false) => {
             }
             field.total += changeTotal
           } else {
+            // 修改 field 里的某个 result
             for (let i = 0; i < field.result.length; i++) {
               if (
                 parseDataUniqueId(field.result[i], changing).toString() ===
@@ -311,7 +313,7 @@ export default (api, debug = false) => {
                   while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
                     // do nothing
                   }
-                  obj[modKeys[0]] = value
+                  Vue.set(obj, modKeys[0], value)
                 }
                 break
               }
