@@ -17,124 +17,132 @@ export default (api, debug = false) => {
     namespaced: true,
     state: () => ({}),
     actions: {
-      async initData(
+      initData(
         { state, commit },
         { func, type, query, callback, cacheTimeout }
       ) {
-        printLog('initData', { func, type, query })
-        const fieldName = generateFieldName(func, type, query)
-        const field = state[fieldName]
-        const refresh = !!query.__refresh__
-        // 如果 error 了，就不再请求
-        if (field && field.error && !refresh) {
-          return
-        }
-        // 正在请求中，return
-        if (field && field.loading) {
-          return
-        }
-        // 这个 field 已经请求过了
-        const notFetch = field && field.fetched && !refresh
-        if (!notFetch) {
-          commit('INIT_STATE', { func, type, query })
-          commit('SET_LOADING', fieldName)
-        }
-        const params = generateRequestParams({ fetched: false }, query, type)
-        if (notFetch) {
-          callback &&
-            callback({
-              params,
-              data: {
-                result: field.result,
-                extra: field.extra
+        return new Promise(async (resolve, reject) => {
+          printLog('initData', { func, type, query })
+          const fieldName = generateFieldName(func, type, query)
+          const field = state[fieldName]
+          const refresh = !!query.__refresh__
+          // 如果 error 了，就不再请求
+          if (field && field.error && !refresh) {
+            return resolve()
+          }
+          // 正在请求中，return
+          if (field && field.loading) {
+            return resolve()
+          }
+          // 这个 field 已经请求过了
+          const notFetch = field && field.fetched && !refresh
+          if (!notFetch) {
+            commit('INIT_STATE', { func, type, query })
+            commit('SET_LOADING', fieldName)
+          }
+          const params = generateRequestParams({ fetched: false }, query, type)
+          if (notFetch) {
+            callback &&
+              callback({
+                params,
+                data: {
+                  result: field.result,
+                  extra: field.extra
+                }
+              })
+            return resolve()
+          }
+          try {
+            printLog('request', { func, params })
+            let data
+            let fromLocal = false
+            if (cacheTimeout) {
+              data = getDateFromCache({
+                key: fieldName,
+                now: Date.now()
+              })
+              if (data) {
+                fromLocal = true
+              } else {
+                data = await api[func](params)
               }
-            })
-          return
-        }
-        try {
-          printLog('request', { func, params })
-          let data
-          let fromLocal = false
-          if (cacheTimeout) {
-            data = getDateFromCache({
-              key: fieldName,
-              now: Date.now()
-            })
-            if (data) {
-              fromLocal = true
             } else {
               data = await api[func](params)
             }
-          } else {
-            data = await api[func](params)
-          }
-          commit('SET_DATA', {
-            data,
-            fieldName,
-            type,
-            fromLocal,
-            cacheTimeout,
-            page: params.page,
-            insertBefore: !!query.is_up
-          })
-          callback &&
-            callback({
-              params,
-              data: {
-                result: data.result,
-                extra: data.extra
-              }
+            commit('SET_DATA', {
+              data,
+              fieldName,
+              type,
+              fromLocal,
+              cacheTimeout,
+              page: params.page,
+              insertBefore: !!query.is_up
             })
-        } catch (error) {
-          commit('SET_ERROR', { fieldName, error })
-        }
+            callback &&
+              callback({
+                params,
+                data: {
+                  result: data.result,
+                  extra: data.extra
+                }
+              })
+            resolve()
+          } catch (error) {
+            commit('SET_ERROR', { fieldName, error })
+            reject(error)
+          }
+        })
       },
-      async loadMore(
+      loadMore(
         { state, commit },
         { type, func, query, callback, cacheTimeout, force }
       ) {
-        printLog('loadMore', { type, func, query })
-        const fieldName = generateFieldName(func, type, query)
-        const field = state[fieldName]
-        if (
-          !field ||
-          field.loading ||
-          field.nothing ||
-          (field.noMore && !force)
-        ) {
-          return
-        }
-        if (type === 'jump' && +query.page === field.page) {
-          return
-        }
-        commit('SET_LOADING', fieldName)
-        if (type === 'jump' || !isArray(field.result)) {
-          commit('CLEAR_RESULT', fieldName)
-        }
-        const params = generateRequestParams(field, query, type)
-        try {
-          printLog('request', { func, params })
-          const data = await api[func](params)
-          commit('SET_DATA', {
-            fromLocal: false,
-            data,
-            fieldName,
-            type,
-            cacheTimeout,
-            page: params.page,
-            insertBefore: !!query.is_up
-          })
-          callback &&
-            callback({
-              params,
-              data: {
-                result: data.result,
-                extra: data.extra
-              }
+        return new Promise(async (resolve, reject) => {
+          printLog('loadMore', { type, func, query })
+          const fieldName = generateFieldName(func, type, query)
+          const field = state[fieldName]
+          if (
+            !field ||
+            field.loading ||
+            field.nothing ||
+            (field.noMore && !force)
+          ) {
+            return resolve()
+          }
+          if (type === 'jump' && +query.page === field.page) {
+            return resolve()
+          }
+          commit('SET_LOADING', fieldName)
+          if (type === 'jump' || !isArray(field.result)) {
+            commit('CLEAR_RESULT', fieldName)
+          }
+          const params = generateRequestParams(field, query, type)
+          try {
+            printLog('request', { func, params })
+            const data = await api[func](params)
+            commit('SET_DATA', {
+              fromLocal: false,
+              data,
+              fieldName,
+              type,
+              cacheTimeout,
+              page: params.page,
+              insertBefore: !!query.is_up
             })
-        } catch (error) {
-          commit('SET_ERROR', { fieldName, error })
-        }
+            callback &&
+              callback({
+                params,
+                data: {
+                  result: data.result,
+                  extra: data.extra
+                }
+              })
+            resolve()
+          } catch (error) {
+            commit('SET_ERROR', { fieldName, error })
+            reject(error)
+          }
+        })
       }
     },
     mutations: {

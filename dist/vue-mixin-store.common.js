@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.46
+ * vue-mixin-store v1.1.47
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1087,267 +1087,286 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return {};
     },
     actions: {
-      initData: function () {
-        var _initData = _asyncToGenerator(
+      initData: function initData(_ref, _ref2) {
+        var state = _ref.state,
+            commit = _ref.commit;
+        var func = _ref2.func,
+            type = _ref2.type,
+            query = _ref2.query,
+            callback = _ref2.callback,
+            cacheTimeout = _ref2.cacheTimeout;
+        return new Promise(
         /*#__PURE__*/
-        regenerator_default.a.mark(function _callee(_ref, _ref2) {
-          var state, commit, func, type, query, callback, cacheTimeout, fieldName, field, refresh, notFetch, params, data, fromLocal;
-          return regenerator_default.a.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  state = _ref.state, commit = _ref.commit;
-                  func = _ref2.func, type = _ref2.type, query = _ref2.query, callback = _ref2.callback, cacheTimeout = _ref2.cacheTimeout;
-                  printLog('initData', {
-                    func: func,
-                    type: type,
-                    query: query
-                  });
-                  fieldName = generateFieldName(func, type, query);
-                  field = state[fieldName];
-                  refresh = !!query.__refresh__; // 如果 error 了，就不再请求
-
-                  if (!(field && field.error && !refresh)) {
-                    _context.next = 8;
-                    break;
-                  }
-
-                  return _context.abrupt("return");
-
-                case 8:
-                  if (!(field && field.loading)) {
-                    _context.next = 10;
-                    break;
-                  }
-
-                  return _context.abrupt("return");
-
-                case 10:
-                  // 这个 field 已经请求过了
-                  notFetch = field && field.fetched && !refresh;
-
-                  if (!notFetch) {
-                    commit('INIT_STATE', {
+        function () {
+          var _ref3 = _asyncToGenerator(
+          /*#__PURE__*/
+          regenerator_default.a.mark(function _callee(resolve, reject) {
+            var fieldName, field, refresh, notFetch, params, data, fromLocal;
+            return regenerator_default.a.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    printLog('initData', {
                       func: func,
                       type: type,
                       query: query
                     });
-                    commit('SET_LOADING', fieldName);
-                  }
+                    fieldName = generateFieldName(func, type, query);
+                    field = state[fieldName];
+                    refresh = !!query.__refresh__; // 如果 error 了，就不再请求
 
-                  params = generateRequestParams({
-                    fetched: false
-                  }, query, type);
-
-                  if (!notFetch) {
-                    _context.next = 16;
-                    break;
-                  }
-
-                  callback && callback({
-                    params: params,
-                    data: {
-                      result: field.result,
-                      extra: field.extra
+                    if (!(field && field.error && !refresh)) {
+                      _context.next = 6;
+                      break;
                     }
-                  });
-                  return _context.abrupt("return");
 
-                case 16:
-                  _context.prev = 16;
-                  printLog('request', {
-                    func: func,
-                    params: params
-                  });
-                  fromLocal = false;
+                    return _context.abrupt("return", resolve());
 
-                  if (!cacheTimeout) {
-                    _context.next = 30;
+                  case 6:
+                    if (!(field && field.loading)) {
+                      _context.next = 8;
+                      break;
+                    }
+
+                    return _context.abrupt("return", resolve());
+
+                  case 8:
+                    // 这个 field 已经请求过了
+                    notFetch = field && field.fetched && !refresh;
+
+                    if (!notFetch) {
+                      commit('INIT_STATE', {
+                        func: func,
+                        type: type,
+                        query: query
+                      });
+                      commit('SET_LOADING', fieldName);
+                    }
+
+                    params = generateRequestParams({
+                      fetched: false
+                    }, query, type);
+
+                    if (!notFetch) {
+                      _context.next = 14;
+                      break;
+                    }
+
+                    callback && callback({
+                      params: params,
+                      data: {
+                        result: field.result,
+                        extra: field.extra
+                      }
+                    });
+                    return _context.abrupt("return", resolve());
+
+                  case 14:
+                    _context.prev = 14;
+                    printLog('request', {
+                      func: func,
+                      params: params
+                    });
+                    fromLocal = false;
+
+                    if (!cacheTimeout) {
+                      _context.next = 28;
+                      break;
+                    }
+
+                    data = getDateFromCache({
+                      key: fieldName,
+                      now: Date.now()
+                    });
+
+                    if (!data) {
+                      _context.next = 23;
+                      break;
+                    }
+
+                    fromLocal = true;
+                    _context.next = 26;
                     break;
-                  }
 
-                  data = getDateFromCache({
-                    key: fieldName,
-                    now: Date.now()
-                  });
-
-                  if (!data) {
+                  case 23:
                     _context.next = 25;
+                    return api[func](params);
+
+                  case 25:
+                    data = _context.sent;
+
+                  case 26:
+                    _context.next = 31;
                     break;
-                  }
 
-                  fromLocal = true;
-                  _context.next = 28;
-                  break;
+                  case 28:
+                    _context.next = 30;
+                    return api[func](params);
 
-                case 25:
-                  _context.next = 27;
-                  return api[func](params);
+                  case 30:
+                    data = _context.sent;
 
-                case 27:
-                  data = _context.sent;
+                  case 31:
+                    commit('SET_DATA', {
+                      data: data,
+                      fieldName: fieldName,
+                      type: type,
+                      fromLocal: fromLocal,
+                      cacheTimeout: cacheTimeout,
+                      page: params.page,
+                      insertBefore: !!query.is_up
+                    });
+                    callback && callback({
+                      params: params,
+                      data: {
+                        result: data.result,
+                        extra: data.extra
+                      }
+                    });
+                    resolve();
+                    _context.next = 40;
+                    break;
 
-                case 28:
-                  _context.next = 33;
-                  break;
+                  case 36:
+                    _context.prev = 36;
+                    _context.t0 = _context["catch"](14);
+                    commit('SET_ERROR', {
+                      fieldName: fieldName,
+                      error: _context.t0
+                    });
+                    reject(_context.t0);
 
-                case 30:
-                  _context.next = 32;
-                  return api[func](params);
-
-                case 32:
-                  data = _context.sent;
-
-                case 33:
-                  commit('SET_DATA', {
-                    data: data,
-                    fieldName: fieldName,
-                    type: type,
-                    fromLocal: fromLocal,
-                    cacheTimeout: cacheTimeout,
-                    page: params.page,
-                    insertBefore: !!query.is_up
-                  });
-                  callback && callback({
-                    params: params,
-                    data: {
-                      result: data.result,
-                      extra: data.extra
-                    }
-                  });
-                  _context.next = 40;
-                  break;
-
-                case 37:
-                  _context.prev = 37;
-                  _context.t0 = _context["catch"](16);
-                  commit('SET_ERROR', {
-                    fieldName: fieldName,
-                    error: _context.t0
-                  });
-
-                case 40:
-                case "end":
-                  return _context.stop();
+                  case 40:
+                  case "end":
+                    return _context.stop();
+                }
               }
-            }
-          }, _callee, null, [[16, 37]]);
-        }));
+            }, _callee, null, [[14, 36]]);
+          }));
 
-        function initData(_x, _x2) {
-          return _initData.apply(this, arguments);
-        }
-
-        return initData;
-      }(),
-      loadMore: function () {
-        var _loadMore = _asyncToGenerator(
+          return function (_x, _x2) {
+            return _ref3.apply(this, arguments);
+          };
+        }());
+      },
+      loadMore: function loadMore(_ref4, _ref5) {
+        var state = _ref4.state,
+            commit = _ref4.commit;
+        var type = _ref5.type,
+            func = _ref5.func,
+            query = _ref5.query,
+            callback = _ref5.callback,
+            cacheTimeout = _ref5.cacheTimeout,
+            force = _ref5.force;
+        return new Promise(
         /*#__PURE__*/
-        regenerator_default.a.mark(function _callee2(_ref3, _ref4) {
-          var state, commit, type, func, query, callback, cacheTimeout, force, fieldName, field, params, data;
-          return regenerator_default.a.wrap(function _callee2$(_context2) {
-            while (1) {
-              switch (_context2.prev = _context2.next) {
-                case 0:
-                  state = _ref3.state, commit = _ref3.commit;
-                  type = _ref4.type, func = _ref4.func, query = _ref4.query, callback = _ref4.callback, cacheTimeout = _ref4.cacheTimeout, force = _ref4.force;
-                  printLog('loadMore', {
-                    type: type,
-                    func: func,
-                    query: query
-                  });
-                  fieldName = generateFieldName(func, type, query);
-                  field = state[fieldName];
+        function () {
+          var _ref6 = _asyncToGenerator(
+          /*#__PURE__*/
+          regenerator_default.a.mark(function _callee2(resolve, reject) {
+            var fieldName, field, params, data;
+            return regenerator_default.a.wrap(function _callee2$(_context2) {
+              while (1) {
+                switch (_context2.prev = _context2.next) {
+                  case 0:
+                    printLog('loadMore', {
+                      type: type,
+                      func: func,
+                      query: query
+                    });
+                    fieldName = generateFieldName(func, type, query);
+                    field = state[fieldName];
 
-                  if (!(!field || field.loading || field.nothing || field.noMore && !force)) {
-                    _context2.next = 7;
-                    break;
-                  }
-
-                  return _context2.abrupt("return");
-
-                case 7:
-                  if (!(type === 'jump' && +query.page === field.page)) {
-                    _context2.next = 9;
-                    break;
-                  }
-
-                  return _context2.abrupt("return");
-
-                case 9:
-                  commit('SET_LOADING', fieldName);
-
-                  if (type === 'jump' || !isArray(field.result)) {
-                    commit('CLEAR_RESULT', fieldName);
-                  }
-
-                  params = generateRequestParams(field, query, type);
-                  _context2.prev = 12;
-                  printLog('request', {
-                    func: func,
-                    params: params
-                  });
-                  _context2.next = 16;
-                  return api[func](params);
-
-                case 16:
-                  data = _context2.sent;
-                  commit('SET_DATA', {
-                    fromLocal: false,
-                    data: data,
-                    fieldName: fieldName,
-                    type: type,
-                    cacheTimeout: cacheTimeout,
-                    page: params.page,
-                    insertBefore: !!query.is_up
-                  });
-                  callback && callback({
-                    params: params,
-                    data: {
-                      result: data.result,
-                      extra: data.extra
+                    if (!(!field || field.loading || field.nothing || field.noMore && !force)) {
+                      _context2.next = 5;
+                      break;
                     }
-                  });
-                  _context2.next = 24;
-                  break;
 
-                case 21:
-                  _context2.prev = 21;
-                  _context2.t0 = _context2["catch"](12);
-                  commit('SET_ERROR', {
-                    fieldName: fieldName,
-                    error: _context2.t0
-                  });
+                    return _context2.abrupt("return", resolve());
 
-                case 24:
-                case "end":
-                  return _context2.stop();
+                  case 5:
+                    if (!(type === 'jump' && +query.page === field.page)) {
+                      _context2.next = 7;
+                      break;
+                    }
+
+                    return _context2.abrupt("return", resolve());
+
+                  case 7:
+                    commit('SET_LOADING', fieldName);
+
+                    if (type === 'jump' || !isArray(field.result)) {
+                      commit('CLEAR_RESULT', fieldName);
+                    }
+
+                    params = generateRequestParams(field, query, type);
+                    _context2.prev = 10;
+                    printLog('request', {
+                      func: func,
+                      params: params
+                    });
+                    _context2.next = 14;
+                    return api[func](params);
+
+                  case 14:
+                    data = _context2.sent;
+                    commit('SET_DATA', {
+                      fromLocal: false,
+                      data: data,
+                      fieldName: fieldName,
+                      type: type,
+                      cacheTimeout: cacheTimeout,
+                      page: params.page,
+                      insertBefore: !!query.is_up
+                    });
+                    callback && callback({
+                      params: params,
+                      data: {
+                        result: data.result,
+                        extra: data.extra
+                      }
+                    });
+                    resolve();
+                    _context2.next = 24;
+                    break;
+
+                  case 20:
+                    _context2.prev = 20;
+                    _context2.t0 = _context2["catch"](10);
+                    commit('SET_ERROR', {
+                      fieldName: fieldName,
+                      error: _context2.t0
+                    });
+                    reject(_context2.t0);
+
+                  case 24:
+                  case "end":
+                    return _context2.stop();
+                }
               }
-            }
-          }, _callee2, null, [[12, 21]]);
-        }));
+            }, _callee2, null, [[10, 20]]);
+          }));
 
-        function loadMore(_x3, _x4) {
-          return _loadMore.apply(this, arguments);
-        }
-
-        return loadMore;
-      }()
+          return function (_x3, _x4) {
+            return _ref6.apply(this, arguments);
+          };
+        }());
+      }
     },
     mutations: {
-      INIT_STATE: function INIT_STATE(state, _ref5) {
-        var func = _ref5.func,
-            type = _ref5.type,
-            query = _ref5.query;
+      INIT_STATE: function INIT_STATE(state, _ref7) {
+        var func = _ref7.func,
+            type = _ref7.type,
+            query = _ref7.query;
         external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(state, generateFieldName(func, type, query), Object.assign({}, defaultListObj));
       },
       SET_LOADING: function SET_LOADING(state, fieldName) {
         state[fieldName].loading = true;
         state[fieldName].error = null;
       },
-      SET_ERROR: function SET_ERROR(state, _ref6) {
-        var fieldName = _ref6.fieldName,
-            error = _ref6.error;
+      SET_ERROR: function SET_ERROR(state, _ref8) {
+        var fieldName = _ref8.fieldName,
+            error = _ref8.error;
         printLog('error', {
           fieldName: fieldName,
           error: error
@@ -1361,14 +1380,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         state[fieldName].result = [];
         state[fieldName].extra = null;
       },
-      SET_DATA: function SET_DATA(state, _ref7) {
-        var data = _ref7.data,
-            fieldName = _ref7.fieldName,
-            type = _ref7.type,
-            page = _ref7.page,
-            insertBefore = _ref7.insertBefore,
-            fromLocal = _ref7.fromLocal,
-            cacheTimeout = _ref7.cacheTimeout;
+      SET_DATA: function SET_DATA(state, _ref9) {
+        var data = _ref9.data,
+            fieldName = _ref9.fieldName,
+            type = _ref9.type,
+            page = _ref9.page,
+            insertBefore = _ref9.insertBefore,
+            fromLocal = _ref9.fromLocal,
+            cacheTimeout = _ref9.cacheTimeout;
         printLog('setData', {
           data: data,
           fieldName: fieldName,
@@ -1417,15 +1436,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           });
         }
       },
-      UPDATE_DATA: function UPDATE_DATA(state, _ref8) {
-        var type = _ref8.type,
-            func = _ref8.func,
-            query = _ref8.query,
-            id = _ref8.id,
-            method = _ref8.method,
-            key = _ref8.key,
-            value = _ref8.value,
-            cacheTimeout = _ref8.cacheTimeout;
+      UPDATE_DATA: function UPDATE_DATA(state, _ref10) {
+        var type = _ref10.type,
+            func = _ref10.func,
+            query = _ref10.query,
+            id = _ref10.id,
+            method = _ref10.method,
+            key = _ref10.key,
+            value = _ref10.value,
+            cacheTimeout = _ref10.cacheTimeout;
 
         try {
           printLog('updateData', {
@@ -1553,17 +1572,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     getters: {
       getFlow: function getFlow(state) {
-        return function (_ref9) {
-          var func = _ref9.func,
-              type = _ref9.type,
-              query = _ref9.query;
+        return function (_ref11) {
+          var func = _ref11.func,
+              type = _ref11.type,
+              query = _ref11.query;
           return state[generateFieldName(func, type, query)];
         };
       }
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"09004a9d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=75006ae8&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4a95410a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=75006ae8&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
