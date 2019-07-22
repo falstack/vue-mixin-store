@@ -71,7 +71,7 @@
 
 <script>
 import { throttle } from 'throttle-debounce'
-import { on, off, checkInView } from './utils'
+import { on, off, checkInView, generateRequestParams } from './utils'
 
 export default {
   name: 'FlowLoader',
@@ -127,6 +127,11 @@ export default {
       validator: val => val >= 0
     }
   },
+  data() {
+    return {
+      firstBind: true
+    }
+  },
   computed: {
     source() {
       return this.$store.getters['flow/getFlow'](this.params)
@@ -151,11 +156,31 @@ export default {
     }
   },
   mounted() {
+    this._fireSSRCallback()
     this.$nextTick(() => {
       this._initFlowLoader()
     })
   },
   methods: {
+    _fireSSRCallback() {
+      if (this.firstBind) {
+        this.firstBind = false
+        if (this.source && this.source.fetched) {
+          this.callback &&
+            this.callback({
+              params: generateRequestParams(
+                { fetched: false },
+                this.params.query,
+                this.type
+              ),
+              data: {
+                result: this.source.result,
+                extra: this.source.extra
+              }
+            })
+        }
+      }
+    },
     modify({ key, value }) {
       this.$store.commit(
         'flow/UPDATE_DATA',

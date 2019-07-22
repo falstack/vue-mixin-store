@@ -59,7 +59,7 @@
 - 参数：id（这里是键值，键名由 query 里的 changing 指定）
 - 参数：key（支持使用`.`分割符来修改对象深层的值）
 - 参数：value（设定的值）
-- 更新列表中的某个元素的某个值
+- 改变`field`中某个`result`的某个值
 
 #### prepend(data)
 - 参数：data（支持单个或多个值）
@@ -82,7 +82,7 @@
 #### modify({ key, value })
 - 参数：key（改变的值的 key）
 - 参数：value（新值）
-- 改变该列表的某个数据
+- 改变该`field`的某个数据
 
 #### patch(array)
 - 参数：value objectArray 或 array
