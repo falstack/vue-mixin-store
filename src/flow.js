@@ -307,7 +307,7 @@ export default (api, debug = false) => {
               expiredAt: Date.now() + cacheTimeout * 1000
             })
           }
-          field.nothing = field.total <= 0
+          field.nothing = computeResultLength(field.result) === 0
         } catch (error) {
           debug && console.log(error) // eslint-disable-line
         }
