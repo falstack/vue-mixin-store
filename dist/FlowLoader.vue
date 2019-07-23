@@ -175,7 +175,9 @@ export default {
               ),
               data: {
                 result: this.source.result,
-                extra: this.source.extra
+                extra: this.source.extra,
+                noMore: this.source.noMore,
+                total: this.source.total
               }
             })
         }

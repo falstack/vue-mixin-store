@@ -47,7 +47,9 @@ export default (api, debug = false) => {
                 params,
                 data: {
                   result: field.result,
-                  extra: field.extra
+                  extra: field.extra,
+                  noMore: field.noMore,
+                  total: field.total
                 }
               })
             return resolve()
@@ -83,7 +85,9 @@ export default (api, debug = false) => {
                 params,
                 data: {
                   result: data.result,
-                  extra: data.extra
+                  extra: data.extra,
+                  noMore: field.noMore,
+                  total: field.total
                 }
               })
             resolve()
@@ -134,7 +138,9 @@ export default (api, debug = false) => {
                 params,
                 data: {
                   result: data.result,
-                  extra: data.extra
+                  extra: data.extra,
+                  noMore: field.noMore,
+                  total: field.total
                 }
               })
             resolve()
