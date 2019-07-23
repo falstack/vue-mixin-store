@@ -193,15 +193,6 @@ export default {
         })
       )
     },
-    delete(id) {
-      this.$store.commit(
-        'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: 'delete',
-          id
-        })
-      )
-    },
     update({ id, key, value }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
@@ -212,7 +203,18 @@ export default {
         })
       )
     },
-    prepend(data) {
+    delete(id, resultPrefix, changingKey) {
+      this.$store.commit(
+        'flow/UPDATE_DATA',
+        Object.assign({}, this.params, {
+          method: 'delete',
+          id,
+          resultPrefix,
+          changingKey
+        })
+      )
+    },
+    prepend(data, resultPrefix, changingKey) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
@@ -220,11 +222,13 @@ export default {
             Object.prototype.toString.call(data) === '[object Array]'
               ? 'merge'
               : 'unshift',
-          value: data
+          value: data,
+          resultPrefix,
+          changingKey
         })
       )
     },
-    append(data) {
+    append(data, resultPrefix, changingKey) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
@@ -232,36 +236,44 @@ export default {
             Object.prototype.toString.call(data) === '[object Array]'
               ? 'concat'
               : 'push',
-          value: data
+          value: data,
+          resultPrefix,
+          changingKey
         })
       )
     },
-    patch(objectArray) {
+    patch(objectArray, resultPrefix, changingKey) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'patch',
-          value: objectArray
+          value: objectArray,
+          resultPrefix,
+          changingKey
         })
       )
     },
-    insertBefore({ id, value }) {
+    insertBefore({ id, value, resultPrefix, changingKey }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'insert-before',
           id,
-          value
+          value,
+          resultPrefix,
+          changingKey
         })
       )
     },
-    insertAfter({ id, value }) {
+    insertAfter({ id, value, resultPrefix, changingKey }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'insert-after',
           id,
-          value
+          value,
+          resultPrefix,
+          changingKey
         })
       )
     },

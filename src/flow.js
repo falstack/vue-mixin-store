@@ -218,7 +218,18 @@ export default (api, debug = false) => {
       },
       UPDATE_DATA(
         state,
-        { type, func, query, id, method, key, value, cacheTimeout }
+        {
+          type,
+          func,
+          query,
+          id,
+          method,
+          key,
+          value,
+          cacheTimeout,
+          resultPrefix,
+          changingKey
+        }
       ) {
         try {
           printLog('updateData', {
@@ -229,7 +240,9 @@ export default (api, debug = false) => {
             method,
             key,
             value,
-            cacheTimeout
+            cacheTimeout,
+            resultPrefix,
+            changingKey
           })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
@@ -237,7 +250,7 @@ export default (api, debug = false) => {
             return
           }
           const modKeys = key ? key.split('.') : []
-          const changing = query.changing || 'id'
+          const changing = changingKey || query.changing || 'id'
           const objArr = !isArray(value)
           // 修改这个 field
           if (
@@ -248,19 +261,31 @@ export default (api, debug = false) => {
             let changeTotal = 0
             switch (method) {
               case 'push':
-                field.result.push(value)
+                resultPrefix
+                  ? field.result[resultPrefix].push(value)
+                  : field.result.push(value)
                 changeTotal = 1
                 break
               case 'unshift':
-                field.result.unshift(value)
+                resultPrefix
+                  ? field.result[resultPrefix].unshift(value)
+                  : field.result.unshift(value)
                 changeTotal = 1
                 break
               case 'concat':
-                field.result = field.result.concat(value)
+                resultPrefix
+                  ? (field.result[resultPrefix] = field.result[
+                      resultPrefix
+                    ].concat(value))
+                  : (field.result = field.result.concat(value))
                 changeTotal = value.length
                 break
               case 'merge':
-                field.result = value.concat(field.result)
+                resultPrefix
+                  ? (field.result[resultPrefix] = value.concat(
+                      field.result[resultPrefix]
+                    ))
+                  : (field.result = value.concat(field.result))
                 changeTotal = value.length
                 break
               case 'modify':
@@ -272,36 +297,75 @@ export default (api, debug = false) => {
                 break
               case 'patch':
                 if (objArr) {
-                  Object.keys(value).forEach(uniqueId => {
-                    field.result.forEach((item, index) => {
-                      if (
-                        parseDataUniqueId(item, changing).toString() ===
-                        uniqueId.toString()
-                      ) {
-                        Object.keys(value[uniqueId]).forEach(key => {
-                          Vue.set(
-                            field.result[index],
-                            key,
-                            value[uniqueId][key]
-                          )
-                        })
-                      }
+                  if (resultPrefix) {
+                    Object.keys(value).forEach(uniqueId => {
+                      field.result[resultPrefix].forEach((item, index) => {
+                        if (
+                          parseDataUniqueId(item, changing).toString() ===
+                          uniqueId.toString()
+                        ) {
+                          Object.keys(value[uniqueId]).forEach(key => {
+                            Vue.set(
+                              field.result[resultPrefix][index],
+                              key,
+                              value[uniqueId][key]
+                            )
+                          })
+                        }
+                      })
                     })
-                  })
+                  } else {
+                    Object.keys(value).forEach(uniqueId => {
+                      field.result.forEach((item, index) => {
+                        if (
+                          parseDataUniqueId(item, changing).toString() ===
+                          uniqueId.toString()
+                        ) {
+                          Object.keys(value[uniqueId]).forEach(key => {
+                            Vue.set(
+                              field.result[index],
+                              key,
+                              value[uniqueId][key]
+                            )
+                          })
+                        }
+                      })
+                    })
+                  }
                 } else {
-                  value.forEach(col => {
-                    const uniqueId = parseDataUniqueId(col, changing)
-                    field.result.forEach((item, index) => {
-                      if (
-                        parseDataUniqueId(item, changing).toString() ===
-                        uniqueId.toString()
-                      ) {
-                        Object.keys(col).forEach(key => {
-                          Vue.set(field.result[index], key, col[key])
-                        })
-                      }
+                  if (resultPrefix) {
+                    value.forEach(col => {
+                      const uniqueId = parseDataUniqueId(col, changing)
+                      field.result[resultPrefix].forEach((item, index) => {
+                        if (
+                          parseDataUniqueId(item, changing).toString() ===
+                          uniqueId.toString()
+                        ) {
+                          Object.keys(col).forEach(key => {
+                            Vue.set(
+                              field.result[resultPrefix][index],
+                              key,
+                              col[key]
+                            )
+                          })
+                        }
+                      })
                     })
-                  })
+                  } else {
+                    value.forEach(col => {
+                      const uniqueId = parseDataUniqueId(col, changing)
+                      field.result.forEach((item, index) => {
+                        if (
+                          parseDataUniqueId(item, changing).toString() ===
+                          uniqueId.toString()
+                        ) {
+                          Object.keys(col).forEach(key => {
+                            Vue.set(field.result[index], key, col[key])
+                          })
+                        }
+                      })
+                    })
+                  }
                 }
                 break
             }
@@ -314,13 +378,19 @@ export default (api, debug = false) => {
                 id.toString()
               ) {
                 if (method === 'delete') {
-                  field.result.splice(i, 1)
+                  resultPrefix
+                    ? field.result[resultPrefix].splice(i, 1)
+                    : field.result.splice(i, 1)
                   field.total--
                 } else if (method === 'insert-before') {
-                  field.result.splice(i, 0, value)
+                  resultPrefix
+                    ? field.result[resultPrefix].splice(i, 0, value)
+                    : field.result.splice(i, 0, value)
                   field.total++
                 } else if (method === 'insert-after') {
-                  field.result.splice(i + 1, 0, value)
+                  resultPrefix
+                    ? field.result[resultPrefix].splice(i + 1, 0, value)
+                    : field.result.splice(i + 1, 0, value)
                   field.total++
                 } else {
                   let obj = field.result[i]

@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.48
+ * vue-mixin-store v1.1.50
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1459,7 +1459,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             method = _ref10.method,
             key = _ref10.key,
             value = _ref10.value,
-            cacheTimeout = _ref10.cacheTimeout;
+            cacheTimeout = _ref10.cacheTimeout,
+            resultPrefix = _ref10.resultPrefix,
+            changingKey = _ref10.changingKey;
 
         try {
           printLog('updateData', {
@@ -1470,7 +1472,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             method: method,
             key: key,
             value: value,
-            cacheTimeout: cacheTimeout
+            cacheTimeout: cacheTimeout,
+            resultPrefix: resultPrefix,
+            changingKey: changingKey
           });
           var fieldName = generateFieldName(func, type, query);
           var field = state[fieldName];
@@ -1480,7 +1484,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
 
           var modKeys = key ? key.split('.') : [];
-          var changing = query.changing || 'id';
+          var changing = changingKey || query.changing || 'id';
           var objArr = !isArray(value); // 修改这个 field
 
           if (~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(method)) {
@@ -1488,22 +1492,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
             switch (method) {
               case 'push':
-                field.result.push(value);
+                resultPrefix ? field.result[resultPrefix].push(value) : field.result.push(value);
                 changeTotal = 1;
                 break;
 
               case 'unshift':
-                field.result.unshift(value);
+                resultPrefix ? field.result[resultPrefix].unshift(value) : field.result.unshift(value);
                 changeTotal = 1;
                 break;
 
               case 'concat':
-                field.result = field.result.concat(value);
+                resultPrefix ? field.result[resultPrefix] = field.result[resultPrefix].concat(value) : field.result = field.result.concat(value);
                 changeTotal = value.length;
                 break;
 
               case 'merge':
-                field.result = value.concat(field.result);
+                resultPrefix ? field.result[resultPrefix] = value.concat(field.result[resultPrefix]) : field.result = value.concat(field.result);
                 changeTotal = value.length;
                 break;
 
@@ -1518,26 +1522,51 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 'patch':
                 if (objArr) {
-                  Object.keys(value).forEach(function (uniqueId) {
-                    field.result.forEach(function (item, index) {
-                      if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
-                        Object.keys(value[uniqueId]).forEach(function (key) {
-                          external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[index], key, value[uniqueId][key]);
-                        });
-                      }
+                  if (resultPrefix) {
+                    Object.keys(value).forEach(function (uniqueId) {
+                      field.result[resultPrefix].forEach(function (item, index) {
+                        if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
+                          Object.keys(value[uniqueId]).forEach(function (key) {
+                            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[resultPrefix][index], key, value[uniqueId][key]);
+                          });
+                        }
+                      });
                     });
-                  });
+                  } else {
+                    Object.keys(value).forEach(function (uniqueId) {
+                      field.result.forEach(function (item, index) {
+                        if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
+                          Object.keys(value[uniqueId]).forEach(function (key) {
+                            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[index], key, value[uniqueId][key]);
+                          });
+                        }
+                      });
+                    });
+                  }
                 } else {
-                  value.forEach(function (col) {
-                    var uniqueId = parseDataUniqueId(col, changing);
-                    field.result.forEach(function (item, index) {
-                      if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
-                        Object.keys(col).forEach(function (key) {
-                          external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[index], key, col[key]);
-                        });
-                      }
+                  if (resultPrefix) {
+                    value.forEach(function (col) {
+                      var uniqueId = parseDataUniqueId(col, changing);
+                      field.result[resultPrefix].forEach(function (item, index) {
+                        if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
+                          Object.keys(col).forEach(function (key) {
+                            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[resultPrefix][index], key, col[key]);
+                          });
+                        }
+                      });
                     });
-                  });
+                  } else {
+                    value.forEach(function (col) {
+                      var uniqueId = parseDataUniqueId(col, changing);
+                      field.result.forEach(function (item, index) {
+                        if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
+                          Object.keys(col).forEach(function (key) {
+                            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[index], key, col[key]);
+                          });
+                        }
+                      });
+                    });
+                  }
                 }
 
                 break;
@@ -1549,13 +1578,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             for (var i = 0; i < field.result.length; i++) {
               if (parseDataUniqueId(field.result[i], changing).toString() === id.toString()) {
                 if (method === 'delete') {
-                  field.result.splice(i, 1);
+                  resultPrefix ? field.result[resultPrefix].splice(i, 1) : field.result.splice(i, 1);
                   field.total--;
                 } else if (method === 'insert-before') {
-                  field.result.splice(i, 0, value);
+                  resultPrefix ? field.result[resultPrefix].splice(i, 0, value) : field.result.splice(i, 0, value);
                   field.total++;
                 } else if (method === 'insert-after') {
-                  field.result.splice(i + 1, 0, value);
+                  resultPrefix ? field.result[resultPrefix].splice(i + 1, 0, value) : field.result.splice(i + 1, 0, value);
                   field.total++;
                 } else {
                   var _obj = field.result[i];
@@ -1597,12 +1626,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2715aeee-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=9cca17d8&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"420c126d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=691fca1e&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=9cca17d8&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=691fca1e&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -1952,12 +1981,6 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
         key: key
       }));
     },
-    delete: function _delete(id) {
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
-        method: 'delete',
-        id: id
-      }));
-    },
     update: function update(_ref2) {
       var id = _ref2.id,
           key = _ref2.key,
@@ -1968,40 +1991,62 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
         value: value
       }));
     },
-    prepend: function prepend(data) {
+    delete: function _delete(id, resultPrefix, changingKey) {
+      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+        method: 'delete',
+        id: id,
+        resultPrefix: resultPrefix,
+        changingKey: changingKey
+      }));
+    },
+    prepend: function prepend(data, resultPrefix, changingKey) {
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: Object.prototype.toString.call(data) === '[object Array]' ? 'merge' : 'unshift',
-        value: data
+        value: data,
+        resultPrefix: resultPrefix,
+        changingKey: changingKey
       }));
     },
-    append: function append(data) {
+    append: function append(data, resultPrefix, changingKey) {
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: Object.prototype.toString.call(data) === '[object Array]' ? 'concat' : 'push',
-        value: data
+        value: data,
+        resultPrefix: resultPrefix,
+        changingKey: changingKey
       }));
     },
-    patch: function patch(objectArray) {
+    patch: function patch(objectArray, resultPrefix, changingKey) {
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'patch',
-        value: objectArray
+        value: objectArray,
+        resultPrefix: resultPrefix,
+        changingKey: changingKey
       }));
     },
     insertBefore: function insertBefore(_ref3) {
       var id = _ref3.id,
-          value = _ref3.value;
+          value = _ref3.value,
+          resultPrefix = _ref3.resultPrefix,
+          changingKey = _ref3.changingKey;
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'insert-before',
         id: id,
-        value: value
+        value: value,
+        resultPrefix: resultPrefix,
+        changingKey: changingKey
       }));
     },
     insertAfter: function insertAfter(_ref4) {
       var id = _ref4.id,
-          value = _ref4.value;
+          value = _ref4.value,
+          resultPrefix = _ref4.resultPrefix,
+          changingKey = _ref4.changingKey;
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'insert-after',
         id: id,
-        value: value
+        value: value,
+        resultPrefix: resultPrefix,
+        changingKey: changingKey
       }));
     },
     getResource: function getResource() {
