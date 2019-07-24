@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.51
+ * vue-mixin-store v1.1.52
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1626,12 +1626,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"fd6a0acc-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=691fca1e&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"b5219f3c-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=fd9023ae&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":_vm.loadMore}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=691fca1e&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=fd9023ae&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -2053,61 +2053,28 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'extra';
       return this.source[key];
     },
-    refresh: function () {
-      var _refresh = FlowLoadervue_type_script_lang_js_asyncToGenerator(
+    jump: function () {
+      var _jump = FlowLoadervue_type_script_lang_js_asyncToGenerator(
       /*#__PURE__*/
-      regenerator_default.a.mark(function _callee() {
+      regenerator_default.a.mark(function _callee(page) {
         var query;
         return regenerator_default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 query = Object.assign({}, this.params.query);
-                query.__refresh__ = true;
-                _context.next = 4;
-                return this.$store.dispatch('flow/initData', Object.assign({}, this.params, {
-                  query: query
-                }));
-
-              case 4:
-                this._initFlowLoader();
-
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function refresh() {
-        return _refresh.apply(this, arguments);
-      }
-
-      return refresh;
-    }(),
-    jump: function () {
-      var _jump = FlowLoadervue_type_script_lang_js_asyncToGenerator(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee2(page) {
-        var query;
-        return regenerator_default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                query = Object.assign({}, this.params.query);
                 query.page = page;
-                _context2.next = 4;
+                _context.next = 4;
                 return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
                   query: query
                 }));
 
               case 4:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2, this);
+        }, _callee, this);
       }));
 
       function jump(_x) {
@@ -2116,8 +2083,39 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
 
       return jump;
     }(),
-    initData: function initData() {
+    refresh: function refresh() {
       var _this2 = this;
+
+      this.$nextTick(
+      /*#__PURE__*/
+      FlowLoadervue_type_script_lang_js_asyncToGenerator(
+      /*#__PURE__*/
+      regenerator_default.a.mark(function _callee2() {
+        var query;
+        return regenerator_default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                query = Object.assign({}, _this2.params.query);
+                query.__refresh__ = true;
+                _context2.next = 4;
+                return _this2.$store.dispatch('flow/initData', Object.assign({}, _this2.params, {
+                  query: query
+                }));
+
+              case 4:
+                _this2._initFlowLoader();
+
+              case 5:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      })));
+    },
+    initData: function initData() {
+      var _this3 = this;
 
       var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       this.$nextTick(
@@ -2130,9 +2128,9 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                query = Object.assign({}, _this2.params.query, obj);
+                query = Object.assign({}, _this3.params.query, obj);
                 _context3.next = 3;
-                return _this2.$store.dispatch('flow/initData', Object.assign({}, _this2.params, {
+                return _this3.$store.dispatch('flow/initData', Object.assign({}, _this3.params, {
                   query: query
                 }));
 

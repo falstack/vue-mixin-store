@@ -280,17 +280,6 @@ export default {
     getResource(key = 'extra') {
       return this.source[key]
     },
-    async refresh() {
-      const query = Object.assign({}, this.params.query)
-      query.__refresh__ = true
-      await this.$store.dispatch(
-        'flow/initData',
-        Object.assign({}, this.params, {
-          query
-        })
-      )
-      this._initFlowLoader()
-    },
     async jump(page) {
       const query = Object.assign({}, this.params.query)
       query.page = page
@@ -300,6 +289,19 @@ export default {
           query
         })
       )
+    },
+    refresh() {
+      this.$nextTick(async () => {
+        const query = Object.assign({}, this.params.query)
+        query.__refresh__ = true
+        await this.$store.dispatch(
+          'flow/initData',
+          Object.assign({}, this.params, {
+            query
+          })
+        )
+        this._initFlowLoader()
+      })
     },
     initData(obj = {}) {
       this.$nextTick(async () => {
