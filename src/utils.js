@@ -160,5 +160,5 @@ export const generateRequestParams = (field, query, type) => {
       result.page = 1
     }
   }
-  return Object.assign(result, query)
+  return Object.assign(query, result)
 }

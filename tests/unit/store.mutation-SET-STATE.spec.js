@@ -84,8 +84,9 @@ describe('store mutation set state', () => {
     })
     Store.mutations.CLEAR_RESULT(state, fieldName)
     expect(state).toEqual({
-      [fieldName]: Object.assign(afterState, {
-        result: []
+      [fieldName]: Object.assign({}, afterState, {
+        result: [],
+        extra: null
       })
     })
   })
