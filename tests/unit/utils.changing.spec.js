@@ -6,7 +6,7 @@ describe('parse data unique id', () => {
     slug: 'abc',
     data: {
       unique_id: 456,
-      nest: {
+      deep: {
         key: 'dio'
       }
     }
@@ -27,8 +27,8 @@ describe('parse data unique id', () => {
     expect(name).toBe(456)
   })
 
-  it('changing 是 nest key', () => {
-    const name = parseDataUniqueId(data, 'data.nest.key')
+  it('changing 是 deep key', () => {
+    const name = parseDataUniqueId(data, 'data.deep.key')
     expect(name).toBe('dio')
   })
 })

@@ -65,17 +65,17 @@ export const setDataToCache = ({ key, value, expiredAt }) => {
 export const isArray = data =>
   Object.prototype.toString.call(data) === '[object Array]'
 
-export const setReactivityField = (field, key, value, type, insertBefore) => {
+export const setReactivityField = (setter, field, key, value, type, insertBefore) => {
   if (field[key]) {
     if (type === 'jump' || !isArray(value)) {
-      Vue.set(field, key, value)
+      setter(field, key, value)
     } else {
       field[key] = insertBefore
         ? value.concat(field[key])
         : field[key].concat(value)
     }
   } else {
-    Vue.set(field, key, value)
+    setter(field, key, value)
   }
 }
 

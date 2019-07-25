@@ -60,7 +60,7 @@
         <!--   normal   -->
         <template v-else-if="!isPagination">
           <div v-if="isAuto" class="flow-loader-state-shim"></div>
-          <div v-else class="flow-loader-state-load" @click="loadMore">
+          <div v-else class="flow-loader-state-load" @click="loadMore()">
             <slot name="load">点击加载更多</slot>
           </div>
         </template>
