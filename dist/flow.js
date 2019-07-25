@@ -206,9 +206,9 @@ export default (api, debug = false) => {
         field.total = data.total
         field.page =
           typeof page === 'number' ? page : typeof page === 'string' ? +page : 1
-        setReactivityField(field, 'result', result, type, insertBefore)
+        setReactivityField(Vue.set, field, 'result', result, type, insertBefore)
         if (extra) {
-          setReactivityField(field, 'extra', extra, type, insertBefore)
+          setReactivityField(Vue.set, field, 'extra', extra, type, insertBefore)
         }
         field.loading = false
         if (cacheTimeout && !field.nothing) {

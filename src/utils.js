@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 export const defaultListObj = {
   result: [],
   page: 0,
@@ -65,7 +63,14 @@ export const setDataToCache = ({ key, value, expiredAt }) => {
 export const isArray = data =>
   Object.prototype.toString.call(data) === '[object Array]'
 
-export const setReactivityField = (setter, field, key, value, type, insertBefore) => {
+export const setReactivityField = (
+  setter,
+  field,
+  key,
+  value,
+  type,
+  insertBefore
+) => {
   if (field[key]) {
     if (type === 'jump' || !isArray(value)) {
       setter(field, key, value)
