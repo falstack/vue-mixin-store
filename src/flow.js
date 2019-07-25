@@ -2,12 +2,14 @@ import Vue from 'vue'
 import {
   defaultListObj,
   generateFieldName,
-  parseDataUniqueId,
   setDataToCache,
   getDateFromCache,
   setReactivityField,
+  updateReactivityField,
   computeResultLength,
   isArray,
+  getObjectDeepValueByNestKey,
+  computeMatchedItemIndex,
   generateRequestParams
 } from './utils'
 
@@ -221,18 +223,7 @@ export default (api, debug = false) => {
       },
       UPDATE_DATA(
         state,
-        {
-          type,
-          func,
-          query,
-          id,
-          method,
-          key,
-          value,
-          cacheTimeout,
-          resultPrefix,
-          changingKey
-        }
+        { type, func, query, id, method, key, value, cacheTimeout, changing }
       ) {
         try {
           printLog('updateData', {
@@ -244,167 +235,85 @@ export default (api, debug = false) => {
             key,
             value,
             cacheTimeout,
-            resultPrefix,
-            changingKey
+            changing
           })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
           if (!field) {
             return
           }
-          const modKeys = key ? key.split('.') : []
-          const changing = changingKey || query.changing || 'id'
-          const objArr = !isArray(value)
-          // 修改这个 field
-          if (
-            ~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(
-              method
-            )
-          ) {
-            let changeTotal = 0
-            switch (method) {
-              case 'push':
-                resultPrefix
-                  ? field.result[resultPrefix].push(value)
-                  : field.result.push(value)
-                changeTotal = 1
-                break
-              case 'unshift':
-                resultPrefix
-                  ? field.result[resultPrefix].unshift(value)
-                  : field.result.unshift(value)
-                changeTotal = 1
-                break
-              case 'concat':
-                resultPrefix
-                  ? (field.result[resultPrefix] = field.result[
-                      resultPrefix
-                    ].concat(value))
-                  : (field.result = field.result.concat(value))
-                changeTotal = value.length
-                break
-              case 'merge':
-                resultPrefix
-                  ? (field.result[resultPrefix] = value.concat(
-                      field.result[resultPrefix]
-                    ))
-                  : (field.result = value.concat(field.result))
-                changeTotal = value.length
-                break
-              case 'modify':
-                let obj = state[fieldName] // eslint-disable-line
-                while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
-                  // do nothing
-                }
-                Vue.set(obj, modKeys[0], value)
-                break
-              case 'patch':
-                if (objArr) {
-                  if (resultPrefix) {
-                    Object.keys(value).forEach(uniqueId => {
-                      field.result[resultPrefix].forEach((item, index) => {
-                        if (
-                          parseDataUniqueId(item, changing).toString() ===
-                          uniqueId.toString()
-                        ) {
-                          Object.keys(value[uniqueId]).forEach(key => {
-                            Vue.set(
-                              field.result[resultPrefix][index],
-                              key,
-                              value[uniqueId][key]
-                            )
-                          })
-                        }
-                      })
-                    })
-                  } else {
-                    Object.keys(value).forEach(uniqueId => {
-                      field.result.forEach((item, index) => {
-                        if (
-                          parseDataUniqueId(item, changing).toString() ===
-                          uniqueId.toString()
-                        ) {
-                          Object.keys(value[uniqueId]).forEach(key => {
-                            Vue.set(
-                              field.result[index],
-                              key,
-                              value[uniqueId][key]
-                            )
-                          })
-                        }
-                      })
-                    })
-                  }
-                } else {
-                  if (resultPrefix) {
-                    value.forEach(col => {
-                      const uniqueId = parseDataUniqueId(col, changing)
-                      field.result[resultPrefix].forEach((item, index) => {
-                        if (
-                          parseDataUniqueId(item, changing).toString() ===
-                          uniqueId.toString()
-                        ) {
-                          Object.keys(col).forEach(key => {
-                            Vue.set(
-                              field.result[resultPrefix][index],
-                              key,
-                              col[key]
-                            )
-                          })
-                        }
-                      })
-                    })
-                  } else {
-                    value.forEach(col => {
-                      const uniqueId = parseDataUniqueId(col, changing)
-                      field.result.forEach((item, index) => {
-                        if (
-                          parseDataUniqueId(item, changing).toString() ===
-                          uniqueId.toString()
-                        ) {
-                          Object.keys(col).forEach(key => {
-                            Vue.set(field.result[index], key, col[key])
-                          })
-                        }
-                      })
-                    })
-                  }
-                }
-                break
-            }
-            field.total += changeTotal
-          } else {
-            // 修改 field 里的某个 result
-            for (let i = 0; i < field.result.length; i++) {
-              if (
-                parseDataUniqueId(field.result[i], changing).toString() ===
-                id.toString()
-              ) {
-                if (method === 'delete') {
-                  resultPrefix
-                    ? field.result[resultPrefix].splice(i, 1)
-                    : field.result.splice(i, 1)
-                  field.total--
-                } else if (method === 'insert-before') {
-                  resultPrefix
-                    ? field.result[resultPrefix].splice(i, 0, value)
-                    : field.result.splice(i, 0, value)
-                  field.total++
-                } else if (method === 'insert-after') {
-                  resultPrefix
-                    ? field.result[resultPrefix].splice(i + 1, 0, value)
-                    : field.result.splice(i + 1, 0, value)
-                  field.total++
-                } else {
-                  let obj = field.result[i]
-                  while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
-                    // do nothing
-                  }
-                  Vue.set(obj, modKeys[0], value)
-                }
-                break
+          const changingKey = changing || query.changing || 'id'
+          const result = field.result
+          const beforeLength = computeResultLength(result)
+          let deepObjOrArr =
+            method === 'update'
+              ? result
+              : getObjectDeepValueByNestKey(result, key)
+          switch (method) {
+            case 'push':
+              deepObjOrArr.push(value)
+              break
+            case 'unshift':
+              deepObjOrArr.unshift(value)
+              break
+            case 'concat':
+              deepObjOrArr = deepObjOrArr.concat(value)
+              break
+            case 'merge':
+              deepObjOrArr = value.concat(deepObjOrArr)
+              break
+            case 'patch':
+              updateReactivityField(Vue.set, deepObjOrArr, value, changingKey)
+              break
+            case 'modify':
+              if (/\./.test(key)) {
+                const keys = key.split('.')
+                const prefix = keys.pop()
+                Vue.set(getObjectDeepValueByNestKey(state, keys), prefix, value)
+              } else {
+                Vue.set(field, key, value)
               }
-            }
+              break
+            case 'delete':
+              deepObjOrArr.splice(
+                computeMatchedItemIndex(id, deepObjOrArr, changingKey),
+                1
+              )
+              break
+            case 'insert-before':
+              deepObjOrArr.splice(
+                computeMatchedItemIndex(id, deepObjOrArr, changingKey),
+                0,
+                value
+              )
+              break
+            case 'insert-after':
+              deepObjOrArr.splice(
+                computeMatchedItemIndex(id, deepObjOrArr, changingKey) + 1,
+                0,
+                value
+              )
+              break
+            case 'update':
+              if (/\./.test(key)) {
+                const keys = key.split('.')
+                const prefix = keys.pop()
+                Vue.set(
+                  getObjectDeepValueByNestKey(
+                    result[computeMatchedItemIndex(id, result, changingKey)],
+                    keys
+                  ),
+                  prefix,
+                  value
+                )
+              } else {
+                Vue.set(
+                  result[computeMatchedItemIndex(id, result, changingKey)],
+                  key,
+                  value
+                )
+              }
+              break
           }
           if (cacheTimeout) {
             setDataToCache({
@@ -413,7 +322,9 @@ export default (api, debug = false) => {
               expiredAt: Date.now() + cacheTimeout * 1000
             })
           }
-          field.nothing = computeResultLength(field.result) === 0
+          const afterLength = computeResultLength(field.result)
+          field.total = field.total + afterLength - beforeLength
+          field.nothing = afterLength === 0
         } catch (error) {
           debug && console.log(error) // eslint-disable-line
         }

@@ -36,6 +36,18 @@ export const parseDataUniqueId = (data, changing) => {
   return result
 }
 
+export const getObjectDeepValueByNestKey = (dataObject, keys) => {
+  if (!keys) {
+    return dataObject
+  }
+  let result = dataObject
+  const keysArr = isArray(keys) ? keys : keys.split('.')
+  keysArr.forEach(key => {
+    result = result[key]
+  })
+  return result
+}
+
 export const getDateFromCache = ({ key, now }) => {
   try {
     const expiredAt = localStorage.getItem(`vue-mixin-store-${key}-expired-at`)
@@ -82,6 +94,46 @@ export const setReactivityField = (
   } else {
     setter(field, key, value)
   }
+}
+
+export const updateReactivityField = (setter, field, value, changing) => {
+  if (isArray(value)) {
+    value.forEach(col => {
+      const stringifyId = parseDataUniqueId(col, changing).toString()
+      field.forEach((item, index) => {
+        if (parseDataUniqueId(item, changing).toString() === stringifyId) {
+          Object.keys(col).forEach(key => {
+            setter(field[index], key, col[key])
+          })
+        }
+      })
+    })
+  } else {
+    Object.keys(value).forEach(uniqueId => {
+      const stringifyId = uniqueId.toString()
+      field.forEach((item, index) => {
+        if (parseDataUniqueId(item, changing).toString() === stringifyId) {
+          const col = value[uniqueId]
+          Object.keys(col).forEach(key => {
+            setter(field[index], key, col[key])
+          })
+        }
+      })
+    })
+  }
+}
+
+export const computeMatchedItemIndex = (itemId, fieldArr, changingKey) => {
+  let i
+  for (i = 0; i < fieldArr.length; i++) {
+    if (
+      parseDataUniqueId(fieldArr[i], changingKey).toString() ===
+      itemId.toString()
+    ) {
+      break
+    }
+  }
+  return i
 }
 
 export const computeResultLength = data => {

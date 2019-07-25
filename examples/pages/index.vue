@@ -19,12 +19,13 @@
         type="page"
         :query="{ count: 10, rank }"
         :auto="0"
+        :callback="testPatch"
       >
         <template #default="{ flow }">
           <ul class="demo-list">
             <li v-for="(item, index) in flow" :key="item.id">
               <div :style="{ backgroundColor: item.style.color }">
-                count：{{ index + 1 }}，id：{{ item.id }}
+                count：{{ index + 1 }}，id：{{ item.id }}，like：{{ item.like }}，name：{{ item.data.name }}
               </div>
             </li>
           </ul>
@@ -128,6 +129,15 @@ export default {
           index
         }
       }
+    },
+    testPatch({ data }) {
+      const patch = data.result.map(_ => {
+        return Object.assign({
+          id: _.id,
+          like: true
+        })
+      }).slice(0, 3)
+      this.$refs.loader0.patch(patch)
     }
   }
 }

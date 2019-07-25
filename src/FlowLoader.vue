@@ -71,7 +71,7 @@
 
 <script>
 import { throttle } from 'throttle-debounce'
-import { on, off, checkInView, generateRequestParams } from './utils'
+import { on, off, checkInView, generateRequestParams, isArray } from './utils'
 
 export default {
   name: 'FlowLoader',
@@ -188,8 +188,8 @@ export default {
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'modify',
-          value,
-          key
+          key,
+          value
         })
       )
     },
@@ -197,87 +197,85 @@ export default {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
+          method: 'update',
           id,
           key,
           value
         })
       )
     },
-    delete(id, resultPrefix, changingKey) {
+    delete(id, key, changing) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'delete',
           id,
-          resultPrefix,
-          changingKey
+          key,
+          changing
         })
       )
     },
-    prepend(data, resultPrefix, changingKey) {
+    prepend(value, key, changing) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
-          method:
-            Object.prototype.toString.call(data) === '[object Array]'
-              ? 'merge'
-              : 'unshift',
-          value: data,
-          resultPrefix,
-          changingKey
+          method: isArray(value) ? 'merge' : 'unshift',
+          key,
+          value,
+          changing
         })
       )
     },
-    append(data, resultPrefix, changingKey) {
+    append(value, key, changing) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
-          method:
-            Object.prototype.toString.call(data) === '[object Array]'
-              ? 'concat'
-              : 'push',
-          value: data,
-          resultPrefix,
-          changingKey
+          method: isArray(value) ? 'concat' : 'push',
+          key,
+          value,
+          changing
         })
       )
     },
-    patch(objectArray, resultPrefix, changingKey) {
+    patch(value, key, changing) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'patch',
-          value: objectArray,
-          resultPrefix,
-          changingKey
+          key,
+          value,
+          changing
         })
       )
     },
-    insertBefore({ id, value, resultPrefix, changingKey }) {
+    insertBefore({ id, value, key, changing }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'insert-before',
           id,
+          key,
           value,
-          resultPrefix,
-          changingKey
+          changing
         })
       )
     },
-    insertAfter({ id, value, resultPrefix, changingKey }) {
+    insertAfter({ id, value, key, changing }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'insert-after',
           id,
+          key,
           value,
-          resultPrefix,
-          changingKey
+          changing
         })
       )
     },
     getResource(key = 'extra') {
+      if (!this.source) {
+        return
+      }
       return this.source[key]
     },
     async jump(page) {

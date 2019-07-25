@@ -30,8 +30,8 @@ export const getObjectByPage = ({ page, count }) => {
         all: [],
         bangumi: [],
         pgc: [
-          { a: 1 },
-          { a: 2 }
+          { a: 1, val: 'ddd' },
+          { a: 2, val: 'xxx' }
         ]
       }
       resolve({

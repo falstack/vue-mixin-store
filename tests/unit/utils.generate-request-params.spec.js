@@ -1,4 +1,8 @@
-import { generateRequestParams, defaultListObj, generateFieldName } from '@/utils'
+import {
+  generateRequestParams,
+  defaultListObj,
+  generateFieldName
+} from '@/utils'
 import storeInstance from '@/flow'
 
 const Store = storeInstance({})
@@ -175,13 +179,7 @@ describe('generate request params', () => {
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
-        result: [
-          { id: 1 },
-          { id: 3 },
-          { id: 5 },
-          { id: 7 },
-          { id: 9 }
-        ],
+        result: [{ id: 1 }, { id: 3 }, { id: 5 }, { id: 7 }, { id: 9 }],
         no_more: true,
         total: 0
       },
@@ -204,13 +202,7 @@ describe('generate request params', () => {
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
-        result: [
-          { id: 1 },
-          { id: 3 },
-          { id: 5 },
-          { id: 7 },
-          { id: 9 }
-        ],
+        result: [{ id: 1 }, { id: 3 }, { id: 5 }, { id: 7 }, { id: 9 }],
         no_more: true,
         total: 0
       },
@@ -233,13 +225,7 @@ describe('generate request params', () => {
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
-        result: [
-          { id: 1 },
-          { id: 3 },
-          { id: 5 },
-          { id: 7 },
-          { id: 9 }
-        ],
+        result: [{ id: 1 }, { id: 3 }, { id: 5 }, { id: 7 }, { id: 9 }],
         no_more: true,
         total: 0
       },
@@ -263,13 +249,7 @@ describe('generate request params', () => {
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
-        result: [
-          { id: 1 },
-          { id: 3 },
-          { id: 5 },
-          { id: 7 },
-          { id: 9 }
-        ],
+        result: [{ id: 1 }, { id: 3 }, { id: 5 }, { id: 7 }, { id: 9 }],
         no_more: true,
         total: 0
       },

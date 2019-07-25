@@ -62,46 +62,46 @@
 - 参数：value（新值）
 - 改变该`field`的某个数据
 
-#### delete(id, resultPrefix, changingKey)
+#### delete(id, key, changing)
 - 参数[必选]：id（这里是键值，键名由 query 里的 changing 指定）
-- 参数[可选]：resultPrefix（为兼容 objectArray 返回格式，字符串，不支持`.`语法）
-- 参数[可选]：changingKey（优先级比 query 里的 changing 高，不支持`.`语法）
+- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 删除列表中的某个元素
 
-#### prepend(data, resultPrefix, changingKey)
+#### prepend(data, key, changing)
 - 参数[必选]：data（支持单个或多个值）
-- 参数[可选]：resultPrefix（为兼容 objectArray 返回格式，字符串，不支持`.`语法）
-- 参数[可选]：changingKey（优先级比 query 里的 changing 高，不支持`.`语法）
+- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 在列表的前面插入数据
 
-#### append(data, resultPrefix, changingKey)
+#### append(data, key, changing)
 - 参数[必选]：data（支持单个或多个值）
-- 参数[可选]：resultPrefix（为兼容 objectArray 返回格式，字符串，不支持`.`语法）
-- 参数[可选]：changingKey（优先级比 query 里的 changing 高，不支持`.`语法）
+- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 在列表的后面插入数据
 
-#### insertBefore({ id, value, resultPrefix, changingKey })
+#### insertBefore({ id, value, key, changing })
 - 参数[必选]：id（列表中某个 item 的 id）
 - 参数[必选]：value（要插入的数据）
-- 参数[可选]：resultPrefix（为兼容 objectArray 返回格式，字符串，不支持`.`语法）
-- 参数[可选]：changingKey（优先级比 query 里的 changing 高，不支持`.`语法）
+- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 在列表的某个元素之前插入数据
 
-#### insertAfter({ id, value, resultPrefix, changingKey })
+#### insertAfter({ id, value, key, changing })
 - 参数[必选]：id（列表中某个 item 的 id）
 - 参数[必选]：value（要插入的数据）
-- 参数[可选]：resultPrefix（为兼容 objectArray 返回格式，字符串，不支持`.`语法）
-- 参数[可选]：changingKey（优先级比 query 里的 changing 高，不支持`.`语法）
+- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 在列表的某个元素之后插入数据
 
-#### patch(array, resultPrefix, changingKey)
+#### patch(array, key, changing)
 - 参数[必选]：value objectArray 或 array
-- 参数[可选]：resultPrefix（为兼容 objectArray 返回格式，字符串，不支持`.`语法）
-- 参数[可选]：changingKey（优先级比 query 里的 changing 高，不支持`.`语法）
+- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 给原有的数据打补丁
 
 #### getResource(key = 'extra')
-- 参数：key（要获取数据的key）
+- 参数：key（要获取数据的key），`store`不存在时返回`undefined`
 - 获取列表里的某个数据
 
 ## FlowStore 透传的参数
