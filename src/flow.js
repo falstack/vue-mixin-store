@@ -215,7 +215,12 @@ export default (api, debug = false) => {
             if (/\./.test(key)) {
               const keys = key.split('.')
               const prefix = keys.pop()
-              Vue.set(getObjectDeepValue(result[computeMatchedItemIndex(id, result, changingKey)], keys), prefix, value)
+              if (isArray(result)) {
+                Vue.set(getObjectDeepValue(result[computeMatchedItemIndex(id, result, changingKey)], keys), prefix, value)
+              } else {
+                const changeArr = getObjectDeepValue(result, keys)
+                Vue.set(changeArr[computeMatchedItemIndex(id, changeArr, changingKey)], prefix, value)
+              }
             } else {
               Vue.set(result[computeMatchedItemIndex(id, result, changingKey)], key, value)
             }
@@ -259,7 +264,7 @@ export default (api, debug = false) => {
           if (cacheTimeout) {
             setDataToCache({
               key: fieldName,
-              value: state[fieldName],
+              value: field,
               expiredAt: Date.now() + cacheTimeout * 1000
             })
           }

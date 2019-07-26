@@ -210,14 +210,15 @@ export default {
         })
       )
     },
-    update({ id, key, value }) {
+    update({ id, key, value, changing }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
         Object.assign({}, this.params, {
           method: 'update',
           id,
           key,
-          value
+          value,
+          changing
         })
       )
     },
