@@ -8,7 +8,7 @@ import {
   updateReactivityField,
   computeResultLength,
   isArray,
-  getModifyValueByNestKey,
+  getObjectDeepValue,
   computeMatchedItemIndex,
   generateRequestParams
 } from './utils'
@@ -215,7 +215,7 @@ export default (api, debug = false) => {
             if (/\./.test(key)) {
               const keys = key.split('.')
               const prefix = keys.pop()
-              Vue.set(getModifyValueByNestKey(result[computeMatchedItemIndex(id, result, changingKey)], keys), prefix, value)
+              Vue.set(getObjectDeepValue(result[computeMatchedItemIndex(id, result, changingKey)], keys), prefix, value)
             } else {
               Vue.set(result[computeMatchedItemIndex(id, result, changingKey)], key, value)
             }
@@ -223,12 +223,12 @@ export default (api, debug = false) => {
             if (/\./.test(key)) {
               const keys = key.split('.')
               const prefix = keys.pop()
-              Vue.set(getModifyValueByNestKey(state, keys), prefix, value)
+              Vue.set(getObjectDeepValue(state, keys), prefix, value)
             } else {
               Vue.set(field, key, value)
             }
           } else {
-            let modifyValue = getModifyValueByNestKey(field, key || 'result')
+            let modifyValue = getObjectDeepValue(field, key || 'result')
             switch (method) {
               case 'push':
                 modifyValue.push(value)

@@ -52,51 +52,51 @@
 - 跳转到第几页，只应该在`type` =`jump` 的时候被调用
 
 #### update({ id, key, value })
-- 参数：id（这里是键值，键名由 query 里的 changing 指定）
-- 参数：key（支持使用`.`分割符来修改对象深层的值）
-- 参数：value（设定的值）
+- 参数[必选]：id（这里是键值，键名由 query 里的 changing 指定）
+- 参数[必选]：key
+- 参数[必选]：value（设定的值）
 - 改变`field`中某个`result`的某个值
 
 #### modify({ key, value })
-- 参数：key（改变的值的 key）
-- 参数：value（新值）
+- 参数[必选]：key（改变的值的 key）
+- 参数[必选]：value（新值）
 - 改变该`field`的某个数据
 
 #### delete(id, key, changing)
 - 参数[必选]：id（这里是键值，键名由 query 里的 changing 指定）
-- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：key 默认为`result`
 - 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 删除列表中的某个元素
 
 #### prepend(data, key, changing)
 - 参数[必选]：data（支持单个或多个值）
-- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：key 默认为`result`
 - 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 在列表的前面插入数据
 
 #### append(data, key, changing)
 - 参数[必选]：data（支持单个或多个值）
-- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：key 默认为`result`
 - 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 在列表的后面插入数据
 
 #### insertBefore({ id, value, key, changing })
 - 参数[必选]：id（列表中某个 item 的 id）
 - 参数[必选]：value（要插入的数据）
-- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：key 默认为`result`
 - 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 在列表的某个元素之前插入数据
 
 #### insertAfter({ id, value, key, changing })
 - 参数[必选]：id（列表中某个 item 的 id）
 - 参数[必选]：value（要插入的数据）
-- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：key 默认为`result`
 - 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 在列表的某个元素之后插入数据
 
 #### patch(array, key, changing)
 - 参数[必选]：value objectArray 或 array
-- 参数[可选]：key（为兼容 objectArray 返回格式，字符串，支持`.`语法）
+- 参数[可选]：key 默认为`result`
 - 参数[可选]：changing（优先级比 query 里的 changing 高，不支持`.`语法）
 - 给原有的数据打补丁
 

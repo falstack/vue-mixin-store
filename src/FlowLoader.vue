@@ -367,9 +367,10 @@ export default {
       }
     },
     clear() {
-      if (this.source) {
-        this.$store.commit('flow/INIT_STATE', this.params)
+      if (!this.source) {
+        return
       }
+      this.$store.commit('flow/INIT_STATE', this.params)
     },
     _getTarget() {
       let el = this.$el
@@ -403,42 +404,46 @@ export default {
       if (this.auto === 0) {
         this._initState()
       } else {
-        checkInView(this.$refs.state, this.preload)
-          ? this.initData()
-          : this._initState()
+        if (this.$refs.state && checkInView(this.$refs.state, this.preload)) {
+          this.initData()
+        } else {
+          this._initState()
+        }
         on(this._getTarget(), 'scroll', this._onScreenScroll)
       }
     },
     _retryData() {
-      if (this.retryOnError) {
-        if (this.source.fetched) {
-          this.loadMore()
-        } else {
-          this.initData({
-            __refresh__: true
-          })
-        }
+      if (!this.retryOnError) {
+        return
+      }
+      if (this.source.fetched) {
+        this.loadMore()
+      } else {
+        this.initData({
+          __refresh__: true
+        })
       }
     },
     _fireSSRCallback() {
-      if (this.firstBind) {
-        this.firstBind = false
-        if (this.source && this.source.fetched) {
-          this.callback &&
-          this.callback({
-            params: generateRequestParams(
-              { fetched: false },
-              this.params.query,
-              this.type
-            ),
-            data: {
-              result: this.source.result,
-              extra: this.source.extra,
-              noMore: this.source.noMore,
-              total: this.source.total
-            }
-          })
-        }
+      if (!this.firstBind) {
+        return
+      }
+      this.firstBind = false
+      if (this.source && this.source.fetched) {
+        this.callback &&
+        this.callback({
+          params: generateRequestParams(
+            { fetched: false },
+            this.params.query,
+            this.type
+          ),
+          data: {
+            result: this.source.result,
+            extra: this.source.extra,
+            noMore: this.source.noMore,
+            total: this.source.total
+          }
+        })
       }
     },
     _onScreenScroll: throttle(200, function() {
@@ -455,6 +460,9 @@ export default {
         (this.isPagination && this.source.fetched)
       ) {
         off(this._getTarget(), 'scroll', this._onScreenScroll)
+        return
+      }
+      if (!this.$refs.state) {
         return
       }
       if (this.isAuto && checkInView(this.$refs.state, this.preload)) {

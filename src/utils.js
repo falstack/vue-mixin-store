@@ -1,15 +1,25 @@
+/**
+ * 默认每个 field 都会有这些数据
+ */
 export const defaultListObj = {
   result: [],
-  page: 0,
   noMore: false,
   nothing: false,
   loading: false,
-  error: null,
   fetched: false,
-  total: 0,
-  extra: null
+  error: null,
+  extra: null,
+  page: 0,
+  total: 0
 }
 
+/**
+ * 根据参数生成 field 的 namespace
+ * @param {string} func
+ * @param {string} type
+ * @param {object} query
+ * @return {string}
+ */
 export const generateFieldName = (func, type, query = {}) => {
   let result = `${func}-${type}`
   Object.keys(query)
@@ -25,18 +35,13 @@ export const generateFieldName = (func, type, query = {}) => {
   return result
 }
 
-export const parseDataUniqueId = (data, changing) => {
-  if (!/\./.test(changing)) {
-    return data[changing]
-  }
-  let result = data
-  changing.split('.').forEach(key => {
-    result = result[key]
-  })
-  return result
-}
-
-export const getModifyValueByNestKey = (field, keys) => {
+/**
+ * 根据 key 从 object 里拿 value
+ * @param {object} field
+ * @param {string} keys
+ * @return {*}
+ */
+export const getObjectDeepValue = (field, keys) => {
   if (!keys) {
     return field
   }
@@ -48,6 +53,12 @@ export const getModifyValueByNestKey = (field, keys) => {
   return result
 }
 
+/**
+ * 从 localStorage 里获取数据
+ * @param {string} key
+ * @param {int} now
+ * @return {null|object}
+ */
 export const getDateFromCache = ({ key, now }) => {
   try {
     const expiredAt = localStorage.getItem(`vue-mixin-store-${key}-expired-at`)
@@ -63,6 +74,12 @@ export const getDateFromCache = ({ key, now }) => {
   }
 }
 
+/**
+ * 设置 localStorage
+ * @param {string} key
+ * @param {object} value
+ * @param {int} expiredAt
+ */
 export const setDataToCache = ({ key, value, expiredAt }) => {
   try {
     localStorage.setItem(`vue-mixin-store-${key}`, JSON.stringify(value))
@@ -72,31 +89,49 @@ export const setDataToCache = ({ key, value, expiredAt }) => {
   }
 }
 
-export const isArray = data =>
-  Object.prototype.toString.call(data) === '[object Array]'
+/**
+ * 判断参数是否为数组
+ * @param {any} data
+ * @return {boolean}
+ */
+export const isArray = data => Object.prototype.toString.call(data) === '[object Array]'
 
+/**
+ * 设置一个响应式的数据到对象上
+ * @param {Vue.set} setter
+ * @param {object} field
+ * @param {string} key
+ * @param {any} value
+ * @param {string} type
+ * @param {boolean} insertBefore
+ */
 export const setReactivityField = (setter, field, key, value, type, insertBefore ) => {
   if (field[key]) {
     if (type === 'jump' || !isArray(value)) {
       setter(field, key, value)
     } else {
-      field[key] = insertBefore
-        ? value.concat(field[key])
-        : field[key].concat(value)
+      field[key] = insertBefore ? value.concat(field[key]) : field[key].concat(value)
     }
   } else {
     setter(field, key, value)
   }
 }
 
-export const updateReactivityField = (setter, field, value, changing) => {
+/**
+ * 响应式的更新对象上的数据
+ * @param {Vue.set} setter
+ * @param {array} fieldArray
+ * @param {any} value
+ * @param {string} changing
+ */
+export const updateReactivityField = (setter, fieldArray, value, changing) => {
   if (isArray(value)) {
     value.forEach(col => {
-      const stringifyId = parseDataUniqueId(col, changing).toString()
-      field.forEach((item, index) => {
-        if (parseDataUniqueId(item, changing).toString() === stringifyId) {
+      const stringifyId = getObjectDeepValue(col, changing).toString()
+      fieldArray.forEach((item, index) => {
+        if (getObjectDeepValue(item, changing).toString() === stringifyId) {
           Object.keys(col).forEach(key => {
-            setter(field[index], key, col[key])
+            setter(fieldArray[index], key, col[key])
           })
         }
       })
@@ -104,11 +139,11 @@ export const updateReactivityField = (setter, field, value, changing) => {
   } else {
     Object.keys(value).forEach(uniqueId => {
       const stringifyId = uniqueId.toString()
-      field.forEach((item, index) => {
-        if (parseDataUniqueId(item, changing).toString() === stringifyId) {
+      fieldArray.forEach((item, index) => {
+        if (getObjectDeepValue(item, changing).toString() === stringifyId) {
           const col = value[uniqueId]
           Object.keys(col).forEach(key => {
-            setter(field[index], key, col[key])
+            setter(fieldArray[index], key, col[key])
           })
         }
       })
@@ -116,19 +151,28 @@ export const updateReactivityField = (setter, field, value, changing) => {
   }
 }
 
+/**
+ * 通过 id 匹配返回数组中某个对象的 index
+ * @param {int|string} itemId
+ * @param {array} fieldArr
+ * @param {int|string} changingKey
+ * @return {number}
+ */
 export const computeMatchedItemIndex = (itemId, fieldArr, changingKey) => {
   let i
   for (i = 0; i < fieldArr.length; i++) {
-    if (
-      parseDataUniqueId(fieldArr[i], changingKey).toString() ===
-      itemId.toString()
-    ) {
+    if (getObjectDeepValue(fieldArr[i], changingKey).toString() === itemId.toString()) {
       break
     }
   }
   return i
 }
 
+/**
+ * 计算一个数据列的长度
+ * @param {array|object} data
+ * @return {number}
+ */
 export const computeResultLength = data => {
   let result = 0
   if (isArray(data)) {
@@ -141,6 +185,12 @@ export const computeResultLength = data => {
   return result
 }
 
+/**
+ * 事件绑定
+ * @param elem
+ * @param {string} type
+ * @param {function} listener
+ */
 export const on = (elem, type, listener) => {
   elem.addEventListener(type, listener, {
     capture: false,
@@ -148,6 +198,12 @@ export const on = (elem, type, listener) => {
   })
 }
 
+/**
+ * 事件解绑
+ * @param elem
+ * @param {string} type
+ * @param {function} listener
+ */
 export const off = (elem, type, listener) => {
   elem.removeEventListener(type, listener, {
     capture: false,
@@ -155,36 +211,39 @@ export const off = (elem, type, listener) => {
   })
 }
 
+/**
+ * 检查元素是否在屏幕内
+ * @param dom
+ * @param {int} preload
+ * @return {boolean}
+ */
 export const checkInView = (dom, preload) => {
-  if (!dom) {
-    return false
-  }
   const rect = dom.getBoundingClientRect()
   return (
     rect.top < window.innerHeight + preload &&
     rect.bottom + preload > 0 &&
-    (rect.left < window.innerWidth + preload && rect.right + preload > 0)
+    rect.left < window.innerWidth + preload &&
+    rect.right + preload > 0
   )
 }
 
+/**
+ * 拼接请求的参数
+ * @param {object} field
+ * @param {object} query
+ * @param {string} type
+ * @return {object}
+ */
 export const generateRequestParams = (field, query, type) => {
   const result = {}
   if (field.fetched) {
     const changing = query.changing || 'id'
     if (type === 'seenIds') {
-      result.seen_ids = field.result
-        .map(_ => parseDataUniqueId(_, changing))
-        .join(',')
+      result.seen_ids = field.result.map(_ => getObjectDeepValue(_, changing)).join(',')
     } else if (type === 'lastId') {
-      result.last_id = parseDataUniqueId(
-        field.result[field.result.length - 1],
-        changing
-      )
+      result.last_id = getObjectDeepValue(field.result[field.result.length - 1], changing)
     } else if (type === 'sinceId') {
-      result.since_id = parseDataUniqueId(
-        query.is_up ? field.result[0] : field.result[field.result.length - 1],
-        changing
-      )
+      result.since_id = getObjectDeepValue(query.is_up ? field.result[0] : field.result[field.result.length - 1], changing)
       result.is_up = query.is_up ? 1 : 0
     } else if (type === 'jump') {
       result.page = query.page || 1
