@@ -36,11 +36,11 @@ export const parseDataUniqueId = (data, changing) => {
   return result
 }
 
-export const getObjectDeepValueByNestKey = (dataObject, keys) => {
+export const getModifyValueByNestKey = (field, keys) => {
   if (!keys) {
-    return dataObject
+    return field
   }
-  let result = dataObject
+  let result = field
   const keysArr = isArray(keys) ? keys : keys.split('.')
   keysArr.forEach(key => {
     result = result[key]
@@ -75,14 +75,7 @@ export const setDataToCache = ({ key, value, expiredAt }) => {
 export const isArray = data =>
   Object.prototype.toString.call(data) === '[object Array]'
 
-export const setReactivityField = (
-  setter,
-  field,
-  key,
-  value,
-  type,
-  insertBefore
-) => {
+export const setReactivityField = (setter, field, key, value, type, insertBefore ) => {
   if (field[key]) {
     if (type === 'jump' || !isArray(value)) {
       setter(field, key, value)

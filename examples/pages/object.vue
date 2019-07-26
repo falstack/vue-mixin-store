@@ -11,10 +11,19 @@
       :auto="3"
       :callback="testPatch"
     >
-      <ul class="demo-list" slot-scope="{ flow }">
-        <li v-for="(item, key) in flow" :key="key">
+      <ul
+        slot-scope="{ flow }"
+        class="demo-list"
+      >
+        <li
+          v-for="(item, key) in flow"
+          :key="key"
+        >
           <p>{{ key }}</p>
-          <div v-for="one in flow[key]">
+          <div
+            v-for="(one, index) in flow[key]"
+            :key="index"
+          >
             {{ one }}
           </div>
         </li>
@@ -39,7 +48,7 @@ export default {
   },
   methods: {
     testPatch() {
-      this.$refs.loader.patch([{ a: 1, val: 'changed' }], 'pgc', 'a')
+      this.$refs.loader.patch([{ a: 1, val: 'changed' }], 'result.pgc', 'a')
     }
   }
 }

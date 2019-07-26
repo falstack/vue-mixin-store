@@ -2,7 +2,10 @@
   <div class="flow-loader">
     <template v-if="source">
       <!--  flow header  -->
-      <slot :source="source" name="header" />
+      <slot
+        :source="source"
+        name="header"
+      />
       <!--  flow list  -->
       <slot
         :flow="source.result"
@@ -11,10 +14,17 @@
         :extra="source.extra"
       />
       <!--  flow footer  -->
-      <slot :source="source" name="footer" />
+      <slot
+        :source="source"
+        name="footer"
+      />
     </template>
     <!--  flow state  -->
-    <div ref="state" class="flow-loader-state" :style="{ textAlign: 'center' }">
+    <div
+      ref="state"
+      class="flow-loader-state"
+      :style="{ textAlign: 'center' }"
+    >
       <template v-if="source">
         <!--   error   -->
         <div
@@ -29,39 +39,67 @@
           >
             <span>出错了，点击重试</span>
           </slot>
-          <slot v-else name="error" :error="source.error">
+          <slot
+            v-else
+            name="error"
+            :error="source.error"
+          >
             <span>出错了，点击重试</span>
           </slot>
         </div>
         <!--   loading   -->
-        <div v-else-if="source.loading" class="flow-loader-state-loading">
+        <div
+          v-else-if="source.loading"
+          class="flow-loader-state-loading"
+        >
           <slot
             v-if="useFirstLoading && !source.result.length"
             name="first-loading"
           >
             <span>加载中…</span>
           </slot>
-          <slot v-else name="loading">
+          <slot
+            v-else
+            name="loading"
+          >
             <span>加载中…</span>
           </slot>
         </div>
         <!--   nothing   -->
-        <div v-else-if="source.nothing" class="flow-loader-state-nothing">
+        <div
+          v-else-if="source.nothing"
+          class="flow-loader-state-nothing"
+        >
           <slot name="nothing">
             <span>这里什么都没有</span>
           </slot>
         </div>
         <!--   no-more   -->
-        <div v-else-if="source.noMore" class="flow-loader-state-no-more">
-          <slot v-if="displayNoMore" name="no-more">
+        <div
+          v-else-if="source.noMore"
+          class="flow-loader-state-no-more"
+        >
+          <slot
+            v-if="displayNoMore"
+            name="no-more"
+          >
             <span>没有更多了</span>
           </slot>
         </div>
         <!--   normal   -->
         <template v-else-if="!isPagination">
-          <div v-if="isAuto" class="flow-loader-state-shim"></div>
-          <div v-else class="flow-loader-state-load" @click="loadMore()">
-            <slot name="load">点击加载更多</slot>
+          <div
+            v-if="isAuto"
+            class="flow-loader-state-shim"
+          />
+          <div
+            v-else
+            class="flow-loader-state-load"
+            @click="loadMore()"
+          >
+            <slot name="load">
+              点击加载更多
+            </slot>
           </div>
         </template>
       </template>
@@ -162,27 +200,6 @@ export default {
     })
   },
   methods: {
-    _fireSSRCallback() {
-      if (this.firstBind) {
-        this.firstBind = false
-        if (this.source && this.source.fetched) {
-          this.callback &&
-            this.callback({
-              params: generateRequestParams(
-                { fetched: false },
-                this.params.query,
-                this.type
-              ),
-              data: {
-                result: this.source.result,
-                extra: this.source.extra,
-                noMore: this.source.noMore,
-                total: this.source.total
-              }
-            })
-        }
-      }
-    },
     modify({ key, value }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
@@ -278,10 +295,10 @@ export default {
       }
       return this.source[key]
     },
-    async jump(page) {
+    jump(page) {
       const query = Object.assign({}, this.params.query)
       query.page = page
-      await this.$store.dispatch(
+      this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query
@@ -302,9 +319,9 @@ export default {
       })
     },
     initData(obj = {}) {
-      this.$nextTick(async () => {
+      this.$nextTick(() => {
         const query = Object.assign({}, this.params.query, obj)
-        await this.$store.dispatch(
+        this.$store.dispatch(
           'flow/initData',
           Object.assign({}, this.params, {
             query
@@ -312,13 +329,13 @@ export default {
         )
       })
     },
-    async loadBefore(obj = {}, force = false) {
+    loadBefore(obj = {}, force = false) {
       if (this.isPagination) {
         return
       }
       const query = Object.assign({}, this.params.query, obj)
       query.is_up = 1
-      await this.$store.dispatch(
+      this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query,
@@ -326,13 +343,13 @@ export default {
         })
       )
     },
-    async loadMore(obj = {}, force = false) {
+    loadMore(obj = {}, force = false) {
       if (this.isPagination) {
         return
       }
       const query = Object.assign({}, this.params.query, obj)
       query.is_up = 0
-      await this.$store.dispatch(
+      this.$store.dispatch(
         'flow/loadMore',
         Object.assign({}, this.params, {
           query,
@@ -399,6 +416,27 @@ export default {
         } else {
           this.initData({
             __refresh__: true
+          })
+        }
+      }
+    },
+    _fireSSRCallback() {
+      if (this.firstBind) {
+        this.firstBind = false
+        if (this.source && this.source.fetched) {
+          this.callback &&
+          this.callback({
+            params: generateRequestParams(
+              { fetched: false },
+              this.params.query,
+              this.type
+            ),
+            data: {
+              result: this.source.result,
+              extra: this.source.extra,
+              noMore: this.source.noMore,
+              total: this.source.total
+            }
           })
         }
       }

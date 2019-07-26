@@ -8,7 +8,7 @@ import {
   updateReactivityField,
   computeResultLength,
   isArray,
-  getObjectDeepValueByNestKey,
+  getModifyValueByNestKey,
   computeMatchedItemIndex,
   generateRequestParams
 } from './utils'
@@ -44,7 +44,7 @@ export default (api, debug = false) => {
           }
           const params = generateRequestParams({ fetched: false }, query, type)
           if (notFetch) {
-            callback &&
+            if (callback) {
               callback({
                 params,
                 data: {
@@ -54,6 +54,7 @@ export default (api, debug = false) => {
                   total: field.total
                 }
               })
+            }
             return resolve()
           }
           try {
@@ -82,19 +83,17 @@ export default (api, debug = false) => {
               page: params.page,
               insertBefore: !!query.is_up
             })
-            callback &&
+            if (callback) {
               callback({
                 params,
                 data: {
                   result: data.result,
                   extra: data.extra,
-                  noMore:
-                    typeof data.no_more === 'undefined'
-                      ? computeResultLength(data.result) === 0
-                      : data.no_more,
+                  noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
                   total: data.total || 0
                 }
               })
+            }
             resolve()
           } catch (error) {
             commit('SET_ERROR', { fieldName, error })
@@ -110,12 +109,7 @@ export default (api, debug = false) => {
           printLog('loadMore', { type, func, query })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
-          if (
-            !field ||
-            field.loading ||
-            field.nothing ||
-            (field.noMore && !force)
-          ) {
+          if (!field || field.loading || field.nothing || (field.noMore && !force)) {
             return resolve()
           }
           if (type === 'jump' && +query.page === field.page) {
@@ -138,7 +132,7 @@ export default (api, debug = false) => {
               page: params.page,
               insertBefore: !!query.is_up
             })
-            callback &&
+            if (callback) {
               callback({
                 params,
                 data: {
@@ -148,6 +142,7 @@ export default (api, debug = false) => {
                   total: field.total
                 }
               })
+            }
             resolve()
           } catch (error) {
             commit('SET_ERROR', { fieldName, error })
@@ -158,11 +153,7 @@ export default (api, debug = false) => {
     },
     mutations: {
       INIT_STATE(state, { func, type, query }) {
-        Vue.set(
-          state,
-          generateFieldName(func, type, query),
-          Object.assign({}, defaultListObj)
-        )
+        Vue.set(state, generateFieldName(func, type, query), Object.assign({}, defaultListObj))
       },
       SET_LOADING(state, fieldName) {
         state[fieldName].loading = true
@@ -178,19 +169,8 @@ export default (api, debug = false) => {
         state[fieldName].result = []
         state[fieldName].extra = null
       },
-      SET_DATA(
-        state,
-        { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout }
-      ) {
-        printLog('setData', {
-          data,
-          fieldName,
-          type,
-          page,
-          insertBefore,
-          fromLocal,
-          cacheTimeout
-        })
+      SET_DATA(state, { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout }) {
+        printLog('setData', { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout })
         if (fromLocal) {
           Vue.set(state, fieldName, data)
           return
@@ -206,8 +186,7 @@ export default (api, debug = false) => {
         }
         field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total
-        field.page =
-          typeof page === 'number' ? page : typeof page === 'string' ? +page : 1
+        field.page = typeof page === 'number' ? page : typeof page === 'string' ? +page : 1
         setReactivityField(Vue.set, field, 'result', result, type, insertBefore)
         if (extra) {
           setReactivityField(Vue.set, field, 'extra', extra, type, insertBefore)
@@ -221,22 +200,9 @@ export default (api, debug = false) => {
           })
         }
       },
-      UPDATE_DATA(
-        state,
-        { type, func, query, id, method, key, value, cacheTimeout, changing }
-      ) {
+      UPDATE_DATA(state, { type, func, query, id, method, key, value, cacheTimeout, changing }) {
         try {
-          printLog('updateData', {
-            type,
-            func,
-            query,
-            id,
-            method,
-            key,
-            value,
-            cacheTimeout,
-            changing
-          })
+          printLog('updateData', { type, func, query, id, method, key, value, cacheTimeout, changing })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
           if (!field) {
@@ -245,75 +211,50 @@ export default (api, debug = false) => {
           const changingKey = changing || query.changing || 'id'
           const result = field.result
           const beforeLength = computeResultLength(result)
-          let deepObjOrArr =
-            method === 'update'
-              ? result
-              : getObjectDeepValueByNestKey(result, key)
-          switch (method) {
-            case 'push':
-              deepObjOrArr.push(value)
-              break
-            case 'unshift':
-              deepObjOrArr.unshift(value)
-              break
-            case 'concat':
-              deepObjOrArr = deepObjOrArr.concat(value)
-              break
-            case 'merge':
-              deepObjOrArr = value.concat(deepObjOrArr)
-              break
-            case 'patch':
-              updateReactivityField(Vue.set, deepObjOrArr, value, changingKey)
-              break
-            case 'modify':
-              if (/\./.test(key)) {
-                const keys = key.split('.')
-                const prefix = keys.pop()
-                Vue.set(getObjectDeepValueByNestKey(state, keys), prefix, value)
-              } else {
-                Vue.set(field, key, value)
-              }
-              break
-            case 'delete':
-              deepObjOrArr.splice(
-                computeMatchedItemIndex(id, deepObjOrArr, changingKey),
-                1
-              )
-              break
-            case 'insert-before':
-              deepObjOrArr.splice(
-                computeMatchedItemIndex(id, deepObjOrArr, changingKey),
-                0,
-                value
-              )
-              break
-            case 'insert-after':
-              deepObjOrArr.splice(
-                computeMatchedItemIndex(id, deepObjOrArr, changingKey) + 1,
-                0,
-                value
-              )
-              break
-            case 'update':
-              if (/\./.test(key)) {
-                const keys = key.split('.')
-                const prefix = keys.pop()
-                Vue.set(
-                  getObjectDeepValueByNestKey(
-                    result[computeMatchedItemIndex(id, result, changingKey)],
-                    keys
-                  ),
-                  prefix,
-                  value
-                )
-              } else {
-                Vue.set(
-                  result[computeMatchedItemIndex(id, result, changingKey)],
-                  key,
-                  value
-                )
-              }
-              break
+          if (method === 'update') {
+            if (/\./.test(key)) {
+              const keys = key.split('.')
+              const prefix = keys.pop()
+              Vue.set(getModifyValueByNestKey(result[computeMatchedItemIndex(id, result, changingKey)], keys), prefix, value)
+            } else {
+              Vue.set(result[computeMatchedItemIndex(id, result, changingKey)], key, value)
+            }
+          } else if (method === 'modify') {
+            if (/\./.test(key)) {
+              const keys = key.split('.')
+              const prefix = keys.pop()
+              Vue.set(getModifyValueByNestKey(state, keys), prefix, value)
+            } else {
+              Vue.set(field, key, value)
+            }
+          } else {
+            let modifyValue = getModifyValueByNestKey(field, key || 'result')
+            switch (method) {
+              case 'push':
+                modifyValue.push(value)
+                break
+              case 'unshift':
+                modifyValue.unshift(value)
+                break
+              case 'concat':
+                modifyValue = modifyValue.concat(value)
+                break
+              case 'merge':
+                modifyValue = value.concat(modifyValue)
+                break
+              case 'patch':
+                updateReactivityField(Vue.set, modifyValue, value, changingKey)
+                break
+              case 'delete':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey), 1)
+                break
+              case 'insert-before':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey), 0, value)
+                break
+              case 'insert-after':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey) + 1, 0, value)
+                break
+            }
           }
           if (cacheTimeout) {
             setDataToCache({
