@@ -184,8 +184,8 @@ export default (api, debug = false) => {
           field.fetched = true
           field.nothing = computeResultLength(result) === 0
         }
-        field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total
+        field.noMore = type === 'jump' ? false : data.no_more
         field.page = typeof page === 'number' ? page : typeof page === 'string' ? +page : 1
         setReactivityField(Vue.set, field, 'result', result, type, insertBefore)
         if (extra) {
@@ -195,7 +195,7 @@ export default (api, debug = false) => {
         if (cacheTimeout && !field.nothing) {
           setDataToCache({
             key: fieldName,
-            value: state[fieldName],
+            value: field,
             expiredAt: Date.now() + cacheTimeout * 1000
           })
         }
@@ -223,7 +223,7 @@ export default (api, debug = false) => {
             if (/\./.test(key)) {
               const keys = key.split('.')
               const prefix = keys.pop()
-              Vue.set(getObjectDeepValue(state, keys), prefix, value)
+              Vue.set(getObjectDeepValue(field, keys), prefix, value)
             } else {
               Vue.set(field, key, value)
             }
@@ -237,10 +237,10 @@ export default (api, debug = false) => {
                 modifyValue.unshift(value)
                 break
               case 'concat':
-                modifyValue = modifyValue.concat(value)
+                value.forEach(item => modifyValue.push(item))
                 break
               case 'merge':
-                modifyValue = value.concat(modifyValue)
+                value.reverse().forEach(item => modifyValue.unshift(item))
                 break
               case 'patch':
                 updateReactivityField(Vue.set, modifyValue, value, changingKey)

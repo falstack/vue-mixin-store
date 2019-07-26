@@ -49,6 +49,8 @@ export default {
   methods: {
     testPatch() {
       this.$refs.loader.patch([{ a: 1, val: 'changed' }], 'result.pgc', 'a')
+      this.$refs.loader.append({ a: 6, val: 'gg' }, 'result.pgc', 'a')
+      this.$refs.loader.append([{ a: 6, val: 'kami' }], 'result.bangumi', 'a')
     }
   }
 }

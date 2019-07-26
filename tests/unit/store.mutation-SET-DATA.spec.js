@@ -1,5 +1,5 @@
 import storeInstance from '@/flow'
-import { defaultListObj, generateFieldName } from '@/utils'
+import { defaultListObj, generateFieldName, getDateFromCache } from '@/utils'
 
 const Store = storeInstance({})
 
@@ -67,7 +67,7 @@ describe('store mutation set data', () => {
           c: []
         },
         no_more: true,
-        total: 0
+        total: 123
       },
       page: 1
     })
@@ -80,7 +80,7 @@ describe('store mutation set data', () => {
           b: [],
           c: []
         },
-        total: 0,
+        total: 123,
         page: 1,
         noMore: true
       })
@@ -364,6 +364,7 @@ describe('store mutation set data', () => {
     Store.mutations.CLEAR_RESULT(state, fieldName)
     const page1 = {
       result: [1, 2, 3, 4, 5],
+      extra: ['a', 'b', 'c'],
       no_more: false,
       total: 10
     }
@@ -378,12 +379,14 @@ describe('store mutation set data', () => {
         fetched: true,
         result: page1.result,
         total: page1.total,
+        extra: ['a', 'b', 'c'],
         page: 1,
         noMore: page1.no_more
       })
     })
     const page2 = {
       result: [11, 12, 13, 14, 15],
+      extra: ['d', 'e', 'f'],
       no_more: true,
       total: 10
     }
@@ -398,10 +401,34 @@ describe('store mutation set data', () => {
       [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
         result: result,
+        extra: ['d', 'e', 'f', 'a', 'b', 'c'],
         total: page2.total,
         page: 2,
         noMore: page2.no_more
       })
     })
+  })
+
+  it('能够正确的设置 local cache', () => {
+    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.CLEAR_RESULT(state, fieldName)
+    const page1 = {
+      result: [1, 2, 3, 4, 5],
+      extra: ['a', 'b', 'c'],
+      no_more: false,
+      total: 10
+    }
+    Store.mutations.SET_DATA(state, {
+      fieldName,
+      data: page1,
+      page: 1,
+      insertBefore: true,
+      cacheTimeout: 3600
+    })
+    const result = getDateFromCache({
+      key: fieldName,
+      now: 0
+    })
+    expect(result).toEqual(Store.getters.getFlow(state)({ func, type, query }))
   })
 })
