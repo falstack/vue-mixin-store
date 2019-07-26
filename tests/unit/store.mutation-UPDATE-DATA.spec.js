@@ -14,6 +14,19 @@ describe('store mutation update data', () => {
     state = {}
   })
 
+  it('field 为空，直接返回', () => {
+    Store.mutations.UPDATE_DATA(state, {
+      type,
+      func,
+      query,
+      id: 1,
+      method: 'update',
+      key: 'val',
+      value: 'c'
+    })
+    expect(state).toEqual({})
+  })
+
   it('result 是 array，调用 update，浅更新', () => {
     Store.mutations.INIT_STATE(state, { func, type, query })
     Store.mutations.SET_DATA(state, {

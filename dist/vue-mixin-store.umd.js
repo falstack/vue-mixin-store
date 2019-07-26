@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.53
+ * vue-mixin-store v1.1.54
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -906,9 +906,9 @@ if (typeof window !== 'undefined') {
     __webpack_require__("f6fd")
   }
 
-  var setPublicPath_i
-  if ((setPublicPath_i = window.document.currentScript) && (setPublicPath_i = setPublicPath_i.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))) {
-    __webpack_require__.p = setPublicPath_i[1] // eslint-disable-line
+  var i
+  if ((i = window.document.currentScript) && (i = i.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))) {
+    __webpack_require__.p = i[1] // eslint-disable-line
   }
 }
 
@@ -926,16 +926,27 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpac
 // CONCATENATED MODULE: ./src/utils.js
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+/**
+ * 默认每个 field 都会有这些数据
+ */
 var defaultListObj = {
   result: [],
-  page: 0,
   noMore: false,
   nothing: false,
   loading: false,
-  error: null,
   fetched: false,
-  total: 0,
-  extra: null
+  error: null,
+  extra: null,
+  page: 0,
+  total: 0
+  /**
+   * 根据参数生成 field 的 namespace
+   * @param {string} func
+   * @param {string} type
+   * @param {object} query
+   * @return {string}
+   */
+
 };
 var generateFieldName = function generateFieldName(func, type) {
   var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
@@ -947,17 +958,32 @@ var generateFieldName = function generateFieldName(func, type) {
   });
   return result;
 };
-var parseDataUniqueId = function parseDataUniqueId(data, changing) {
-  if (!/\./.test(changing)) {
-    return data[changing];
+/**
+ * 根据 key 从 object 里拿 value
+ * @param {object} field
+ * @param {string} keys
+ * @return {*}
+ */
+
+var getObjectDeepValue = function getObjectDeepValue(field, keys) {
+  if (!keys) {
+    return field;
   }
 
-  var result = data;
-  changing.split('.').forEach(function (key) {
+  var result = field;
+  var keysArr = isArray(keys) ? keys : keys.split('.');
+  keysArr.forEach(function (key) {
     result = result[key];
   });
   return result;
 };
+/**
+ * 从 localStorage 里获取数据
+ * @param {string} key
+ * @param {int} now
+ * @return {null|object}
+ */
+
 var getDateFromCache = function getDateFromCache(_ref) {
   var key = _ref.key,
       now = _ref.now;
@@ -977,6 +1003,13 @@ var getDateFromCache = function getDateFromCache(_ref) {
     return null;
   }
 };
+/**
+ * 设置 localStorage
+ * @param {string} key
+ * @param {object} value
+ * @param {int} expiredAt
+ */
+
 var setDataToCache = function setDataToCache(_ref2) {
   var key = _ref2.key,
       value = _ref2.value,
@@ -988,9 +1021,25 @@ var setDataToCache = function setDataToCache(_ref2) {
   } catch (e) {// do nothing
   }
 };
+/**
+ * 判断参数是否为数组
+ * @param {any} data
+ * @return {boolean}
+ */
+
 var isArray = function isArray(data) {
   return Object.prototype.toString.call(data) === '[object Array]';
 };
+/**
+ * 设置一个响应式的数据到对象上
+ * @param {Vue.set} setter
+ * @param {object} field
+ * @param {string} key
+ * @param {any} value
+ * @param {string} type
+ * @param {boolean} insertBefore
+ */
+
 var setReactivityField = function setReactivityField(setter, field, key, value, type, insertBefore) {
   if (field[key]) {
     if (type === 'jump' || !isArray(value)) {
@@ -1002,6 +1051,65 @@ var setReactivityField = function setReactivityField(setter, field, key, value, 
     setter(field, key, value);
   }
 };
+/**
+ * 响应式的更新对象上的数据
+ * @param {Vue.set} setter
+ * @param {array} fieldArray
+ * @param {any} value
+ * @param {string} changing
+ */
+
+var updateReactivityField = function updateReactivityField(setter, fieldArray, value, changing) {
+  if (isArray(value)) {
+    value.forEach(function (col) {
+      var stringifyId = getObjectDeepValue(col, changing).toString();
+      fieldArray.forEach(function (item, index) {
+        if (getObjectDeepValue(item, changing).toString() === stringifyId) {
+          Object.keys(col).forEach(function (key) {
+            setter(fieldArray[index], key, col[key]);
+          });
+        }
+      });
+    });
+  } else {
+    Object.keys(value).forEach(function (uniqueId) {
+      var stringifyId = uniqueId.toString();
+      fieldArray.forEach(function (item, index) {
+        if (getObjectDeepValue(item, changing).toString() === stringifyId) {
+          var col = value[uniqueId];
+          Object.keys(col).forEach(function (key) {
+            setter(fieldArray[index], key, col[key]);
+          });
+        }
+      });
+    });
+  }
+};
+/**
+ * 通过 id 匹配返回数组中某个对象的 index
+ * @param {int|string} itemId
+ * @param {array} fieldArr
+ * @param {int|string} changingKey
+ * @return {number}
+ */
+
+var computeMatchedItemIndex = function computeMatchedItemIndex(itemId, fieldArr, changingKey) {
+  var i;
+
+  for (i = 0; i < fieldArr.length; i++) {
+    if (getObjectDeepValue(fieldArr[i], changingKey).toString() === itemId.toString()) {
+      break;
+    }
+  }
+
+  return i;
+};
+/**
+ * 计算一个数据列的长度
+ * @param {array|object} data
+ * @return {number}
+ */
+
 var computeResultLength = function computeResultLength(data) {
   var result = 0;
 
@@ -1015,26 +1123,51 @@ var computeResultLength = function computeResultLength(data) {
 
   return result;
 };
+/**
+ * 事件绑定
+ * @param elem
+ * @param {string} type
+ * @param {function} listener
+ */
+
 var on = function on(elem, type, listener) {
   elem.addEventListener(type, listener, {
     capture: false,
     passive: true
   });
 };
+/**
+ * 事件解绑
+ * @param elem
+ * @param {string} type
+ * @param {function} listener
+ */
+
 var off = function off(elem, type, listener) {
   elem.removeEventListener(type, listener, {
     capture: false,
     passive: true
   });
 };
-var checkInView = function checkInView(dom, preload) {
-  if (!dom) {
-    return false;
-  }
+/**
+ * 检查元素是否在屏幕内
+ * @param dom
+ * @param {int} preload
+ * @return {boolean}
+ */
 
+var checkInView = function checkInView(dom, preload) {
   var rect = dom.getBoundingClientRect();
   return rect.top < window.innerHeight + preload && rect.bottom + preload > 0 && rect.left < window.innerWidth + preload && rect.right + preload > 0;
 };
+/**
+ * 拼接请求的参数
+ * @param {object} field
+ * @param {object} query
+ * @param {string} type
+ * @return {object}
+ */
+
 var generateRequestParams = function generateRequestParams(field, query, type) {
   var result = {};
 
@@ -1043,12 +1176,12 @@ var generateRequestParams = function generateRequestParams(field, query, type) {
 
     if (type === 'seenIds') {
       result.seen_ids = field.result.map(function (_) {
-        return parseDataUniqueId(_, changing);
+        return getObjectDeepValue(_, changing);
       }).join(',');
     } else if (type === 'lastId') {
-      result.last_id = parseDataUniqueId(field.result[field.result.length - 1], changing);
+      result.last_id = getObjectDeepValue(field.result[field.result.length - 1], changing);
     } else if (type === 'sinceId') {
-      result.since_id = parseDataUniqueId(query.is_up ? field.result[0] : field.result[field.result.length - 1], changing);
+      result.since_id = getObjectDeepValue(query.is_up ? field.result[0] : field.result[field.result.length - 1], changing);
       result.is_up = query.is_up ? 1 : 0;
     } else if (type === 'jump') {
       result.page = query.page || 1;
@@ -1070,7 +1203,7 @@ var generateRequestParams = function generateRequestParams(field, query, type) {
     }
   }
 
-  return Object.assign(result, query);
+  return Object.assign(query, result);
 };
 // CONCATENATED MODULE: ./src/flow.js
 
@@ -1160,15 +1293,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       break;
                     }
 
-                    callback && callback({
-                      params: params,
-                      data: {
-                        result: field.result,
-                        extra: field.extra,
-                        noMore: field.noMore,
-                        total: field.total
-                      }
-                    });
+                    if (callback) {
+                      callback({
+                        params: params,
+                        data: {
+                          result: field.result,
+                          extra: field.extra,
+                          noMore: field.noMore,
+                          total: field.total
+                        }
+                      });
+                    }
+
                     return _context.abrupt("return", resolve());
 
                   case 14:
@@ -1226,15 +1362,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       page: params.page,
                       insertBefore: !!query.is_up
                     });
-                    callback && callback({
-                      params: params,
-                      data: {
-                        result: data.result,
-                        extra: data.extra,
-                        noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
-                        total: data.total || 0
-                      }
-                    });
+
+                    if (callback) {
+                      callback({
+                        params: params,
+                        data: {
+                          result: data.result,
+                          extra: data.extra || null,
+                          noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
+                          total: data.total || 0
+                        }
+                      });
+                    }
+
                     resolve();
                     _context.next = 40;
                     break;
@@ -1331,15 +1471,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       page: params.page,
                       insertBefore: !!query.is_up
                     });
-                    callback && callback({
-                      params: params,
-                      data: {
-                        result: data.result,
-                        extra: data.extra,
-                        noMore: field.noMore,
-                        total: field.total
-                      }
-                    });
+
+                    if (callback) {
+                      callback({
+                        params: params,
+                        data: {
+                          result: data.result,
+                          extra: data.extra || null,
+                          noMore: field.noMore,
+                          total: field.total
+                        }
+                      });
+                    }
+
                     resolve();
                     _context2.next = 24;
                     break;
@@ -1431,8 +1575,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           field.nothing = computeResultLength(result) === 0;
         }
 
-        field.noMore = type === 'jump' ? false : data.no_more;
         field.total = data.total;
+        field.noMore = type === 'jump' ? false : data.no_more;
         field.page = typeof page === 'number' ? page : typeof page === 'string' ? +page : 1;
         setReactivityField(external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set, field, 'result', result, type, insertBefore);
 
@@ -1445,7 +1589,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         if (cacheTimeout && !field.nothing) {
           setDataToCache({
             key: fieldName,
-            value: state[fieldName],
+            value: field,
             expiredAt: Date.now() + cacheTimeout * 1000
           });
         }
@@ -1459,8 +1603,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             key = _ref10.key,
             value = _ref10.value,
             cacheTimeout = _ref10.cacheTimeout,
-            resultPrefix = _ref10.resultPrefix,
-            changingKey = _ref10.changingKey;
+            changing = _ref10.changing;
 
         try {
           printLog('updateData', {
@@ -1472,8 +1615,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             key: key,
             value: value,
             cacheTimeout: cacheTimeout,
-            resultPrefix: resultPrefix,
-            changingKey: changingKey
+            changing: changing
           });
           var fieldName = generateFieldName(func, type, query);
           var field = state[fieldName];
@@ -1482,132 +1624,87 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             return;
           }
 
-          var modKeys = key ? key.split('.') : [];
-          var changing = changingKey || query.changing || 'id';
-          var objArr = !isArray(value); // 修改这个 field
+          var changingKey = changing || query.changing || 'id';
+          var result = field.result;
+          var beforeLength = computeResultLength(result);
 
-          if (~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(method)) {
-            var changeTotal = 0;
+          if (method === 'update') {
+            if (/\./.test(key)) {
+              var keys = key.split('.');
+              var prefix = keys.pop();
+
+              if (isArray(result)) {
+                external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(getObjectDeepValue(result[computeMatchedItemIndex(id, result, changingKey)], keys), prefix, value);
+              } else {
+                var changeArr = getObjectDeepValue(result, keys);
+                external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(changeArr[computeMatchedItemIndex(id, changeArr, changingKey)], prefix, value);
+              }
+            } else {
+              external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(result[computeMatchedItemIndex(id, result, changingKey)], key, value);
+            }
+          } else if (method === 'modify') {
+            if (/\./.test(key)) {
+              var _keys = key.split('.');
+
+              var _prefix = _keys.pop();
+
+              external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(getObjectDeepValue(field, _keys), _prefix, value);
+            } else {
+              external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field, key, value);
+            }
+          } else {
+            var modifyValue = getObjectDeepValue(field, key || 'result');
 
             switch (method) {
               case 'push':
-                resultPrefix ? field.result[resultPrefix].push(value) : field.result.push(value);
-                changeTotal = 1;
+                modifyValue.push(value);
                 break;
 
               case 'unshift':
-                resultPrefix ? field.result[resultPrefix].unshift(value) : field.result.unshift(value);
-                changeTotal = 1;
+                modifyValue.unshift(value);
                 break;
 
               case 'concat':
-                resultPrefix ? field.result[resultPrefix] = field.result[resultPrefix].concat(value) : field.result = field.result.concat(value);
-                changeTotal = value.length;
+                value.forEach(function (item) {
+                  return modifyValue.push(item);
+                });
                 break;
 
               case 'merge':
-                resultPrefix ? field.result[resultPrefix] = value.concat(field.result[resultPrefix]) : field.result = value.concat(field.result);
-                changeTotal = value.length;
-                break;
-
-              case 'modify':
-                var obj = state[fieldName]; // eslint-disable-line
-
-                while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {// do nothing
-                }
-
-                external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(obj, modKeys[0], value);
+                value.reverse().forEach(function (item) {
+                  return modifyValue.unshift(item);
+                });
                 break;
 
               case 'patch':
-                if (objArr) {
-                  if (resultPrefix) {
-                    Object.keys(value).forEach(function (uniqueId) {
-                      field.result[resultPrefix].forEach(function (item, index) {
-                        if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
-                          Object.keys(value[uniqueId]).forEach(function (key) {
-                            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[resultPrefix][index], key, value[uniqueId][key]);
-                          });
-                        }
-                      });
-                    });
-                  } else {
-                    Object.keys(value).forEach(function (uniqueId) {
-                      field.result.forEach(function (item, index) {
-                        if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
-                          Object.keys(value[uniqueId]).forEach(function (key) {
-                            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[index], key, value[uniqueId][key]);
-                          });
-                        }
-                      });
-                    });
-                  }
-                } else {
-                  if (resultPrefix) {
-                    value.forEach(function (col) {
-                      var uniqueId = parseDataUniqueId(col, changing);
-                      field.result[resultPrefix].forEach(function (item, index) {
-                        if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
-                          Object.keys(col).forEach(function (key) {
-                            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[resultPrefix][index], key, col[key]);
-                          });
-                        }
-                      });
-                    });
-                  } else {
-                    value.forEach(function (col) {
-                      var uniqueId = parseDataUniqueId(col, changing);
-                      field.result.forEach(function (item, index) {
-                        if (parseDataUniqueId(item, changing).toString() === uniqueId.toString()) {
-                          Object.keys(col).forEach(function (key) {
-                            external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(field.result[index], key, col[key]);
-                          });
-                        }
-                      });
-                    });
-                  }
-                }
-
+                updateReactivityField(external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set, modifyValue, value, changingKey);
                 break;
-            }
 
-            field.total += changeTotal;
-          } else {
-            // 修改 field 里的某个 result
-            for (var i = 0; i < field.result.length; i++) {
-              if (parseDataUniqueId(field.result[i], changing).toString() === id.toString()) {
-                if (method === 'delete') {
-                  resultPrefix ? field.result[resultPrefix].splice(i, 1) : field.result.splice(i, 1);
-                  field.total--;
-                } else if (method === 'insert-before') {
-                  resultPrefix ? field.result[resultPrefix].splice(i, 0, value) : field.result.splice(i, 0, value);
-                  field.total++;
-                } else if (method === 'insert-after') {
-                  resultPrefix ? field.result[resultPrefix].splice(i + 1, 0, value) : field.result.splice(i + 1, 0, value);
-                  field.total++;
-                } else {
-                  var _obj = field.result[i];
-
-                  while (modKeys.length - 1 && (_obj = _obj[modKeys.shift()])) {// do nothing
-                  }
-
-                  external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(_obj, modKeys[0], value);
-                }
-
+              case 'delete':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey), 1);
                 break;
-              }
+
+              case 'insert-before':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey), 0, value);
+                break;
+
+              case 'insert-after':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey) + 1, 0, value);
+                break;
             }
           }
 
           if (cacheTimeout) {
             setDataToCache({
               key: fieldName,
-              value: state[fieldName],
+              value: field,
               expiredAt: Date.now() + cacheTimeout * 1000
             });
           }
 
-          field.nothing = computeResultLength(field.result) === 0;
+          var afterLength = computeResultLength(field.result);
+          field.total = field.total + afterLength - beforeLength;
+          field.nothing = afterLength === 0;
         } catch (error) {
           debug && console.log(error); // eslint-disable-line
         }
@@ -1625,12 +1722,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4966faac-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=7c8ba9c8&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v("点击加载更多")])],2)]:_vm._e()]:_vm._e()],2)],2)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"13688336-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=ad796ace&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v("\n            点击加载更多\n          ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=7c8ba9c8&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=ad796ace&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -1848,6 +1945,44 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ var FlowLoadervue_type_script_lang_js_ = ({
@@ -1952,136 +2087,102 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
     });
   },
   methods: {
-    _fireSSRCallback: function _fireSSRCallback() {
-      if (this.firstBind) {
-        this.firstBind = false;
-
-        if (this.source && this.source.fetched) {
-          this.callback && this.callback({
-            params: generateRequestParams({
-              fetched: false
-            }, this.params.query, this.type),
-            data: {
-              result: this.source.result,
-              extra: this.source.extra,
-              noMore: this.source.noMore,
-              total: this.source.total
-            }
-          });
-        }
-      }
-    },
     modify: function modify(_ref) {
       var key = _ref.key,
           value = _ref.value;
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'modify',
-        value: value,
-        key: key
+        key: key,
+        value: value
       }));
     },
     update: function update(_ref2) {
       var id = _ref2.id,
           key = _ref2.key,
-          value = _ref2.value;
+          value = _ref2.value,
+          changing = _ref2.changing;
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+        method: 'update',
         id: id,
         key: key,
-        value: value
+        value: value,
+        changing: changing
       }));
     },
-    delete: function _delete(id, resultPrefix, changingKey) {
+    delete: function _delete(id, key, changing) {
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'delete',
         id: id,
-        resultPrefix: resultPrefix,
-        changingKey: changingKey
+        key: key,
+        changing: changing
       }));
     },
-    prepend: function prepend(data, resultPrefix, changingKey) {
+    prepend: function prepend(value, key, changing) {
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
-        method: Object.prototype.toString.call(data) === '[object Array]' ? 'merge' : 'unshift',
-        value: data,
-        resultPrefix: resultPrefix,
-        changingKey: changingKey
+        method: isArray(value) ? 'merge' : 'unshift',
+        key: key,
+        value: value,
+        changing: changing
       }));
     },
-    append: function append(data, resultPrefix, changingKey) {
+    append: function append(value, key, changing) {
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
-        method: Object.prototype.toString.call(data) === '[object Array]' ? 'concat' : 'push',
-        value: data,
-        resultPrefix: resultPrefix,
-        changingKey: changingKey
+        method: isArray(value) ? 'concat' : 'push',
+        key: key,
+        value: value,
+        changing: changing
       }));
     },
-    patch: function patch(objectArray, resultPrefix, changingKey) {
+    patch: function patch(value, key, changing) {
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'patch',
-        value: objectArray,
-        resultPrefix: resultPrefix,
-        changingKey: changingKey
+        key: key,
+        value: value,
+        changing: changing
       }));
     },
     insertBefore: function insertBefore(_ref3) {
       var id = _ref3.id,
           value = _ref3.value,
-          resultPrefix = _ref3.resultPrefix,
-          changingKey = _ref3.changingKey;
+          key = _ref3.key,
+          changing = _ref3.changing;
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'insert-before',
         id: id,
+        key: key,
         value: value,
-        resultPrefix: resultPrefix,
-        changingKey: changingKey
+        changing: changing
       }));
     },
     insertAfter: function insertAfter(_ref4) {
       var id = _ref4.id,
           value = _ref4.value,
-          resultPrefix = _ref4.resultPrefix,
-          changingKey = _ref4.changingKey;
+          key = _ref4.key,
+          changing = _ref4.changing;
       this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
         method: 'insert-after',
         id: id,
+        key: key,
         value: value,
-        resultPrefix: resultPrefix,
-        changingKey: changingKey
+        changing: changing
       }));
     },
     getResource: function getResource() {
       var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'extra';
-      return this.source[key];
-    },
-    jump: function () {
-      var _jump = FlowLoadervue_type_script_lang_js_asyncToGenerator(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee(page) {
-        var query;
-        return regenerator_default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                query = Object.assign({}, this.params.query);
-                query.page = page;
-                _context.next = 4;
-                return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-                  query: query
-                }));
 
-              case 4:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-
-      function jump(_x) {
-        return _jump.apply(this, arguments);
+      if (!this.source) {
+        return;
       }
 
-      return jump;
-    }(),
+      return this.source[key];
+    },
+    jump: function jump(page) {
+      var query = Object.assign({}, this.params.query);
+      query.page = page;
+      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+        query: query
+      }));
+    },
     refresh: function refresh() {
       var _this2 = this;
 
@@ -2089,15 +2190,15 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       /*#__PURE__*/
       FlowLoadervue_type_script_lang_js_asyncToGenerator(
       /*#__PURE__*/
-      regenerator_default.a.mark(function _callee2() {
+      regenerator_default.a.mark(function _callee() {
         var query;
-        return regenerator_default.a.wrap(function _callee2$(_context2) {
+        return regenerator_default.a.wrap(function _callee$(_context) {
           while (1) {
-            switch (_context2.prev = _context2.next) {
+            switch (_context.prev = _context.next) {
               case 0:
                 query = Object.assign({}, _this2.params.query);
                 query.__refresh__ = true;
-                _context2.next = 4;
+                _context.next = 4;
                 return _this2.$store.dispatch('flow/initData', Object.assign({}, _this2.params, {
                   query: query
                 }));
@@ -2107,130 +2208,54 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
 
               case 5:
               case "end":
-                return _context2.stop();
+                return _context.stop();
             }
           }
-        }, _callee2);
+        }, _callee);
       })));
     },
     initData: function initData() {
       var _this3 = this;
 
       var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      this.$nextTick(
-      /*#__PURE__*/
-      FlowLoadervue_type_script_lang_js_asyncToGenerator(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee3() {
-        var query;
-        return regenerator_default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                query = Object.assign({}, _this3.params.query, obj);
-                _context3.next = 3;
-                return _this3.$store.dispatch('flow/initData', Object.assign({}, _this3.params, {
-                  query: query
-                }));
+      this.$nextTick(function () {
+        var query = Object.assign({}, _this3.params.query, obj);
 
-              case 3:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      })));
+        _this3.$store.dispatch('flow/initData', Object.assign({}, _this3.params, {
+          query: query
+        }));
+      });
     },
-    loadBefore: function () {
-      var _loadBefore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee4() {
-        var obj,
-            force,
-            query,
-            _args4 = arguments;
-        return regenerator_default.a.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                obj = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : {};
-                force = _args4.length > 1 && _args4[1] !== undefined ? _args4[1] : false;
+    loadBefore: function loadBefore() {
+      var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-                if (!this.isPagination) {
-                  _context4.next = 4;
-                  break;
-                }
-
-                return _context4.abrupt("return");
-
-              case 4:
-                query = Object.assign({}, this.params.query, obj);
-                query.is_up = 1;
-                _context4.next = 8;
-                return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-                  query: query,
-                  force: force
-                }));
-
-              case 8:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this);
-      }));
-
-      function loadBefore() {
-        return _loadBefore.apply(this, arguments);
+      if (this.isPagination) {
+        return;
       }
 
-      return loadBefore;
-    }(),
-    loadMore: function () {
-      var _loadMore = FlowLoadervue_type_script_lang_js_asyncToGenerator(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee5() {
-        var obj,
-            force,
-            query,
-            _args5 = arguments;
-        return regenerator_default.a.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                obj = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : {};
-                force = _args5.length > 1 && _args5[1] !== undefined ? _args5[1] : false;
-
-                if (!this.isPagination) {
-                  _context5.next = 4;
-                  break;
-                }
-
-                return _context5.abrupt("return");
-
-              case 4:
-                query = Object.assign({}, this.params.query, obj);
-                query.is_up = 0;
-                _context5.next = 8;
-                return this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
-                  query: query,
-                  force: force
-                }));
-
-              case 8:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5, this);
+      var query = Object.assign({}, this.params.query, obj);
+      query.is_up = 1;
+      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+        query: query,
+        force: force
       }));
+    },
+    loadMore: function loadMore() {
+      var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      function loadMore() {
-        return _loadMore.apply(this, arguments);
+      if (this.isPagination) {
+        return;
       }
 
-      return loadMore;
-    }(),
+      var query = Object.assign({}, this.params.query, obj);
+      query.is_up = 0;
+      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+        query: query,
+        force: force
+      }));
+    },
     retry: function retry() {
       if (this.source.fetched) {
         this.loadMore();
@@ -2241,9 +2266,11 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       }
     },
     clear: function clear() {
-      if (this.source) {
-        this.$store.commit('flow/INIT_STATE', this.params);
+      if (!this.source) {
+        return;
       }
+
+      this.$store.commit('flow/INIT_STATE', this.params);
     },
     _getTarget: function _getTarget() {
       var el = this.$el;
@@ -2279,19 +2306,47 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       if (this.auto === 0) {
         this._initState();
       } else {
-        checkInView(this.$refs.state, this.preload) ? this.initData() : this._initState();
+        if (this.$refs.state && checkInView(this.$refs.state, this.preload)) {
+          this.initData();
+        } else {
+          this._initState();
+        }
+
         on(this._getTarget(), 'scroll', this._onScreenScroll);
       }
     },
     _retryData: function _retryData() {
-      if (this.retryOnError) {
-        if (this.source.fetched) {
-          this.loadMore();
-        } else {
-          this.initData({
-            __refresh__: true
-          });
-        }
+      if (!this.retryOnError) {
+        return;
+      }
+
+      if (this.source.fetched) {
+        this.loadMore();
+      } else {
+        this.initData({
+          __refresh__: true
+        });
+      }
+    },
+    _fireSSRCallback: function _fireSSRCallback() {
+      if (!this.firstBind) {
+        return;
+      }
+
+      this.firstBind = false;
+
+      if (this.source && this.source.fetched) {
+        this.callback && this.callback({
+          params: generateRequestParams({
+            fetched: false
+          }, this.params.query, this.type),
+          data: {
+            result: this.source.result,
+            extra: this.source.extra,
+            noMore: this.source.noMore,
+            total: this.source.total
+          }
+        });
       }
     },
     _onScreenScroll: throttle(200, function () {
@@ -2307,6 +2362,10 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
 
       if (!this.isAuto || this.source.noMore || this.isPagination && this.source.fetched) {
         off(this._getTarget(), 'scroll', this._onScreenScroll);
+        return;
+      }
+
+      if (!this.$refs.state) {
         return;
       }
 

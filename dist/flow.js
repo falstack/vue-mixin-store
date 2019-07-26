@@ -2,12 +2,14 @@ import Vue from 'vue'
 import {
   defaultListObj,
   generateFieldName,
-  parseDataUniqueId,
   setDataToCache,
   getDateFromCache,
   setReactivityField,
+  updateReactivityField,
   computeResultLength,
   isArray,
+  getObjectDeepValue,
+  computeMatchedItemIndex,
   generateRequestParams
 } from './utils'
 
@@ -42,7 +44,7 @@ export default (api, debug = false) => {
           }
           const params = generateRequestParams({ fetched: false }, query, type)
           if (notFetch) {
-            callback &&
+            if (callback) {
               callback({
                 params,
                 data: {
@@ -52,6 +54,7 @@ export default (api, debug = false) => {
                   total: field.total
                 }
               })
+            }
             return resolve()
           }
           try {
@@ -80,19 +83,17 @@ export default (api, debug = false) => {
               page: params.page,
               insertBefore: !!query.is_up
             })
-            callback &&
+            if (callback) {
               callback({
                 params,
                 data: {
                   result: data.result,
-                  extra: data.extra,
-                  noMore:
-                    typeof data.no_more === 'undefined'
-                      ? computeResultLength(data.result) === 0
-                      : data.no_more,
+                  extra: data.extra || null,
+                  noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
                   total: data.total || 0
                 }
               })
+            }
             resolve()
           } catch (error) {
             commit('SET_ERROR', { fieldName, error })
@@ -108,12 +109,7 @@ export default (api, debug = false) => {
           printLog('loadMore', { type, func, query })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
-          if (
-            !field ||
-            field.loading ||
-            field.nothing ||
-            (field.noMore && !force)
-          ) {
+          if (!field || field.loading || field.nothing || (field.noMore && !force)) {
             return resolve()
           }
           if (type === 'jump' && +query.page === field.page) {
@@ -136,16 +132,17 @@ export default (api, debug = false) => {
               page: params.page,
               insertBefore: !!query.is_up
             })
-            callback &&
+            if (callback) {
               callback({
                 params,
                 data: {
                   result: data.result,
-                  extra: data.extra,
+                  extra: data.extra || null,
                   noMore: field.noMore,
                   total: field.total
                 }
               })
+            }
             resolve()
           } catch (error) {
             commit('SET_ERROR', { fieldName, error })
@@ -156,11 +153,7 @@ export default (api, debug = false) => {
     },
     mutations: {
       INIT_STATE(state, { func, type, query }) {
-        Vue.set(
-          state,
-          generateFieldName(func, type, query),
-          Object.assign({}, defaultListObj)
-        )
+        Vue.set(state, generateFieldName(func, type, query), Object.assign({}, defaultListObj))
       },
       SET_LOADING(state, fieldName) {
         state[fieldName].loading = true
@@ -176,19 +169,8 @@ export default (api, debug = false) => {
         state[fieldName].result = []
         state[fieldName].extra = null
       },
-      SET_DATA(
-        state,
-        { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout }
-      ) {
-        printLog('setData', {
-          data,
-          fieldName,
-          type,
-          page,
-          insertBefore,
-          fromLocal,
-          cacheTimeout
-        })
+      SET_DATA(state, { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout }) {
+        printLog('setData', { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout })
         if (fromLocal) {
           Vue.set(state, fieldName, data)
           return
@@ -202,10 +184,9 @@ export default (api, debug = false) => {
           field.fetched = true
           field.nothing = computeResultLength(result) === 0
         }
-        field.noMore = type === 'jump' ? false : data.no_more
         field.total = data.total
-        field.page =
-          typeof page === 'number' ? page : typeof page === 'string' ? +page : 1
+        field.noMore = type === 'jump' ? false : data.no_more
+        field.page = typeof page === 'number' ? page : typeof page === 'string' ? +page : 1
         setReactivityField(Vue.set, field, 'result', result, type, insertBefore)
         if (extra) {
           setReactivityField(Vue.set, field, 'extra', extra, type, insertBefore)
@@ -214,206 +195,82 @@ export default (api, debug = false) => {
         if (cacheTimeout && !field.nothing) {
           setDataToCache({
             key: fieldName,
-            value: state[fieldName],
+            value: field,
             expiredAt: Date.now() + cacheTimeout * 1000
           })
         }
       },
-      UPDATE_DATA(
-        state,
-        {
-          type,
-          func,
-          query,
-          id,
-          method,
-          key,
-          value,
-          cacheTimeout,
-          resultPrefix,
-          changingKey
-        }
-      ) {
+      UPDATE_DATA(state, { type, func, query, id, method, key, value, cacheTimeout, changing }) {
         try {
-          printLog('updateData', {
-            type,
-            func,
-            query,
-            id,
-            method,
-            key,
-            value,
-            cacheTimeout,
-            resultPrefix,
-            changingKey
-          })
+          printLog('updateData', { type, func, query, id, method, key, value, cacheTimeout, changing })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
           if (!field) {
             return
           }
-          const modKeys = key ? key.split('.') : []
-          const changing = changingKey || query.changing || 'id'
-          const objArr = !isArray(value)
-          // 修改这个 field
-          if (
-            ~['push', 'unshift', 'concat', 'merge', 'modify', 'patch'].indexOf(
-              method
-            )
-          ) {
-            let changeTotal = 0
+          const changingKey = changing || query.changing || 'id'
+          const result = field.result
+          const beforeLength = computeResultLength(result)
+          if (method === 'update') {
+            if (/\./.test(key)) {
+              const keys = key.split('.')
+              const prefix = keys.pop()
+              if (isArray(result)) {
+                Vue.set(getObjectDeepValue(result[computeMatchedItemIndex(id, result, changingKey)], keys), prefix, value)
+              } else {
+                const changeArr = getObjectDeepValue(result, keys)
+                Vue.set(changeArr[computeMatchedItemIndex(id, changeArr, changingKey)], prefix, value)
+              }
+            } else {
+              Vue.set(result[computeMatchedItemIndex(id, result, changingKey)], key, value)
+            }
+          } else if (method === 'modify') {
+            if (/\./.test(key)) {
+              const keys = key.split('.')
+              const prefix = keys.pop()
+              Vue.set(getObjectDeepValue(field, keys), prefix, value)
+            } else {
+              Vue.set(field, key, value)
+            }
+          } else {
+            let modifyValue = getObjectDeepValue(field, key || 'result')
             switch (method) {
               case 'push':
-                resultPrefix
-                  ? field.result[resultPrefix].push(value)
-                  : field.result.push(value)
-                changeTotal = 1
+                modifyValue.push(value)
                 break
               case 'unshift':
-                resultPrefix
-                  ? field.result[resultPrefix].unshift(value)
-                  : field.result.unshift(value)
-                changeTotal = 1
+                modifyValue.unshift(value)
                 break
               case 'concat':
-                resultPrefix
-                  ? (field.result[resultPrefix] = field.result[
-                      resultPrefix
-                    ].concat(value))
-                  : (field.result = field.result.concat(value))
-                changeTotal = value.length
+                value.forEach(item => modifyValue.push(item))
                 break
               case 'merge':
-                resultPrefix
-                  ? (field.result[resultPrefix] = value.concat(
-                      field.result[resultPrefix]
-                    ))
-                  : (field.result = value.concat(field.result))
-                changeTotal = value.length
-                break
-              case 'modify':
-                let obj = state[fieldName] // eslint-disable-line
-                while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
-                  // do nothing
-                }
-                Vue.set(obj, modKeys[0], value)
+                value.reverse().forEach(item => modifyValue.unshift(item))
                 break
               case 'patch':
-                if (objArr) {
-                  if (resultPrefix) {
-                    Object.keys(value).forEach(uniqueId => {
-                      field.result[resultPrefix].forEach((item, index) => {
-                        if (
-                          parseDataUniqueId(item, changing).toString() ===
-                          uniqueId.toString()
-                        ) {
-                          Object.keys(value[uniqueId]).forEach(key => {
-                            Vue.set(
-                              field.result[resultPrefix][index],
-                              key,
-                              value[uniqueId][key]
-                            )
-                          })
-                        }
-                      })
-                    })
-                  } else {
-                    Object.keys(value).forEach(uniqueId => {
-                      field.result.forEach((item, index) => {
-                        if (
-                          parseDataUniqueId(item, changing).toString() ===
-                          uniqueId.toString()
-                        ) {
-                          Object.keys(value[uniqueId]).forEach(key => {
-                            Vue.set(
-                              field.result[index],
-                              key,
-                              value[uniqueId][key]
-                            )
-                          })
-                        }
-                      })
-                    })
-                  }
-                } else {
-                  if (resultPrefix) {
-                    value.forEach(col => {
-                      const uniqueId = parseDataUniqueId(col, changing)
-                      field.result[resultPrefix].forEach((item, index) => {
-                        if (
-                          parseDataUniqueId(item, changing).toString() ===
-                          uniqueId.toString()
-                        ) {
-                          Object.keys(col).forEach(key => {
-                            Vue.set(
-                              field.result[resultPrefix][index],
-                              key,
-                              col[key]
-                            )
-                          })
-                        }
-                      })
-                    })
-                  } else {
-                    value.forEach(col => {
-                      const uniqueId = parseDataUniqueId(col, changing)
-                      field.result.forEach((item, index) => {
-                        if (
-                          parseDataUniqueId(item, changing).toString() ===
-                          uniqueId.toString()
-                        ) {
-                          Object.keys(col).forEach(key => {
-                            Vue.set(field.result[index], key, col[key])
-                          })
-                        }
-                      })
-                    })
-                  }
-                }
+                updateReactivityField(Vue.set, modifyValue, value, changingKey)
                 break
-            }
-            field.total += changeTotal
-          } else {
-            // 修改 field 里的某个 result
-            for (let i = 0; i < field.result.length; i++) {
-              if (
-                parseDataUniqueId(field.result[i], changing).toString() ===
-                id.toString()
-              ) {
-                if (method === 'delete') {
-                  resultPrefix
-                    ? field.result[resultPrefix].splice(i, 1)
-                    : field.result.splice(i, 1)
-                  field.total--
-                } else if (method === 'insert-before') {
-                  resultPrefix
-                    ? field.result[resultPrefix].splice(i, 0, value)
-                    : field.result.splice(i, 0, value)
-                  field.total++
-                } else if (method === 'insert-after') {
-                  resultPrefix
-                    ? field.result[resultPrefix].splice(i + 1, 0, value)
-                    : field.result.splice(i + 1, 0, value)
-                  field.total++
-                } else {
-                  let obj = field.result[i]
-                  while (modKeys.length - 1 && (obj = obj[modKeys.shift()])) {
-                    // do nothing
-                  }
-                  Vue.set(obj, modKeys[0], value)
-                }
+              case 'delete':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey), 1)
                 break
-              }
+              case 'insert-before':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey), 0, value)
+                break
+              case 'insert-after':
+                modifyValue.splice(computeMatchedItemIndex(id, modifyValue, changingKey) + 1, 0, value)
+                break
             }
           }
           if (cacheTimeout) {
             setDataToCache({
               key: fieldName,
-              value: state[fieldName],
+              value: field,
               expiredAt: Date.now() + cacheTimeout * 1000
             })
           }
-          field.nothing = computeResultLength(field.result) === 0
+          const afterLength = computeResultLength(field.result)
+          field.total = field.total + afterLength - beforeLength
+          field.nothing = afterLength === 0
         } catch (error) {
           debug && console.log(error) // eslint-disable-line
         }

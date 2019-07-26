@@ -88,7 +88,7 @@ export default (api, debug = false) => {
                 params,
                 data: {
                   result: data.result,
-                  extra: data.extra,
+                  extra: data.extra || null,
                   noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
                   total: data.total || 0
                 }
@@ -137,7 +137,7 @@ export default (api, debug = false) => {
                 params,
                 data: {
                   result: data.result,
-                  extra: data.extra,
+                  extra: data.extra || null,
                   noMore: field.noMore,
                   total: field.total
                 }
