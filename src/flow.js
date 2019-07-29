@@ -15,6 +15,7 @@ import {
 
 export default (api, debug = false) => {
   const printLog = (field, val) => debug && console.log(`[${field}]`, val) // eslint-disable-line
+  const isClient = typeof window !== 'undefined'
   return {
     namespaced: true,
     state: () => ({}),
@@ -44,7 +45,7 @@ export default (api, debug = false) => {
           }
           const params = generateRequestParams({ fetched: false }, query, type)
           if (notFetch) {
-            if (callback) {
+            if (isClient && callback) {
               callback({
                 params,
                 data: {
@@ -83,7 +84,7 @@ export default (api, debug = false) => {
               page: params.page,
               insertBefore: !!query.is_up
             })
-            if (callback) {
+            if (isClient && callback) {
               callback({
                 params,
                 data: {
@@ -132,7 +133,7 @@ export default (api, debug = false) => {
               page: params.page,
               insertBefore: !!query.is_up
             })
-            if (callback) {
+            if (isClient && callback) {
               callback({
                 params,
                 data: {
