@@ -28,7 +28,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 update，浅更新', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -77,7 +77,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 update，深更新', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -134,7 +134,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 modify，浅更改', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -182,7 +182,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 modify，深更改', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -245,7 +245,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 push', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -299,7 +299,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 unshift', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -353,7 +353,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 concat', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -417,7 +417,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 merge', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -481,7 +481,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 patch，patch 是数组', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -537,7 +537,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 patch，patch 是对象', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -591,7 +591,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 delete', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -625,7 +625,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 insert-before', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -680,7 +680,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 array，调用 insert-after', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -735,7 +735,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 update', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -808,7 +808,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 modify', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -892,7 +892,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 push', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -972,7 +972,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 unshift', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -1052,7 +1052,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 concat', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -1142,7 +1142,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 merge', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -1232,7 +1232,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 patch', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -1314,7 +1314,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 delete', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -1382,7 +1382,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 insert-before', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -1462,7 +1462,7 @@ describe('store mutation update data', () => {
   })
 
   it('result 是 object，调用 insert-after', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {

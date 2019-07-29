@@ -120,7 +120,7 @@ describe('generate request params', () => {
   })
 
   it('非初次请求，type 为 page，page 是 field 的 page + 1', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -144,7 +144,7 @@ describe('generate request params', () => {
   })
 
   it('非初次请求，type 为 jump，page 是 query 的 page 或 1', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -175,7 +175,7 @@ describe('generate request params', () => {
   })
 
   it('非初次请求，type 为 seenIds，seen_ids 是之前 result 的 unique_id 逗号拼接的字符串', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -198,7 +198,7 @@ describe('generate request params', () => {
   })
 
   it('非初次请求，type 为 lastId，last_id 是之前 result 数组最后一个值的 unique_id', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -221,7 +221,7 @@ describe('generate request params', () => {
   })
 
   it('非初次请求，type 为 sinceId，如果 query 的 is_up 是 true，则为 result 第 0 个值的 unique_id，并且 is_up 是 0', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -245,7 +245,7 @@ describe('generate request params', () => {
   })
 
   it('非初次请求，type 为 sinceId，如果 query 的 is_up 是 true，则为 result 最后一个值的 unique_id，并且 is_up 是 1', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {

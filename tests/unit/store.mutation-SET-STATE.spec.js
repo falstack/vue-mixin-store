@@ -24,15 +24,15 @@ describe('store mutation set state', () => {
   })
 
   it('初始化 state', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     expect(state).toEqual({
       [fieldName]: defaultListObj
     })
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     expect(state).toEqual({
       [fieldName]: defaultListObj
     })
-    Store.mutations.INIT_STATE(state, { func: 'a', type: 'b' })
+    Store.mutations.INIT_STATE(state, generateFieldName('a', 'b'))
     expect(state).toEqual({
       [fieldName]: defaultListObj,
       [generateFieldName('a', 'b')]: defaultListObj
@@ -40,7 +40,7 @@ describe('store mutation set state', () => {
   })
 
   it('设置 loading', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_LOADING(state, fieldName)
     expect(state).toEqual({
       [fieldName]: Object.assign({}, defaultListObj, {
@@ -51,7 +51,7 @@ describe('store mutation set state', () => {
   })
 
   it('设置 error', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_ERROR(state, { fieldName, error })
     expect(state).toEqual({
       [fieldName]: Object.assign({}, defaultListObj, {
@@ -62,7 +62,7 @@ describe('store mutation set state', () => {
   })
 
   it('如果 type 是 jump 或者 result 是 object-array，在下次请求前清空 result', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       type,

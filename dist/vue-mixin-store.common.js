@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.55
+ * vue-mixin-store v1.1.56
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1268,11 +1268,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     notFetch = field && field.fetched && !refresh;
 
                     if (!notFetch) {
-                      commit('INIT_STATE', {
-                        func: func,
-                        type: type,
-                        query: query
-                      });
+                      commit('INIT_STATE', fieldName);
                       commit('SET_LOADING', fieldName);
                     }
 
@@ -1307,7 +1303,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     });
                     fromLocal = false;
 
-                    if (!cacheTimeout) {
+                    if (!(isClient && cacheTimeout)) {
                       _context.next = 28;
                       break;
                     }
@@ -1504,19 +1500,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     mutations: {
-      INIT_STATE: function INIT_STATE(state, _ref7) {
-        var func = _ref7.func,
-            type = _ref7.type,
-            query = _ref7.query;
-        external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(state, generateFieldName(func, type, query), Object.assign({}, defaultListObj));
+      INIT_STATE: function INIT_STATE(state, fieldName) {
+        external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(state, fieldName, Object.assign({}, defaultListObj));
       },
       SET_LOADING: function SET_LOADING(state, fieldName) {
         state[fieldName].loading = true;
         state[fieldName].error = null;
       },
-      SET_ERROR: function SET_ERROR(state, _ref8) {
-        var fieldName = _ref8.fieldName,
-            error = _ref8.error;
+      SET_ERROR: function SET_ERROR(state, _ref7) {
+        var fieldName = _ref7.fieldName,
+            error = _ref7.error;
         printLog('error', {
           fieldName: fieldName,
           error: error
@@ -1530,14 +1523,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         state[fieldName].result = [];
         state[fieldName].extra = null;
       },
-      SET_DATA: function SET_DATA(state, _ref9) {
-        var data = _ref9.data,
-            fieldName = _ref9.fieldName,
-            type = _ref9.type,
-            page = _ref9.page,
-            insertBefore = _ref9.insertBefore,
-            fromLocal = _ref9.fromLocal,
-            cacheTimeout = _ref9.cacheTimeout;
+      SET_DATA: function SET_DATA(state, _ref8) {
+        var data = _ref8.data,
+            fieldName = _ref8.fieldName,
+            type = _ref8.type,
+            page = _ref8.page,
+            insertBefore = _ref8.insertBefore,
+            fromLocal = _ref8.fromLocal,
+            cacheTimeout = _ref8.cacheTimeout;
         printLog('setData', {
           data: data,
           fieldName: fieldName,
@@ -1578,7 +1571,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
         field.loading = false;
 
-        if (cacheTimeout && !field.nothing) {
+        if (isClient && cacheTimeout && !field.nothing) {
           setDataToCache({
             key: fieldName,
             value: field,
@@ -1586,16 +1579,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           });
         }
       },
-      UPDATE_DATA: function UPDATE_DATA(state, _ref10) {
-        var type = _ref10.type,
-            func = _ref10.func,
-            query = _ref10.query,
-            id = _ref10.id,
-            method = _ref10.method,
-            key = _ref10.key,
-            value = _ref10.value,
-            cacheTimeout = _ref10.cacheTimeout,
-            changing = _ref10.changing;
+      UPDATE_DATA: function UPDATE_DATA(state, _ref9) {
+        var type = _ref9.type,
+            func = _ref9.func,
+            query = _ref9.query,
+            id = _ref9.id,
+            method = _ref9.method,
+            key = _ref9.key,
+            value = _ref9.value,
+            cacheTimeout = _ref9.cacheTimeout,
+            changing = _ref9.changing;
 
         try {
           printLog('updateData', {
@@ -1686,7 +1679,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
 
-          if (cacheTimeout) {
+          if (isClient && cacheTimeout) {
             setDataToCache({
               key: fieldName,
               value: field,
@@ -1704,17 +1697,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     getters: {
       getFlow: function getFlow(state) {
-        return function (_ref11) {
-          var func = _ref11.func,
-              type = _ref11.type,
-              query = _ref11.query;
+        return function (_ref10) {
+          var func = _ref10.func,
+              type = _ref10.type,
+              query = _ref10.query;
           return state[generateFieldName(func, type, query)];
         };
       }
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"840d40f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=ad796ace&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"60055940-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=ad796ace&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v("\n            点击加载更多\n          ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 

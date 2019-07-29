@@ -40,7 +40,7 @@ export default (api, debug = false) => {
           // 这个 field 已经请求过了
           const notFetch = field && field.fetched && !refresh
           if (!notFetch) {
-            commit('INIT_STATE', { func, type, query })
+            commit('INIT_STATE', fieldName)
             commit('SET_LOADING', fieldName)
           }
           const params = generateRequestParams({ fetched: false }, query, type)
@@ -62,7 +62,7 @@ export default (api, debug = false) => {
             printLog('request', { func, params })
             let data
             let fromLocal = false
-            if (cacheTimeout) {
+            if (isClient && cacheTimeout) {
               data = getDateFromCache({
                 key: fieldName,
                 now: Date.now()
@@ -153,8 +153,8 @@ export default (api, debug = false) => {
       }
     },
     mutations: {
-      INIT_STATE(state, { func, type, query }) {
-        Vue.set(state, generateFieldName(func, type, query), Object.assign({}, defaultListObj))
+      INIT_STATE(state, fieldName) {
+        Vue.set(state, fieldName, Object.assign({}, defaultListObj))
       },
       SET_LOADING(state, fieldName) {
         state[fieldName].loading = true
@@ -193,7 +193,7 @@ export default (api, debug = false) => {
           setReactivityField(Vue.set, field, 'extra', extra, type, insertBefore)
         }
         field.loading = false
-        if (cacheTimeout && !field.nothing) {
+        if (isClient && cacheTimeout && !field.nothing) {
           setDataToCache({
             key: fieldName,
             value: field,
@@ -262,7 +262,7 @@ export default (api, debug = false) => {
                 break
             }
           }
-          if (cacheTimeout) {
+          if (isClient && cacheTimeout) {
             setDataToCache({
               key: fieldName,
               value: field,

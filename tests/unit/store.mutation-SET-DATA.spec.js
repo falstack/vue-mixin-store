@@ -34,7 +34,7 @@ describe('store mutation set data', () => {
   })
 
   it('如果返回为空，nothing 为 true', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -57,7 +57,7 @@ describe('store mutation set data', () => {
   })
 
   it('如果返回为 object-array，则根据内部 array 来判断是否数据为空', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -88,7 +88,7 @@ describe('store mutation set data', () => {
   })
 
   it('type 是 jump，noMore 永远都是 false', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.SET_DATA(state, {
       fieldName,
       data: {
@@ -120,7 +120,7 @@ describe('store mutation set data', () => {
   })
 
   it('type 是 jump，不缓存上一页', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     const page1 = {
       result: [1, 2, 3, 4, 5],
       no_more: true,
@@ -164,7 +164,7 @@ describe('store mutation set data', () => {
   })
 
   it('返回的 result 是 object-array，不缓存上一页', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     const page1 = {
       result: {
         a: [{ id: 1 }],
@@ -214,7 +214,7 @@ describe('store mutation set data', () => {
   })
 
   it('返回的 result 是 array，缓存上一页', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.CLEAR_RESULT(state, fieldName)
     const page1 = {
       result: [1, 2, 3, 4, 5],
@@ -258,7 +258,7 @@ describe('store mutation set data', () => {
   })
 
   it('设置 object 类型的 extra', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.CLEAR_RESULT(state, fieldName)
     const page1 = {
       result: [1, 2, 3, 4, 5],
@@ -312,7 +312,7 @@ describe('store mutation set data', () => {
   })
 
   it('设置 array 类型的 extra', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.CLEAR_RESULT(state, fieldName)
     const page1 = {
       result: [1, 2, 3, 4, 5],
@@ -360,7 +360,7 @@ describe('store mutation set data', () => {
   })
 
   it('指定新数据插入到列表之前', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.CLEAR_RESULT(state, fieldName)
     const page1 = {
       result: [1, 2, 3, 4, 5],
@@ -410,7 +410,7 @@ describe('store mutation set data', () => {
   })
 
   it('能够正确的设置 local cache', () => {
-    Store.mutations.INIT_STATE(state, { func, type, query })
+    Store.mutations.INIT_STATE(state, fieldName)
     Store.mutations.CLEAR_RESULT(state, fieldName)
     const page1 = {
       result: [1, 2, 3, 4, 5],
