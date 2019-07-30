@@ -109,7 +109,7 @@
 
 <script>
 import { throttle } from 'throttle-debounce'
-import { on, off, checkInView, generateRequestParams, isArray } from './utils'
+import { on, off, checkInView, generateRequestParams, isArray, generateFieldName } from './utils'
 
 export default {
   name: 'FlowLoader',
@@ -371,7 +371,7 @@ export default {
       if (!this.source) {
         return
       }
-      this.$store.commit('flow/INIT_STATE', this.params)
+      this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query))
     },
     _getTarget() {
       let el = this.$el
@@ -399,7 +399,7 @@ export default {
       if (this.source) {
         return
       }
-      this.$store.commit('flow/INIT_STATE', this.params)
+      this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query))
     },
     _initFlowLoader() {
       if (this.auto === 0) {
