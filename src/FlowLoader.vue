@@ -306,10 +306,11 @@ export default {
         })
       )
     },
-    refresh() {
+    refresh(reload = false) {
       this.$nextTick(async () => {
         const query = Object.assign({}, this.params.query)
         query.__refresh__ = true
+        query.__reload__ = reload
         await this.$store.dispatch(
           'flow/initData',
           Object.assign({}, this.params, {

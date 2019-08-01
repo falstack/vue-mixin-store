@@ -26,7 +26,7 @@ export const generateFieldName = (func, type, query = {}) => {
     .filter(
       _ =>
         !~['undefined', 'object', 'function'].indexOf(typeof query[_]) &&
-        !~['page', 'changing', 'is_up', '__refresh__'].indexOf(_)
+        !~['page', 'changing', 'is_up', '__refresh__', '__reload__'].indexOf(_)
     )
     .sort()
     .forEach(key => {

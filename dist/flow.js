@@ -29,6 +29,7 @@ export default (api, debug = false) => {
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
           const refresh = !!query.__refresh__
+          const reload = !!query.__reload__
           // 如果 error 了，就不再请求
           if (field && field.error && !refresh) {
             return resolve()
@@ -39,7 +40,7 @@ export default (api, debug = false) => {
           }
           // 这个 field 已经请求过了
           const notFetch = field && field.fetched && !refresh
-          if (!notFetch) {
+          if (!notFetch && !reload) {
             commit('INIT_STATE', fieldName)
             commit('SET_LOADING', fieldName)
           }
@@ -52,7 +53,8 @@ export default (api, debug = false) => {
                   result: field.result,
                   extra: field.extra,
                   noMore: field.noMore,
-                  total: field.total
+                  total: field.total,
+                  refresh
                 }
               })
             }
@@ -75,6 +77,9 @@ export default (api, debug = false) => {
             } else {
               data = await api[func](params)
             }
+            if (reload) {
+              commit('INIT_STATE', fieldName)
+            }
             commit('SET_DATA', {
               data,
               fieldName,
@@ -91,7 +96,8 @@ export default (api, debug = false) => {
                   result: data.result,
                   extra: data.extra || null,
                   noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
-                  total: data.total || 0
+                  total: data.total || 0,
+                  refresh
                 }
               })
             }
@@ -140,7 +146,8 @@ export default (api, debug = false) => {
                   result: data.result,
                   extra: data.extra || null,
                   noMore: field.noMore,
-                  total: field.total
+                  total: field.total,
+                  refresh: false
                 }
               })
             }

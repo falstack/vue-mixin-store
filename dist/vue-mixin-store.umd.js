@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.57
+ * vue-mixin-store v1.1.58
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -952,7 +952,7 @@ var generateFieldName = function generateFieldName(func, type) {
   var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var result = "".concat(func, "-").concat(type);
   Object.keys(query).filter(function (_) {
-    return !~['undefined', 'object', 'function'].indexOf(_typeof(query[_])) && !~['page', 'changing', 'is_up', '__refresh__'].indexOf(_);
+    return !~['undefined', 'object', 'function'].indexOf(_typeof(query[_])) && !~['page', 'changing', 'is_up', '__refresh__', '__reload__'].indexOf(_);
   }).sort().forEach(function (key) {
     result += "-".concat(key, "-").concat(query[key]);
   });
@@ -1243,7 +1243,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           var _ref3 = _asyncToGenerator(
           /*#__PURE__*/
           regenerator_default.a.mark(function _callee(resolve, reject) {
-            var fieldName, field, refresh, notFetch, params, data, fromLocal;
+            var fieldName, field, refresh, reload, notFetch, params, data, fromLocal;
             return regenerator_default.a.wrap(function _callee$(_context) {
               while (1) {
                 switch (_context.prev = _context.next) {
@@ -1255,28 +1255,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     });
                     fieldName = generateFieldName(func, type, query);
                     field = state[fieldName];
-                    refresh = !!query.__refresh__; // 如果 error 了，就不再请求
+                    refresh = !!query.__refresh__;
+                    reload = !!query.__reload__; // 如果 error 了，就不再请求
 
                     if (!(field && field.error && !refresh)) {
-                      _context.next = 6;
+                      _context.next = 7;
                       break;
                     }
 
                     return _context.abrupt("return", resolve());
 
-                  case 6:
+                  case 7:
                     if (!(field && field.loading)) {
-                      _context.next = 8;
+                      _context.next = 9;
                       break;
                     }
 
                     return _context.abrupt("return", resolve());
 
-                  case 8:
+                  case 9:
                     // 这个 field 已经请求过了
                     notFetch = field && field.fetched && !refresh;
 
-                    if (!notFetch) {
+                    if (!notFetch && !reload) {
                       commit('INIT_STATE', fieldName);
                       commit('SET_LOADING', fieldName);
                     }
@@ -1286,7 +1287,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }, query, type);
 
                     if (!notFetch) {
-                      _context.next = 14;
+                      _context.next = 15;
                       break;
                     }
 
@@ -1297,15 +1298,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                           result: field.result,
                           extra: field.extra,
                           noMore: field.noMore,
-                          total: field.total
+                          total: field.total,
+                          refresh: refresh
                         }
                       });
                     }
 
                     return _context.abrupt("return", resolve());
 
-                  case 14:
-                    _context.prev = 14;
+                  case 15:
+                    _context.prev = 15;
                     printLog('request', {
                       func: func,
                       params: params
@@ -1313,7 +1315,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     fromLocal = false;
 
                     if (!(isClient && cacheTimeout)) {
-                      _context.next = 28;
+                      _context.next = 29;
                       break;
                     }
 
@@ -1323,33 +1325,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     });
 
                     if (!data) {
-                      _context.next = 23;
+                      _context.next = 24;
                       break;
                     }
 
                     fromLocal = true;
-                    _context.next = 26;
+                    _context.next = 27;
                     break;
 
-                  case 23:
-                    _context.next = 25;
+                  case 24:
+                    _context.next = 26;
                     return api[func](params);
-
-                  case 25:
-                    data = _context.sent;
 
                   case 26:
-                    _context.next = 31;
-                    break;
-
-                  case 28:
-                    _context.next = 30;
-                    return api[func](params);
-
-                  case 30:
                     data = _context.sent;
 
+                  case 27:
+                    _context.next = 32;
+                    break;
+
+                  case 29:
+                    _context.next = 31;
+                    return api[func](params);
+
                   case 31:
+                    data = _context.sent;
+
+                  case 32:
+                    if (reload) {
+                      commit('INIT_STATE', fieldName);
+                    }
+
                     commit('SET_DATA', {
                       data: data,
                       fieldName: fieldName,
@@ -1367,30 +1373,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                           result: data.result,
                           extra: data.extra || null,
                           noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
-                          total: data.total || 0
+                          total: data.total || 0,
+                          refresh: refresh
                         }
                       });
                     }
 
                     resolve();
-                    _context.next = 40;
+                    _context.next = 42;
                     break;
 
-                  case 36:
-                    _context.prev = 36;
-                    _context.t0 = _context["catch"](14);
+                  case 38:
+                    _context.prev = 38;
+                    _context.t0 = _context["catch"](15);
                     commit('SET_ERROR', {
                       fieldName: fieldName,
                       error: _context.t0
                     });
                     reject(_context.t0);
 
-                  case 40:
+                  case 42:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, _callee, null, [[14, 36]]);
+            }, _callee, null, [[15, 38]]);
           }));
 
           return function (_x, _x2) {
@@ -1476,7 +1483,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                           result: data.result,
                           extra: data.extra || null,
                           noMore: field.noMore,
-                          total: field.total
+                          total: field.total,
+                          refresh: false
                         }
                       });
                     }
@@ -1716,12 +1724,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"ae0d1294-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=6e5c85cb&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6434d1db-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=aeede152&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v("\n            点击加载更多\n          ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=6e5c85cb&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=aeede152&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -2180,6 +2188,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
     refresh: function refresh() {
       var _this2 = this;
 
+      var reload = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       this.$nextTick(
       /*#__PURE__*/
       FlowLoadervue_type_script_lang_js_asyncToGenerator(
@@ -2192,15 +2201,16 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
               case 0:
                 query = Object.assign({}, _this2.params.query);
                 query.__refresh__ = true;
-                _context.next = 4;
+                query.__reload__ = reload;
+                _context.next = 5;
                 return _this2.$store.dispatch('flow/initData', Object.assign({}, _this2.params, {
                   query: query
                 }));
 
-              case 4:
+              case 5:
                 _this2._initFlowLoader();
 
-              case 5:
+              case 6:
               case "end":
                 return _context.stop();
             }
