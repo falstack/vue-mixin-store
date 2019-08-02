@@ -53,9 +53,9 @@ export default (api, debug = false) => {
                   result: field.result,
                   extra: field.extra,
                   noMore: field.noMore,
-                  total: field.total,
-                  refresh
-                }
+                  total: field.total
+                },
+                refresh
               })
             }
             return resolve()
@@ -96,9 +96,9 @@ export default (api, debug = false) => {
                   result: data.result,
                   extra: data.extra || null,
                   noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
-                  total: data.total || 0,
-                  refresh
-                }
+                  total: data.total || 0
+                },
+                refresh
               })
             }
             resolve()
@@ -146,9 +146,9 @@ export default (api, debug = false) => {
                   result: data.result,
                   extra: data.extra || null,
                   noMore: field.noMore,
-                  total: field.total,
-                  refresh: false
-                }
+                  total: field.total
+                },
+                refresh: false
               })
             }
             resolve()

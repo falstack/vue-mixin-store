@@ -444,7 +444,8 @@ export default {
             extra: this.source.extra,
             noMore: this.source.noMore,
             total: this.source.total
-          }
+          },
+          refresh: false
         })
       }
     },
