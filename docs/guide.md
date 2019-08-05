@@ -99,3 +99,47 @@ export const getListBySeenIds = ({ seen_ids, count }) => {
 1. 重复的定义 store
 2. 维护 loading、error...这些状态
 :::
+
+## 完全用例
+```vue
+<FlowLoader
+  func="requestFuncName"
+  type="page"
+  :query="{}"
+  :auto="-1"
+  :display-no-more="false"
+  :use-first-error="false"
+  :use-first-loading="false"
+  :retry-on-error="true"
+  :preload="50"
+  :callback="callbackFn"
+  :cache-timeout="0"
+>
+  <template #header="{ source }">
+    <header> ... </header>
+  </template>
+  <template #default="{ flow, total, count, extra }">
+    <ul>
+      <ItemComponent v-for="item in flow" :item="item" />
+    </ul>
+  </template>
+  <template #footer="{ source }">
+    <footer> ... </footer>  
+  </template>
+  <template #loading>
+     <LoadingComponent/>
+  </template>
+  <template #nothing>
+    <NothingComponent/>
+  </template>
+  <template #error="{ error }">
+    <ErrorComponent/>
+  </template>
+  <template #first-error="{ error }">
+     <FirstErrorComponent/> 
+  </template>
+  <template #first-loading>
+     <FirstLoadingComponent/> 
+  </template>
+</FlowLoader>
+```
