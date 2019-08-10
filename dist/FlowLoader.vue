@@ -203,91 +203,115 @@ export default {
     modify({ key, value }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: 'modify',
-          key,
-          value
-        })
+        {
+          ...this.params,
+          ...{
+            method: 'modify',
+            key,
+            value
+          }
+        }
       )
     },
     update({ id, key, value, changing }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: 'update',
-          id,
-          key,
-          value,
-          changing
-        })
+        {
+          ...this.params,
+          ...{
+            method: 'update',
+            id,
+            key,
+            value,
+            changing
+          }
+        }
       )
     },
     delete(id, key, changing) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: 'delete',
-          id,
-          key,
-          changing
-        })
+        {
+          ...this.params,
+          ...{
+            method: 'delete',
+            id,
+            key,
+            changing
+          }
+        }
       )
     },
     prepend(value, key, changing) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: isArray(value) ? 'merge' : 'unshift',
-          key,
-          value,
-          changing
-        })
+        {
+          ...this.params,
+          ...{
+            method: isArray(value) ? 'merge' : 'unshift',
+            key,
+            value,
+            changing
+          }
+        }
       )
     },
     append(value, key, changing) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: isArray(value) ? 'concat' : 'push',
-          key,
-          value,
-          changing
-        })
+        {
+          ...this.params,
+          ...{
+            method: isArray(value) ? 'concat' : 'push',
+            key,
+            value,
+            changing
+          }
+        }
       )
     },
     patch(value, key, changing) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: 'patch',
-          key,
-          value,
-          changing
-        })
+        {
+          ...this.params,
+          ...{
+            method: 'patch',
+            key,
+            value,
+            changing
+          }
+        }
       )
     },
     insertBefore({ id, value, key, changing }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: 'insert-before',
-          id,
-          key,
-          value,
-          changing
-        })
+        {
+          ...this.params,
+          ...{
+            method: 'insert-before',
+            id,
+            key,
+            value,
+            changing
+          }
+        }
       )
     },
     insertAfter({ id, value, key, changing }) {
       this.$store.commit(
         'flow/UPDATE_DATA',
-        Object.assign({}, this.params, {
-          method: 'insert-after',
-          id,
-          key,
-          value,
-          changing
-        })
+        {
+          ...this.params,
+          ...{
+            method: 'insert-after',
+            id,
+            key,
+            value,
+            changing
+          }
+        }
       )
     },
     getResource(key = 'extra') {
@@ -297,37 +321,40 @@ export default {
       return this.source[key]
     },
     jump(page) {
-      const query = Object.assign({}, this.params.query)
+      const query = { ...this.params.query }
       query.page = page
       this.$store.dispatch(
         'flow/loadMore',
-        Object.assign({}, this.params, {
-          query
-        })
+        {
+          ...this.params,
+          ...{ query }
+        }
       )
     },
     refresh(reload = false) {
       this.$nextTick(async () => {
-        const query = Object.assign({}, this.params.query)
+        const query = { ...this.params.query }
         query.__refresh__ = true
         query.__reload__ = reload
         await this.$store.dispatch(
           'flow/initData',
-          Object.assign({}, this.params, {
-            query
-          })
+          {
+            ...this.params,
+            ...{ query }
+          }
         )
         this._initFlowLoader()
       })
     },
     initData(obj = {}) {
       this.$nextTick(() => {
-        const query = Object.assign({}, this.params.query, obj)
+        const query = { ...this.params.query, ...obj }
         this.$store.dispatch(
           'flow/initData',
-          Object.assign({}, this.params, {
-            query
-          })
+          {
+            ...this.params,
+            ...{ query }
+          }
         )
       })
     },
@@ -335,28 +362,34 @@ export default {
       if (this.isPagination) {
         return
       }
-      const query = Object.assign({}, this.params.query, obj)
+      const query = { ...this.params.query, ...obj }
       query.is_up = 1
       this.$store.dispatch(
         'flow/loadMore',
-        Object.assign({}, this.params, {
-          query,
-          force
-        })
+        {
+          ...this.params,
+          ...{
+            query,
+            force
+          }
+        }
       )
     },
     loadMore(obj = {}, force = false) {
       if (this.isPagination) {
         return
       }
-      const query = Object.assign({}, this.params.query, obj)
+      const query = { ...this.params.query, ...obj }
       query.is_up = 0
       this.$store.dispatch(
         'flow/loadMore',
-        Object.assign({}, this.params, {
-          query,
-          force
-        })
+        {
+          ...this.params,
+          ...{
+            query,
+            force
+          }
+        }
       )
     },
     retry() {
@@ -384,7 +417,7 @@ export default {
         el.tagName !== 'HTML' &&
         el.tagName !== 'BOYD' &&
         el.nodeType === 1
-      ) {
+        ) {
         const overflowY = window.getComputedStyle(el).overflowY
         if (overflowY === 'scroll' || overflowY === 'auto') {
           if (el.tagName === 'HTML' || el.tagName === 'BODY') {
@@ -454,12 +487,13 @@ export default {
         this._initState()
         return
       }
-      if (this.source.loading || this.source.nothing || this.source.error) {
+      if (this.source.loading || this.source.error) {
         return
       }
       if (
         !this.isAuto ||
         this.source.noMore ||
+        this.source.nothing ||
         (this.isPagination && this.source.fetched)
       ) {
         off(this._getTarget(), 'scroll', this._onScreenScroll)

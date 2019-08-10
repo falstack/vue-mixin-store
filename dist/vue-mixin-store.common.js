@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.59
+ * vue-mixin-store v1.1.60
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1715,12 +1715,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"b0ec7de2-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=41443112&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"c9c1bcf2-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=e39cb1d6&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v("\n            点击加载更多\n          ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=41443112&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=e39cb1d6&
 
 // CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
 /* eslint-disable no-undefined,no-param-reassign,no-shadow */
@@ -1866,6 +1866,10 @@ function debounce (delay, atBegin, callback) {
 function FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 //
 //
@@ -2083,7 +2087,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
     modify: function modify(_ref) {
       var key = _ref.key,
           value = _ref.value;
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
         method: 'modify',
         key: key,
         value: value
@@ -2094,7 +2098,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
           key = _ref2.key,
           value = _ref2.value,
           changing = _ref2.changing;
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
         method: 'update',
         id: id,
         key: key,
@@ -2103,7 +2107,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       }));
     },
     delete: function _delete(id, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
         method: 'delete',
         id: id,
         key: key,
@@ -2111,7 +2115,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       }));
     },
     prepend: function prepend(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
         method: isArray(value) ? 'merge' : 'unshift',
         key: key,
         value: value,
@@ -2119,7 +2123,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       }));
     },
     append: function append(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
         method: isArray(value) ? 'concat' : 'push',
         key: key,
         value: value,
@@ -2127,7 +2131,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       }));
     },
     patch: function patch(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
         method: 'patch',
         key: key,
         value: value,
@@ -2139,7 +2143,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
           value = _ref3.value,
           key = _ref3.key,
           changing = _ref3.changing;
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
         method: 'insert-before',
         id: id,
         key: key,
@@ -2152,7 +2156,7 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
           value = _ref4.value,
           key = _ref4.key,
           changing = _ref4.changing;
-      this.$store.commit('flow/UPDATE_DATA', Object.assign({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
         method: 'insert-after',
         id: id,
         key: key,
@@ -2170,9 +2174,10 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
       return this.source[key];
     },
     jump: function jump(page) {
-      var query = Object.assign({}, this.params.query);
+      var query = _objectSpread({}, this.params.query);
+
       query.page = page;
-      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {
         query: query
       }));
     },
@@ -2190,11 +2195,11 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                query = Object.assign({}, _this2.params.query);
+                query = _objectSpread({}, _this2.params.query);
                 query.__refresh__ = true;
                 query.__reload__ = reload;
                 _context.next = 5;
-                return _this2.$store.dispatch('flow/initData', Object.assign({}, _this2.params, {
+                return _this2.$store.dispatch('flow/initData', _objectSpread({}, _this2.params, {
                   query: query
                 }));
 
@@ -2214,9 +2219,9 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
 
       var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       this.$nextTick(function () {
-        var query = Object.assign({}, _this3.params.query, obj);
+        var query = _objectSpread({}, _this3.params.query, obj);
 
-        _this3.$store.dispatch('flow/initData', Object.assign({}, _this3.params, {
+        _this3.$store.dispatch('flow/initData', _objectSpread({}, _this3.params, {
           query: query
         }));
       });
@@ -2229,9 +2234,10 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
         return;
       }
 
-      var query = Object.assign({}, this.params.query, obj);
+      var query = _objectSpread({}, this.params.query, obj);
+
       query.is_up = 1;
-      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {
         query: query,
         force: force
       }));
@@ -2244,9 +2250,10 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
         return;
       }
 
-      var query = Object.assign({}, this.params.query, obj);
+      var query = _objectSpread({}, this.params.query, obj);
+
       query.is_up = 0;
-      this.$store.dispatch('flow/loadMore', Object.assign({}, this.params, {
+      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {
         query: query,
         force: force
       }));
@@ -2352,11 +2359,11 @@ function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return functio
         return;
       }
 
-      if (this.source.loading || this.source.nothing || this.source.error) {
+      if (this.source.loading || this.source.error) {
         return;
       }
 
-      if (!this.isAuto || this.source.noMore || this.isPagination && this.source.fetched) {
+      if (!this.isAuto || this.source.noMore || this.source.nothing || this.isPagination && this.source.fetched) {
         off(this._getTarget(), 'scroll', this._onScreenScroll);
         return;
       }
