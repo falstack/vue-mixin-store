@@ -219,6 +219,9 @@ export const off = (elem, type, listener) => {
  */
 export const checkInView = (dom, preload) => {
   const rect = dom.getBoundingClientRect()
+  if (!rect.left && !rect.right && !rect.top && !rect.bottom) {
+    return false
+  }
   return (
     rect.top < window.innerHeight + preload &&
     rect.bottom + preload > 0 &&

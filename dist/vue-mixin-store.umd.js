@@ -1158,6 +1158,11 @@ var off = function off(elem, type, listener) {
 
 var checkInView = function checkInView(dom, preload) {
   var rect = dom.getBoundingClientRect();
+
+  if (!rect.left && !rect.right && !rect.top && !rect.bottom) {
+    return false;
+  }
+
   return rect.top < window.innerHeight + preload && rect.bottom + preload > 0 && rect.left < window.innerWidth + preload && rect.right + preload > 0;
 };
 /**
