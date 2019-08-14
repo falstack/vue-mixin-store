@@ -194,8 +194,8 @@ export default {
     }
   },
   mounted() {
-    this._fireSSRCallback()
     this.$nextTick(() => {
+      this._fireSSRCallback()
       this._initFlowLoader()
     })
   },
@@ -460,7 +460,7 @@ export default {
       }
     },
     _fireSSRCallback() {
-      if (!this.firstBind) {
+      if (!this.firstBind || !checkInView(this.$refs.state, this.preload)) {
         return
       }
       this.firstBind = false
