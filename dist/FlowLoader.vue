@@ -460,7 +460,7 @@ export default {
       }
     },
     _fireSSRCallback() {
-      if (!this.firstBind || !checkInView(this.$refs.state, this.preload)) {
+      if (!this.firstBind || !checkInView(this.$el, this.preload)) {
         return
       }
       this.firstBind = false
