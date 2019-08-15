@@ -40,26 +40,14 @@ export default (api, debug = false) => {
           }
           // 这个 field 已经请求过了
           const notFetch = field && field.fetched && !refresh
+          if (notFetch) {
+            return resolve()
+          }
           if (!notFetch && !reload) {
             commit('INIT_STATE', fieldName)
             commit('SET_LOADING', fieldName)
           }
           const params = generateRequestParams({ fetched: false }, query, type)
-          if (notFetch) {
-            if (isClient && callback) {
-              callback({
-                params,
-                data: {
-                  result: field.result,
-                  extra: field.extra,
-                  noMore: field.noMore,
-                  total: field.total
-                },
-                refresh
-              })
-            }
-            return resolve()
-          }
           try {
             printLog('request', { func, params })
             let data

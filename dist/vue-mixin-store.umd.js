@@ -1282,6 +1282,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     // 这个 field 已经请求过了
                     notFetch = field && field.fetched && !refresh;
 
+                    if (!notFetch) {
+                      _context.next = 12;
+                      break;
+                    }
+
+                    return _context.abrupt("return", resolve());
+
+                  case 12:
                     if (!notFetch && !reload) {
                       commit('INIT_STATE', fieldName);
                       commit('SET_LOADING', fieldName);
@@ -1290,29 +1298,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     params = generateRequestParams({
                       fetched: false
                     }, query, type);
-
-                    if (!notFetch) {
-                      _context.next = 15;
-                      break;
-                    }
-
-                    if (isClient && callback) {
-                      callback({
-                        params: params,
-                        data: {
-                          result: field.result,
-                          extra: field.extra,
-                          noMore: field.noMore,
-                          total: field.total
-                        },
-                        refresh: refresh
-                      });
-                    }
-
-                    return _context.abrupt("return", resolve());
-
-                  case 15:
-                    _context.prev = 15;
+                    _context.prev = 14;
                     printLog('request', {
                       func: func,
                       params: params
@@ -1320,7 +1306,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     fromLocal = false;
 
                     if (!(isClient && cacheTimeout)) {
-                      _context.next = 29;
+                      _context.next = 28;
                       break;
                     }
 
@@ -1330,33 +1316,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     });
 
                     if (!data) {
-                      _context.next = 24;
+                      _context.next = 23;
                       break;
                     }
 
                     fromLocal = true;
-                    _context.next = 27;
+                    _context.next = 26;
                     break;
 
-                  case 24:
-                    _context.next = 26;
+                  case 23:
+                    _context.next = 25;
                     return api[func](params);
+
+                  case 25:
+                    data = _context.sent;
 
                   case 26:
-                    data = _context.sent;
-
-                  case 27:
-                    _context.next = 32;
+                    _context.next = 31;
                     break;
 
-                  case 29:
-                    _context.next = 31;
+                  case 28:
+                    _context.next = 30;
                     return api[func](params);
 
-                  case 31:
+                  case 30:
                     data = _context.sent;
 
-                  case 32:
+                  case 31:
                     if (reload) {
                       commit('INIT_STATE', fieldName);
                     }
@@ -1385,24 +1371,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
 
                     resolve();
-                    _context.next = 42;
+                    _context.next = 41;
                     break;
 
-                  case 38:
-                    _context.prev = 38;
-                    _context.t0 = _context["catch"](15);
+                  case 37:
+                    _context.prev = 37;
+                    _context.t0 = _context["catch"](14);
                     commit('SET_ERROR', {
                       fieldName: fieldName,
                       error: _context.t0
                     });
                     reject(_context.t0);
 
-                  case 42:
+                  case 41:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, _callee, null, [[15, 38]]);
+            }, _callee, null, [[14, 37]]);
           }));
 
           return function (_x, _x2) {
