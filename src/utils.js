@@ -218,6 +218,9 @@ export const off = (elem, type, listener) => {
  * @return {boolean}
  */
 export const checkInView = (dom, preload) => {
+  if (!dom) {
+    return false
+  }
   const rect = dom.getBoundingClientRect()
   if (!rect.left && !rect.right && !rect.top && !rect.bottom) {
     return false
