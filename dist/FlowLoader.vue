@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { on, off, checkInView, generateRequestParams, isArray, generateFieldName, getScrollParentDom, throttle } from './utils'
+import { on, off, checkInView, generateRequestParams, isArray, generateFieldName, getScrollParentDom } from './utils'
 
 export default {
   name: 'FlowLoader',
@@ -166,7 +166,8 @@ export default {
   },
   data() {
     return {
-      firstBind: true
+      firstBind: true,
+      throttle: false
     }
   },
   computed: {
@@ -459,7 +460,18 @@ export default {
         })
       }
     },
-    _onScreenScroll: throttle(function() {
+    _onScreenScroll(event, force = false) {
+      if (!force) {
+        if (this.throttle) {
+          return
+        }
+        this.throttle = true
+        setTimeout(() => {
+          this.throttle = false
+          this._onScreenScroll(null, true)
+        }, 200)
+        return
+      }
       if (!this.source) {
         this._initState()
         return
@@ -486,7 +498,7 @@ export default {
           this.initData()
         }
       }
-    }, 200)
+    }
   }
 }
 </script>

@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.66
+ * vue-mixin-store v1.1.67
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1237,42 +1237,6 @@ var getScrollParentDom = function getScrollParentDom(dom) {
 
   return document;
 };
-var throttle = function throttle(func, wait, options) {
-  var context, args, result;
-  var timeout = null;
-  var previous = 0;
-  if (!options) options = {};
-
-  var later = function later() {
-    previous = options.leading === false ? 0 : Date.now();
-    timeout = null;
-    result = func.apply(context, args);
-    if (!timeout) context = args = null;
-  };
-
-  return function () {
-    var now = Date.now();
-    if (!previous && options.leading === false) previous = now;
-    var remaining = wait - (now - previous);
-    context = this;
-    args = arguments;
-
-    if (remaining <= 0 || remaining > wait) {
-      if (timeout) {
-        clearTimeout(timeout);
-        timeout = null;
-      }
-
-      previous = now;
-      result = func.apply(context, args);
-      if (!timeout) context = args = null;
-    } else if (!timeout && options.trailing !== false) {
-      timeout = setTimeout(later, remaining);
-    }
-
-    return result;
-  };
-};
 // CONCATENATED MODULE: ./src/flow.js
 
 
@@ -1778,12 +1742,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"333ea28b-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=3a6a88de&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6fb0f23e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=09f7a2f0&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v("\n            点击加载更多\n          ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=3a6a88de&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=09f7a2f0&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
@@ -1792,7 +1756,9 @@ function FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reje
 
 function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -1971,7 +1937,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      firstBind: true
+      firstBind: true,
+      throttle: false
     };
   },
   computed: {
@@ -2011,7 +1978,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     modify: function modify(_ref) {
       var key = _ref.key,
           value = _ref.value;
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'modify',
         key: key,
         value: value
@@ -2022,7 +1989,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           key = _ref2.key,
           value = _ref2.value,
           changing = _ref2.changing;
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'update',
         id: id,
         key: key,
@@ -2031,7 +1998,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     delete: function _delete(id, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'delete',
         id: id,
         key: key,
@@ -2039,7 +2006,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     prepend: function prepend(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: isArray(value) ? 'merge' : 'unshift',
         key: key,
         value: value,
@@ -2047,7 +2014,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     append: function append(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: isArray(value) ? 'concat' : 'push',
         key: key,
         value: value,
@@ -2055,7 +2022,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     patch: function patch(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'patch',
         key: key,
         value: value,
@@ -2067,7 +2034,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           value = _ref3.value,
           key = _ref3.key,
           changing = _ref3.changing;
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'insert-before',
         id: id,
         key: key,
@@ -2080,7 +2047,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           value = _ref4.value,
           key = _ref4.key,
           changing = _ref4.changing;
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {
+      this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'insert-after',
         id: id,
         key: key,
@@ -2101,7 +2068,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var query = _objectSpread({}, this.params.query);
 
       query.page = page;
-      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {
+      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {}, {
         query: query
       }));
     },
@@ -2123,7 +2090,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 query.__refresh__ = true;
                 query.__reload__ = reload;
                 _context.next = 5;
-                return _this2.$store.dispatch('flow/initData', _objectSpread({}, _this2.params, {
+                return _this2.$store.dispatch('flow/initData', _objectSpread({}, _this2.params, {}, {
                   query: query
                 }));
 
@@ -2143,9 +2110,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       this.$nextTick(function () {
-        var query = _objectSpread({}, _this3.params.query, obj);
+        var query = _objectSpread({}, _this3.params.query, {}, obj);
 
-        _this3.$store.dispatch('flow/initData', _objectSpread({}, _this3.params, {
+        _this3.$store.dispatch('flow/initData', _objectSpread({}, _this3.params, {}, {
           query: query
         }));
       });
@@ -2158,10 +2125,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return;
       }
 
-      var query = _objectSpread({}, this.params.query, obj);
+      var query = _objectSpread({}, this.params.query, {}, obj);
 
       query.is_up = 1;
-      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {
+      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {}, {
         query: query,
         force: force
       }));
@@ -2174,10 +2141,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return;
       }
 
-      var query = _objectSpread({}, this.params.query, obj);
+      var query = _objectSpread({}, this.params.query, {}, obj);
 
       query.is_up = 0;
-      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {
+      this.$store.dispatch('flow/loadMore', _objectSpread({}, this.params, {}, {
         query: query,
         force: force
       }));
@@ -2253,7 +2220,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       }
     },
-    _onScreenScroll: throttle(function () {
+    _onScreenScroll: function _onScreenScroll(event) {
+      var _this4 = this;
+
+      var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (!force) {
+        if (this.throttle) {
+          return;
+        }
+
+        this.throttle = true;
+        setTimeout(function () {
+          _this4.throttle = false;
+
+          _this4._onScreenScroll(null, true);
+        }, 200);
+        return;
+      }
+
       if (!this.source) {
         this._initState();
 
@@ -2280,7 +2265,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           this.initData();
         }
       }
-    }, 200)
+    }
   }
 });
 // CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=script&lang=js&
