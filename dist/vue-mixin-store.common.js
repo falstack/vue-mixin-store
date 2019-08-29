@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.65
+ * vue-mixin-store v1.1.66
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1205,6 +1205,65 @@ var generateRequestParams = function generateRequestParams(field, query, type) {
 
   return Object.assign(query, result);
 };
+var getScrollParentDom = function getScrollParentDom(dom) {
+  var el = dom;
+
+  if (!el) {
+    return null;
+  }
+
+  while (el && el.tagName !== 'HTML' && el.tagName !== 'BOYD' && el.nodeType === 1) {
+    var overflowY = window.getComputedStyle(el).overflowY;
+
+    if (overflowY === 'scroll' || overflowY === 'auto') {
+      if (el.tagName === 'HTML' || el.tagName === 'BODY') {
+        return document;
+      }
+
+      return el;
+    }
+
+    el = el.parentNode;
+  }
+
+  return document;
+};
+var throttle = function throttle(func, wait, options) {
+  var context, args, result;
+  var timeout = null;
+  var previous = 0;
+  if (!options) options = {};
+
+  var later = function later() {
+    previous = options.leading === false ? 0 : Date.now();
+    timeout = null;
+    result = func.apply(context, args);
+    if (!timeout) context = args = null;
+  };
+
+  return function () {
+    var now = Date.now();
+    if (!previous && options.leading === false) previous = now;
+    var remaining = wait - (now - previous);
+    context = this;
+    args = arguments;
+
+    if (remaining <= 0 || remaining > wait) {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+
+      previous = now;
+      result = func.apply(context, args);
+      if (!timeout) context = args = null;
+    } else if (!timeout && options.trailing !== false) {
+      timeout = setTimeout(later, remaining);
+    }
+
+    return result;
+  };
+};
 // CONCATENATED MODULE: ./src/flow.js
 
 
@@ -1710,150 +1769,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"a7484602-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f701d28e&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"333ea28b-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=3a6a88de&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v("\n            点击加载更多\n          ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=f701d28e&
-
-// CONCATENATED MODULE: ./node_modules/throttle-debounce/dist/index.esm.js
-/* eslint-disable no-undefined,no-param-reassign,no-shadow */
-
-/**
- * Throttle execution of a function. Especially useful for rate limiting
- * execution of handlers on events like resize and scroll.
- *
- * @param  {Number}    delay          A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
- * @param  {Boolean}   [noTrailing]   Optional, defaults to false. If noTrailing is true, callback will only execute every `delay` milliseconds while the
- *                                    throttled-function is being called. If noTrailing is false or unspecified, callback will be executed one final time
- *                                    after the last throttled-function call. (After the throttled-function has not been called for `delay` milliseconds,
- *                                    the internal counter is reset)
- * @param  {Function}  callback       A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
- *                                    to `callback` when the throttled-function is executed.
- * @param  {Boolean}   [debounceMode] If `debounceMode` is true (at begin), schedule `clear` to execute after `delay` ms. If `debounceMode` is false (at end),
- *                                    schedule `callback` to execute after `delay` ms.
- *
- * @return {Function}  A new, throttled, function.
- */
-function throttle (delay, noTrailing, callback, debounceMode) {
-  /*
-   * After wrapper has stopped being called, this timeout ensures that
-   * `callback` is executed at the proper times in `throttle` and `end`
-   * debounce modes.
-   */
-  var timeoutID;
-  var cancelled = false; // Keep track of the last time `callback` was executed.
-
-  var lastExec = 0; // Function to clear existing timeout
-
-  function clearExistingTimeout() {
-    if (timeoutID) {
-      clearTimeout(timeoutID);
-    }
-  } // Function to cancel next exec
-
-
-  function cancel() {
-    clearExistingTimeout();
-    cancelled = true;
-  } // `noTrailing` defaults to falsy.
-
-
-  if (typeof noTrailing !== 'boolean') {
-    debounceMode = callback;
-    callback = noTrailing;
-    noTrailing = undefined;
-  }
-  /*
-   * The `wrapper` function encapsulates all of the throttling / debouncing
-   * functionality and when executed will limit the rate at which `callback`
-   * is executed.
-   */
-
-
-  function wrapper() {
-    var self = this;
-    var elapsed = Date.now() - lastExec;
-    var args = arguments;
-
-    if (cancelled) {
-      return;
-    } // Execute `callback` and update the `lastExec` timestamp.
-
-
-    function exec() {
-      lastExec = Date.now();
-      callback.apply(self, args);
-    }
-    /*
-     * If `debounceMode` is true (at begin) this is used to clear the flag
-     * to allow future `callback` executions.
-     */
-
-
-    function clear() {
-      timeoutID = undefined;
-    }
-
-    if (debounceMode && !timeoutID) {
-      /*
-       * Since `wrapper` is being called for the first time and
-       * `debounceMode` is true (at begin), execute `callback`.
-       */
-      exec();
-    }
-
-    clearExistingTimeout();
-
-    if (debounceMode === undefined && elapsed > delay) {
-      /*
-       * In throttle mode, if `delay` time has been exceeded, execute
-       * `callback`.
-       */
-      exec();
-    } else if (noTrailing !== true) {
-      /*
-       * In trailing throttle mode, since `delay` time has not been
-       * exceeded, schedule `callback` to execute `delay` ms after most
-       * recent execution.
-       *
-       * If `debounceMode` is true (at begin), schedule `clear` to execute
-       * after `delay` ms.
-       *
-       * If `debounceMode` is false (at end), schedule `callback` to
-       * execute after `delay` ms.
-       */
-      timeoutID = setTimeout(debounceMode ? clear : exec, debounceMode === undefined ? delay - elapsed : delay);
-    }
-  }
-
-  wrapper.cancel = cancel; // Return the wrapper function.
-
-  return wrapper;
-}
-
-/* eslint-disable no-undefined */
-/**
- * Debounce execution of a function. Debouncing, unlike throttling,
- * guarantees that a function is only executed a single time, either at the
- * very beginning of a series of calls, or at the very end.
- *
- * @param  {Number}   delay         A zero-or-greater delay in milliseconds. For event callbacks, values around 100 or 250 (or even higher) are most useful.
- * @param  {Boolean}  [atBegin]     Optional, defaults to false. If atBegin is false or unspecified, callback will only be executed `delay` milliseconds
- *                                  after the last debounced-function call. If atBegin is true, callback will be executed only at the first debounced-function call.
- *                                  (After the throttled-function has not been called for `delay` milliseconds, the internal counter is reset).
- * @param  {Function} callback      A function to be executed after delay milliseconds. The `this` context and all arguments are passed through, as-is,
- *                                  to `callback` when the debounced-function is executed.
- *
- * @return {Function} A new, debounced function.
- */
-
-function debounce (delay, atBegin, callback) {
-  return callback === undefined ? throttle(delay, atBegin, false) : throttle(delay, callback, atBegin !== false);
-}
-
-
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=3a6a88de&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
@@ -1975,7 +1896,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-
 
 /* harmony default export */ var FlowLoadervue_type_script_lang_js_ = ({
   name: 'FlowLoader',
@@ -2269,29 +2189,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query));
     },
-    _getTarget: function _getTarget() {
-      var el = this.$el;
-
-      if (!el) {
-        return null;
-      }
-
-      while (el && el.tagName !== 'HTML' && el.tagName !== 'BOYD' && el.nodeType === 1) {
-        var overflowY = window.getComputedStyle(el).overflowY;
-
-        if (overflowY === 'scroll' || overflowY === 'auto') {
-          if (el.tagName === 'HTML' || el.tagName === 'BODY') {
-            return document;
-          }
-
-          return el;
-        }
-
-        el = el.parentNode;
-      }
-
-      return document;
-    },
     _initState: function _initState() {
       if (this.source) {
         return;
@@ -2309,7 +2206,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           this._initState();
         }
 
-        on(this._getTarget(), 'scroll', this._onScreenScroll);
+        on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
       }
     },
     _retryData: function _retryData() {
@@ -2347,7 +2244,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       }
     },
-    _onScreenScroll: throttle(200, function () {
+    _onScreenScroll: throttle(function () {
       if (!this.source) {
         this._initState();
 
@@ -2359,7 +2256,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       if (!this.isAuto || this.source.noMore || this.source.nothing || this.isPagination && this.source.fetched) {
-        off(this._getTarget(), 'scroll', this._onScreenScroll);
+        off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
         return;
       }
 
@@ -2374,7 +2271,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           this.initData();
         }
       }
-    })
+    }, 200)
   }
 });
 // CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=script&lang=js&

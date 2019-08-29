@@ -108,8 +108,7 @@
 </template>
 
 <script>
-import { throttle } from 'throttle-debounce'
-import { on, off, checkInView, generateRequestParams, isArray, generateFieldName } from './utils'
+import { on, off, checkInView, generateRequestParams, isArray, generateFieldName, getScrollParentDom, throttle } from './utils'
 
 export default {
   name: 'FlowLoader',
@@ -407,28 +406,6 @@ export default {
       }
       this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query))
     },
-    _getTarget() {
-      let el = this.$el
-      if (!el) {
-        return null
-      }
-      while (
-        el &&
-        el.tagName !== 'HTML' &&
-        el.tagName !== 'BOYD' &&
-        el.nodeType === 1
-        ) {
-        const overflowY = window.getComputedStyle(el).overflowY
-        if (overflowY === 'scroll' || overflowY === 'auto') {
-          if (el.tagName === 'HTML' || el.tagName === 'BODY') {
-            return document
-          }
-          return el
-        }
-        el = el.parentNode
-      }
-      return document
-    },
     _initState() {
       if (this.source) {
         return
@@ -444,7 +421,7 @@ export default {
         } else {
           this._initState()
         }
-        on(this._getTarget(), 'scroll', this._onScreenScroll)
+        on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
       }
     },
     _retryData() {
@@ -482,7 +459,7 @@ export default {
         })
       }
     },
-    _onScreenScroll: throttle(200, function() {
+    _onScreenScroll: throttle(function() {
       if (!this.source) {
         this._initState()
         return
@@ -496,7 +473,7 @@ export default {
         this.source.nothing ||
         (this.isPagination && this.source.fetched)
       ) {
-        off(this._getTarget(), 'scroll', this._onScreenScroll)
+        off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
         return
       }
       if (!this.$refs.state) {
@@ -509,7 +486,7 @@ export default {
           this.initData()
         }
       }
-    })
+    }, 200)
   }
 }
 </script>
