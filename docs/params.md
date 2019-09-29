@@ -13,7 +13,6 @@
 | retryOnError | Boolean | false | true | - | 当展示 error 的时候是否点击后重试 |
 | preload | Number | false | 50 | >= 0 | 自动加载下一页的预加载高度（px） |
 | callback | Function | false | undefined | Function | 接口请求成功后可以调用一个 callback 函数 |
-| callbackOnce | Boolean | false | true | Function | callback 是否只在数据变更时调用（组件重复绑定时不调用） |
 | cacheTimeout | Number | false | 0 | >= 0 | 将数据缓存到 localStorage 里超时的秒数 |
 
 ### query 中的一些关键字
@@ -105,6 +104,10 @@
 #### getResource(key = 'extra')
 - 参数：key（要获取数据的key），`store`不存在时返回`undefined`
 - 获取列表里的某个数据
+
+#### forceCallback()
+- 参数：无
+- 强制调用 callback
 
 ## FlowStore 透传的参数
 | 类型 | 参数 | 默认值 | 翻页值 |

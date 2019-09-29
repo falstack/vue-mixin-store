@@ -137,10 +137,6 @@ export default {
       default: undefined,
       validator: val => val === undefined || typeof val === 'function'
     },
-    callbackOnce: {
-      type: Boolean,
-      default: true
-    },
     displayNoMore: {
       type: Boolean,
       default: false
@@ -441,11 +437,11 @@ export default {
         })
       }
     },
-    _fireSSRCallback() {
-      if (!checkInView(this.$el, this.preload)) {
-        return
-      }
-      if (!this.firstBind && this.callbackOnce) {
+    forceCallback() {
+      this._fireSSRCallback(true)
+    },
+    _fireSSRCallback(force = false) {
+      if (!force && (!this.firstBind || !checkInView(this.$el, this.preload))) {
         return
       }
       this.firstBind = false
