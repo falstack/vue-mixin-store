@@ -20,6 +20,7 @@
         :query="{ count: 10, rank }"
         :auto="0"
         :callback="testPatch"
+        :callback-once="false"
       >
         <template #default="{ flow }">
           <ul class="demo-list">
@@ -131,6 +132,7 @@ export default {
       }
     },
     testPatch({ data }) {
+      console.log('testPatch')
       const patch = data.result.map(_ => {
         return Object.assign({
           id: _.id,

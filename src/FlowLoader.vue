@@ -137,6 +137,10 @@ export default {
       default: undefined,
       validator: val => val === undefined || typeof val === 'function'
     },
+    callbackOnce: {
+      type: Boolean,
+      default: true
+    },
     displayNoMore: {
       type: Boolean,
       default: false
@@ -197,7 +201,6 @@ export default {
     this.$nextTick(() => {
       this._fireSSRCallback()
       this._initFlowLoader()
-      this._fireMounted()
     })
   },
   methods: {
@@ -438,27 +441,11 @@ export default {
         })
       }
     },
-    _fireMounted() {
-      if (this.source && this.source.fetched) {
-        this.loaded &&
-        this.loaded('mounted', {
-          params: generateRequestParams(
-            { fetched: false },
-            this.params.query,
-            this.type
-          ),
-          data: {
-            result: this.source.result,
-            extra: this.source.extra,
-            noMore: this.source.noMore,
-            total: this.source.total
-          },
-          refresh: false
-        })
-      }
-    },
     _fireSSRCallback() {
-      if (!this.firstBind || !checkInView(this.$el, this.preload)) {
+      if (!checkInView(this.$el, this.preload)) {
+        return
+      }
+      if (!this.firstBind && this.callbackOnce) {
         return
       }
       this.firstBind = false
