@@ -197,6 +197,7 @@ export default {
     this.$nextTick(() => {
       this._fireSSRCallback()
       this._initFlowLoader()
+      this._fireMounted()
     })
   },
   methods: {
@@ -434,6 +435,25 @@ export default {
       } else {
         this.initData({
           __refresh__: true
+        })
+      }
+    },
+    _fireMounted() {
+      if (this.source && this.source.fetched) {
+        this.loaded &&
+        this.loaded('mounted', {
+          params: generateRequestParams(
+            { fetched: false },
+            this.params.query,
+            this.type
+          ),
+          data: {
+            result: this.source.result,
+            extra: this.source.extra,
+            noMore: this.source.noMore,
+            total: this.source.total
+          },
+          refresh: false
         })
       }
     },

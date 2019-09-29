@@ -1,7 +1,7 @@
 # 参数
 
 ## FlowLoader 的 props
-| 参数 | 类型 | 必填？ | 默认值 | 验证 | 作用 |
+| 参数 | 类型 | 必填 | 默认值 | 验证 | 作用 |
 | --- | --- | --- | --- | --- | --- |
 | func | String | true | - | - | 请求的 API 函数名 |
 | type | String | true | - | page, jump, seenIds, lastId, sinceId | API的翻页方式 |
@@ -13,6 +13,7 @@
 | retryOnError | Boolean | false | true | - | 当展示 error 的时候是否点击后重试 |
 | preload | Number | false | 50 | >= 0 | 自动加载下一页的预加载高度（px） |
 | callback | Function | false | undefined | Function | 接口请求成功后可以调用一个 callback 函数 |
+| loaded | Function | false | undefined | Function | 组件每次渲染只要已经有数据加载就会调用，参数与 callback 一致 |
 | cacheTimeout | Number | false | 0 | >= 0 | 将数据缓存到 localStorage 里超时的秒数 |
 
 ### query 中的一些关键字
