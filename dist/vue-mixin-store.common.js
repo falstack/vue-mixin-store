@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.70
+ * vue-mixin-store v1.1.71
  * (c) 2019 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -837,7 +837,6 @@ try {
 
 module.exports = __webpack_require__("96cf");
 
-
 /***/ }),
 
 /***/ "f6fd":
@@ -930,15 +929,15 @@ var defaultListObj = {
   extra: null,
   page: 0,
   total: 0
-  /**
-   * 根据参数生成 field 的 namespace
-   * @param {string} func
-   * @param {string} type
-   * @param {object} query
-   * @return {string}
-   */
-
 };
+/**
+ * 根据参数生成 field 的 namespace
+ * @param {string} func
+ * @param {string} type
+ * @param {object} query
+ * @return {string}
+ */
+
 var generateFieldName = function generateFieldName(func, type) {
   var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var result = "".concat(func, "-").concat(type);
@@ -1231,11 +1230,6 @@ var getScrollParentDom = function getScrollParentDom(dom) {
 // CONCATENATED MODULE: ./src/flow.js
 
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-
 
 /* harmony default export */ var flow = (function (api) {
   var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -1260,269 +1254,249 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             query = _ref2.query,
             callback = _ref2.callback,
             cacheTimeout = _ref2.cacheTimeout;
-        return new Promise(
-        /*#__PURE__*/
-        function () {
-          var _ref3 = _asyncToGenerator(
-          /*#__PURE__*/
-          regenerator_default.a.mark(function _callee(resolve, reject) {
-            var fieldName, field, refresh, reload, notFetch, params, data, fromLocal;
-            return regenerator_default.a.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    printLog('initData', {
-                      func: func,
-                      type: type,
-                      query: query
-                    });
-                    fieldName = generateFieldName(func, type, query);
-                    field = state[fieldName];
-                    refresh = !!query.__refresh__;
-                    reload = !!query.__reload__; // 如果 error 了，就不再请求
+        return new Promise(function _callee(resolve, reject) {
+          var fieldName, field, refresh, reload, notFetch, params, data, fromLocal;
+          return regenerator_default.a.async(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  printLog('initData', {
+                    func: func,
+                    type: type,
+                    query: query
+                  });
+                  fieldName = generateFieldName(func, type, query);
+                  field = state[fieldName];
+                  refresh = !!query.__refresh__;
+                  reload = !!query.__reload__; // 如果 error 了，就不再请求
 
-                    if (!(field && field.error && !refresh)) {
-                      _context.next = 7;
-                      break;
-                    }
-
-                    return _context.abrupt("return", resolve());
-
-                  case 7:
-                    if (!(field && field.loading)) {
-                      _context.next = 9;
-                      break;
-                    }
-
-                    return _context.abrupt("return", resolve());
-
-                  case 9:
-                    // 这个 field 已经请求过了
-                    notFetch = field && field.fetched && !refresh;
-
-                    if (!notFetch) {
-                      _context.next = 12;
-                      break;
-                    }
-
-                    return _context.abrupt("return", resolve());
-
-                  case 12:
-                    if (!notFetch && !reload) {
-                      commit('INIT_STATE', fieldName);
-                      commit('SET_LOADING', fieldName);
-                    }
-
-                    params = generateRequestParams({
-                      fetched: false
-                    }, query, type);
-                    _context.prev = 14;
-                    printLog('request', {
-                      func: func,
-                      params: params
-                    });
-                    fromLocal = false;
-
-                    if (!(isClient && cacheTimeout)) {
-                      _context.next = 28;
-                      break;
-                    }
-
-                    data = getDateFromCache({
-                      key: fieldName,
-                      now: Date.now()
-                    });
-
-                    if (!data) {
-                      _context.next = 23;
-                      break;
-                    }
-
-                    fromLocal = true;
-                    _context.next = 26;
+                  if (!(field && field.error && !refresh)) {
+                    _context.next = 7;
                     break;
+                  }
 
-                  case 23:
-                    _context.next = 25;
-                    return api[func](params);
+                  return _context.abrupt("return", resolve());
 
-                  case 25:
-                    data = _context.sent;
-
-                  case 26:
-                    _context.next = 31;
+                case 7:
+                  if (!(field && field.loading)) {
+                    _context.next = 9;
                     break;
+                  }
 
-                  case 28:
-                    _context.next = 30;
-                    return api[func](params);
+                  return _context.abrupt("return", resolve());
 
-                  case 30:
-                    data = _context.sent;
+                case 9:
+                  // 这个 field 已经请求过了
+                  notFetch = field && field.fetched && !refresh;
 
-                  case 31:
-                    if (reload) {
-                      commit('INIT_STATE', fieldName);
-                    }
-
-                    commit('SET_DATA', {
-                      data: data,
-                      fieldName: fieldName,
-                      type: type,
-                      fromLocal: fromLocal,
-                      cacheTimeout: cacheTimeout,
-                      page: params.page,
-                      insertBefore: !!query.is_up
-                    });
-
-                    if (isClient && callback) {
-                      callback({
-                        params: params,
-                        data: {
-                          result: data.result,
-                          extra: data.extra || null,
-                          noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
-                          total: data.total || 0
-                        },
-                        refresh: refresh
-                      });
-                    }
-
-                    resolve();
-                    _context.next = 41;
+                  if (!notFetch) {
+                    _context.next = 12;
                     break;
+                  }
 
-                  case 37:
-                    _context.prev = 37;
-                    _context.t0 = _context["catch"](14);
-                    commit('SET_ERROR', {
-                      fieldName: fieldName,
-                      error: _context.t0
-                    });
-                    reject(_context.t0);
+                  return _context.abrupt("return", resolve());
 
-                  case 41:
-                  case "end":
-                    return _context.stop();
-                }
-              }
-            }, _callee, null, [[14, 37]]);
-          }));
-
-          return function (_x, _x2) {
-            return _ref3.apply(this, arguments);
-          };
-        }());
-      },
-      loadMore: function loadMore(_ref4, _ref5) {
-        var state = _ref4.state,
-            commit = _ref4.commit;
-        var type = _ref5.type,
-            func = _ref5.func,
-            query = _ref5.query,
-            callback = _ref5.callback,
-            cacheTimeout = _ref5.cacheTimeout,
-            force = _ref5.force;
-        return new Promise(
-        /*#__PURE__*/
-        function () {
-          var _ref6 = _asyncToGenerator(
-          /*#__PURE__*/
-          regenerator_default.a.mark(function _callee2(resolve, reject) {
-            var fieldName, field, params, data;
-            return regenerator_default.a.wrap(function _callee2$(_context2) {
-              while (1) {
-                switch (_context2.prev = _context2.next) {
-                  case 0:
-                    printLog('loadMore', {
-                      type: type,
-                      func: func,
-                      query: query
-                    });
-                    fieldName = generateFieldName(func, type, query);
-                    field = state[fieldName];
-
-                    if (!(!field || field.loading || field.nothing || field.noMore && !force)) {
-                      _context2.next = 5;
-                      break;
-                    }
-
-                    return _context2.abrupt("return", resolve());
-
-                  case 5:
-                    if (!(type === 'jump' && +query.page === field.page)) {
-                      _context2.next = 7;
-                      break;
-                    }
-
-                    return _context2.abrupt("return", resolve());
-
-                  case 7:
+                case 12:
+                  if (!notFetch && !reload) {
+                    commit('INIT_STATE', fieldName);
                     commit('SET_LOADING', fieldName);
+                  }
 
-                    if (type === 'jump' || !isArray(field.result)) {
-                      commit('CLEAR_RESULT', fieldName);
-                    }
+                  params = generateRequestParams({
+                    fetched: false
+                  }, query, type);
+                  _context.prev = 14;
+                  printLog('request', {
+                    func: func,
+                    params: params
+                  });
+                  fromLocal = false;
 
-                    params = generateRequestParams(field, query, type);
-                    _context2.prev = 10;
-                    printLog('request', {
-                      func: func,
-                      params: params
-                    });
-                    _context2.next = 14;
-                    return api[func](params);
-
-                  case 14:
-                    data = _context2.sent;
-                    commit('SET_DATA', {
-                      fromLocal: false,
-                      data: data,
-                      fieldName: fieldName,
-                      type: type,
-                      cacheTimeout: cacheTimeout,
-                      page: params.page,
-                      insertBefore: !!query.is_up
-                    });
-
-                    if (isClient && callback) {
-                      callback({
-                        params: params,
-                        data: {
-                          result: data.result,
-                          extra: data.extra || null,
-                          noMore: field.noMore,
-                          total: field.total
-                        },
-                        refresh: false
-                      });
-                    }
-
-                    resolve();
-                    _context2.next = 24;
+                  if (!(isClient && cacheTimeout)) {
+                    _context.next = 28;
                     break;
+                  }
 
-                  case 20:
-                    _context2.prev = 20;
-                    _context2.t0 = _context2["catch"](10);
-                    commit('SET_ERROR', {
-                      fieldName: fieldName,
-                      error: _context2.t0
+                  data = getDateFromCache({
+                    key: fieldName,
+                    now: Date.now()
+                  });
+
+                  if (!data) {
+                    _context.next = 23;
+                    break;
+                  }
+
+                  fromLocal = true;
+                  _context.next = 26;
+                  break;
+
+                case 23:
+                  _context.next = 25;
+                  return regenerator_default.a.awrap(api[func](params));
+
+                case 25:
+                  data = _context.sent;
+
+                case 26:
+                  _context.next = 31;
+                  break;
+
+                case 28:
+                  _context.next = 30;
+                  return regenerator_default.a.awrap(api[func](params));
+
+                case 30:
+                  data = _context.sent;
+
+                case 31:
+                  if (reload) {
+                    commit('INIT_STATE', fieldName);
+                  }
+
+                  commit('SET_DATA', {
+                    data: data,
+                    fieldName: fieldName,
+                    type: type,
+                    fromLocal: fromLocal,
+                    cacheTimeout: cacheTimeout,
+                    page: params.page,
+                    insertBefore: !!query.is_up
+                  });
+
+                  if (isClient && callback) {
+                    callback({
+                      params: params,
+                      data: {
+                        result: data.result,
+                        extra: data.extra || null,
+                        noMore: typeof data.no_more === 'undefined' ? computeResultLength(data.result) === 0 : data.no_more,
+                        total: data.total || 0
+                      },
+                      refresh: refresh
                     });
-                    reject(_context2.t0);
+                  }
 
-                  case 24:
-                  case "end":
-                    return _context2.stop();
-                }
+                  resolve();
+                  _context.next = 41;
+                  break;
+
+                case 37:
+                  _context.prev = 37;
+                  _context.t0 = _context["catch"](14);
+                  commit('SET_ERROR', {
+                    fieldName: fieldName,
+                    error: _context.t0
+                  });
+                  reject(_context.t0);
+
+                case 41:
+                case "end":
+                  return _context.stop();
               }
-            }, _callee2, null, [[10, 20]]);
-          }));
+            }
+          }, null, null, [[14, 37]]);
+        });
+      },
+      loadMore: function loadMore(_ref3, _ref4) {
+        var state = _ref3.state,
+            commit = _ref3.commit;
+        var type = _ref4.type,
+            func = _ref4.func,
+            query = _ref4.query,
+            callback = _ref4.callback,
+            cacheTimeout = _ref4.cacheTimeout,
+            force = _ref4.force;
+        return new Promise(function _callee2(resolve, reject) {
+          var fieldName, field, params, data;
+          return regenerator_default.a.async(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  printLog('loadMore', {
+                    type: type,
+                    func: func,
+                    query: query
+                  });
+                  fieldName = generateFieldName(func, type, query);
+                  field = state[fieldName];
 
-          return function (_x3, _x4) {
-            return _ref6.apply(this, arguments);
-          };
-        }());
+                  if (!(!field || field.loading || field.nothing || field.noMore && !force)) {
+                    _context2.next = 5;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", resolve());
+
+                case 5:
+                  if (!(type === 'jump' && +query.page === field.page)) {
+                    _context2.next = 7;
+                    break;
+                  }
+
+                  return _context2.abrupt("return", resolve());
+
+                case 7:
+                  commit('SET_LOADING', fieldName);
+
+                  if (type === 'jump' || !isArray(field.result)) {
+                    commit('CLEAR_RESULT', fieldName);
+                  }
+
+                  params = generateRequestParams(field, query, type);
+                  _context2.prev = 10;
+                  printLog('request', {
+                    func: func,
+                    params: params
+                  });
+                  _context2.next = 14;
+                  return regenerator_default.a.awrap(api[func](params));
+
+                case 14:
+                  data = _context2.sent;
+                  commit('SET_DATA', {
+                    fromLocal: false,
+                    data: data,
+                    fieldName: fieldName,
+                    type: type,
+                    cacheTimeout: cacheTimeout,
+                    page: params.page,
+                    insertBefore: !!query.is_up
+                  });
+
+                  if (isClient && callback) {
+                    callback({
+                      params: params,
+                      data: {
+                        result: data.result,
+                        extra: data.extra || null,
+                        noMore: field.noMore,
+                        total: field.total
+                      },
+                      refresh: false
+                    });
+                  }
+
+                  resolve();
+                  _context2.next = 24;
+                  break;
+
+                case 20:
+                  _context2.prev = 20;
+                  _context2.t0 = _context2["catch"](10);
+                  commit('SET_ERROR', {
+                    fieldName: fieldName,
+                    error: _context2.t0
+                  });
+                  reject(_context2.t0);
+
+                case 24:
+                case "end":
+                  return _context2.stop();
+              }
+            }
+          }, null, null, [[10, 20]]);
+        });
       }
     },
     mutations: {
@@ -1533,9 +1507,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         state[fieldName].loading = true;
         state[fieldName].error = null;
       },
-      SET_ERROR: function SET_ERROR(state, _ref7) {
-        var fieldName = _ref7.fieldName,
-            error = _ref7.error;
+      SET_ERROR: function SET_ERROR(state, _ref5) {
+        var fieldName = _ref5.fieldName,
+            error = _ref5.error;
         printLog('error', {
           fieldName: fieldName,
           error: error
@@ -1549,14 +1523,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         state[fieldName].result = [];
         state[fieldName].extra = null;
       },
-      SET_DATA: function SET_DATA(state, _ref8) {
-        var data = _ref8.data,
-            fieldName = _ref8.fieldName,
-            type = _ref8.type,
-            page = _ref8.page,
-            insertBefore = _ref8.insertBefore,
-            fromLocal = _ref8.fromLocal,
-            cacheTimeout = _ref8.cacheTimeout;
+      SET_DATA: function SET_DATA(state, _ref6) {
+        var data = _ref6.data,
+            fieldName = _ref6.fieldName,
+            type = _ref6.type,
+            page = _ref6.page,
+            insertBefore = _ref6.insertBefore,
+            fromLocal = _ref6.fromLocal,
+            cacheTimeout = _ref6.cacheTimeout;
         printLog('setData', {
           data: data,
           fieldName: fieldName,
@@ -1605,16 +1579,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           });
         }
       },
-      UPDATE_DATA: function UPDATE_DATA(state, _ref9) {
-        var type = _ref9.type,
-            func = _ref9.func,
-            query = _ref9.query,
-            id = _ref9.id,
-            method = _ref9.method,
-            key = _ref9.key,
-            value = _ref9.value,
-            cacheTimeout = _ref9.cacheTimeout,
-            changing = _ref9.changing;
+      UPDATE_DATA: function UPDATE_DATA(state, _ref7) {
+        var type = _ref7.type,
+            func = _ref7.func,
+            query = _ref7.query,
+            id = _ref7.id,
+            method = _ref7.method,
+            key = _ref7.key,
+            value = _ref7.value,
+            cacheTimeout = _ref7.cacheTimeout,
+            changing = _ref7.changing;
 
         try {
           printLog('updateData', {
@@ -1723,18 +1697,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     getters: {
       getFlow: function getFlow(state) {
-        return function (_ref10) {
-          var func = _ref10.func,
-              type = _ref10.type,
-              query = _ref10.query;
+        return function (_ref8) {
+          var func = _ref8.func,
+              type = _ref8.type,
+              query = _ref8.query;
           return state[generateFieldName(func, type, query)];
         };
       }
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"12d2fd6d-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=2dc778e8&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v("\n            点击加载更多\n          ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"3567d5aa-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=2dc778e8&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
@@ -1743,13 +1717,9 @@ var staticRenderFns = []
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
 
-function FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -2067,13 +2037,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this2 = this;
 
       var reload = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      this.$nextTick(
-      /*#__PURE__*/
-      FlowLoadervue_type_script_lang_js_asyncToGenerator(
-      /*#__PURE__*/
-      regenerator_default.a.mark(function _callee() {
+      this.$nextTick(function _callee() {
         var query;
-        return regenerator_default.a.wrap(function _callee$(_context) {
+        return regenerator_default.a.async(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
@@ -2081,9 +2047,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 query.__refresh__ = true;
                 query.__reload__ = reload;
                 _context.next = 5;
-                return _this2.$store.dispatch('flow/initData', _objectSpread({}, _this2.params, {}, {
+                return regenerator_default.a.awrap(_this2.$store.dispatch('flow/initData', _objectSpread({}, _this2.params, {}, {
                   query: query
-                }));
+                })));
 
               case 5:
                 _this2._initFlowLoader();
@@ -2093,8 +2059,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return _context.stop();
             }
           }
-        }, _callee);
-      })));
+        });
+      });
     },
     initData: function initData() {
       var _this3 = this;

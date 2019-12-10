@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to vue-mixin-store 👋</h1>
 <p>
-  <img src="https://img.shields.io/badge/version-1.1.65-blue.svg?cacheSeconds=2592000" />
+  <img src="https://img.shields.io/badge/version-1.1.71-blue.svg?cacheSeconds=2592000" />
   <img src="https://travis-ci.org/falstack/vue-mixin-store.svg?branch=master" />
   <a href="https://codecov.io/gh/falstack/vue-mixin-store">
     <img src="https://codecov.io/gh/falstack/vue-mixin-store/branch/master/graph/badge.svg" />
