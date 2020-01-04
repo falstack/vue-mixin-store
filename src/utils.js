@@ -30,7 +30,7 @@ export const generateFieldName = (func, type, query = {}) => {
     )
     .sort()
     .forEach(key => {
-      if (query[key].toString() !== '') {
+      if (query[key] !== '') {
         result += `-${key}-${query[key]}`
       }
     })
