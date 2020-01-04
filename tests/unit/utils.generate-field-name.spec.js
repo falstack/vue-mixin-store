@@ -35,6 +35,6 @@ describe('generate field name', () => {
       is_end: false,
       arr: [1, 2, 3]
     })
-    expect(name).toBe('func-type-count-10-is_end-false-sort-hottest')
+    expect(name).toBe('func-type-count-10-empty--is_end-false-sort-hottest')
   })
 })

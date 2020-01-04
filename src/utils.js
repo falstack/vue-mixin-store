@@ -26,13 +26,11 @@ export const generateFieldName = (func, type, query = {}) => {
     .filter(
       _ =>
         !~['undefined', 'object', 'function'].indexOf(typeof query[_]) &&
-        !~['page', 'changing', 'is_up', '__refresh__', '__reload__', 'since_id'].indexOf(_)
+        !~['page', 'is_up', 'since_id', 'seen_ids',' last_id', 'changing', '__refresh__', '__reload__'].indexOf(_)
     )
     .sort()
     .forEach(key => {
-      if (query[key] !== '') {
-        result += `-${key}-${query[key]}`
-      }
+      result += `-${key}-${query[key]}`
     })
   return result
 }
