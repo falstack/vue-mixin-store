@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.1.77
+ * vue-mixin-store v1.1.78
  * (c) 2020 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1305,7 +1305,8 @@ var getScrollParentDom = function getScrollParentDom(dom) {
                   params = generateRequestParams({
                     fetched: false
                   }, query, type);
-                  _context.prev = 14;
+                  params._extra = field.extra;
+                  _context.prev = 15;
                   printLog('request', {
                     func: func,
                     params: params
@@ -1313,7 +1314,7 @@ var getScrollParentDom = function getScrollParentDom(dom) {
                   fromLocal = false;
 
                   if (!(isClient && cacheTimeout)) {
-                    _context.next = 28;
+                    _context.next = 29;
                     break;
                   }
 
@@ -1323,33 +1324,33 @@ var getScrollParentDom = function getScrollParentDom(dom) {
                   });
 
                   if (!data) {
-                    _context.next = 23;
+                    _context.next = 24;
                     break;
                   }
 
                   fromLocal = true;
-                  _context.next = 26;
+                  _context.next = 27;
                   break;
 
-                case 23:
-                  _context.next = 25;
+                case 24:
+                  _context.next = 26;
                   return regenerator_default.a.awrap(api[func](params));
-
-                case 25:
-                  data = _context.sent;
 
                 case 26:
-                  _context.next = 31;
-                  break;
-
-                case 28:
-                  _context.next = 30;
-                  return regenerator_default.a.awrap(api[func](params));
-
-                case 30:
                   data = _context.sent;
 
+                case 27:
+                  _context.next = 32;
+                  break;
+
+                case 29:
+                  _context.next = 31;
+                  return regenerator_default.a.awrap(api[func](params));
+
                 case 31:
+                  data = _context.sent;
+
+                case 32:
                   if (reload) {
                     commit('INIT_STATE', fieldName);
                   }
@@ -1378,24 +1379,24 @@ var getScrollParentDom = function getScrollParentDom(dom) {
                   }
 
                   resolve();
-                  _context.next = 41;
+                  _context.next = 42;
                   break;
 
-                case 37:
-                  _context.prev = 37;
-                  _context.t0 = _context["catch"](14);
+                case 38:
+                  _context.prev = 38;
+                  _context.t0 = _context["catch"](15);
                   commit('SET_ERROR', {
                     fieldName: fieldName,
                     error: _context.t0
                   });
                   reject(_context.t0);
 
-                case 41:
+                case 42:
                 case "end":
                   return _context.stop();
               }
             }
-          }, null, null, [[14, 37]]);
+          }, null, null, [[15, 38]]);
         });
       },
       loadMore: function loadMore(_ref3, _ref4) {
@@ -1444,15 +1445,16 @@ var getScrollParentDom = function getScrollParentDom(dom) {
                   }
 
                   params = generateRequestParams(field, query, type);
-                  _context2.prev = 10;
+                  params._extra = field.extra;
+                  _context2.prev = 11;
                   printLog('request', {
                     func: func,
                     params: params
                   });
-                  _context2.next = 14;
+                  _context2.next = 15;
                   return regenerator_default.a.awrap(api[func](params));
 
-                case 14:
+                case 15:
                   data = _context2.sent;
                   commit('SET_DATA', {
                     fromLocal: false,
@@ -1478,24 +1480,24 @@ var getScrollParentDom = function getScrollParentDom(dom) {
                   }
 
                   resolve();
-                  _context2.next = 24;
+                  _context2.next = 25;
                   break;
 
-                case 20:
-                  _context2.prev = 20;
-                  _context2.t0 = _context2["catch"](10);
+                case 21:
+                  _context2.prev = 21;
+                  _context2.t0 = _context2["catch"](11);
                   commit('SET_ERROR', {
                     fieldName: fieldName,
                     error: _context2.t0
                   });
                   reject(_context2.t0);
 
-                case 24:
+                case 25:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, null, null, [[10, 20]]);
+          }, null, null, [[11, 21]]);
         });
       }
     },
@@ -1707,7 +1709,7 @@ var getScrollParentDom = function getScrollParentDom(dom) {
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"80400f8e-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=2dc778e8&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"a306e16a-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=2dc778e8&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 

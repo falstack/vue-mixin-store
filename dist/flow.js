@@ -48,6 +48,7 @@ export default (api, debug = false) => {
             commit('SET_LOADING', fieldName)
           }
           const params = generateRequestParams({ fetched: false }, query, type)
+          params._extra = field.extra
           try {
             printLog('request', { func, params })
             let data
@@ -115,6 +116,7 @@ export default (api, debug = false) => {
             commit('CLEAR_RESULT', fieldName)
           }
           const params = generateRequestParams(field, query, type)
+          params._extra = field.extra
           try {
             printLog('request', { func, params })
             const data = await api[func](params)
