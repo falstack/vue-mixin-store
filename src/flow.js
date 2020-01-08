@@ -28,7 +28,8 @@ export default (api, debug = false) => {
           printLog('initData', { func, type, query })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
-          const refresh = !!query.__refresh__
+          const initError = field && field.error && !field.result.length
+          const refresh = !!query.__refresh__ || initError
           const reload = !!query.__reload__
           // 如果 error 了，就不再请求
           if (field && field.error && !refresh) {

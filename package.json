@@ -1,6 +1,6 @@
 {
   "name": "vue-mixin-store",
-  "version": "1.1.79",
+  "version": "1.1.80",
   "main": "dist/vue-mixin-store.umd.min.js",
   "files": [
     "dist"
@@ -38,7 +38,7 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
-    "core-js": "3.6.1",
+    "core-js": "3.6.2",
     "cross-env": "^6.0.3",
     "eslint": "6.8.0",
     "eslint-plugin-vue": "^6.1.2",
