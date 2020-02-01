@@ -323,7 +323,7 @@ export default {
     jump(page) {
       const query = { ...this.params.query }
       query.page = page
-      this.$store.dispatch(
+      return this.$store.dispatch(
         'flow/loadMore',
         {
           ...this.params,
@@ -332,30 +332,44 @@ export default {
       )
     },
     refresh(reload = false) {
-      this.$nextTick(async () => {
-        const query = { ...this.params.query }
-        query.__refresh__ = true
-        query.__reload__ = reload
-        await this.$store.dispatch(
-          'flow/initData',
-          {
-            ...this.params,
-            ...{ query }
+      return new Promise((resolve, reject) => {
+        this.$nextTick(async () => {
+          const query = { ...this.params.query }
+          query.__refresh__ = true
+          query.__reload__ = reload
+          try {
+            await this.$store.dispatch(
+              'flow/initData',
+              {
+                ...this.params,
+                ...{ query }
+              }
+            )
+            this._initFlowLoader()
+            resolve()
+          } catch (e) {
+            reject()
           }
-        )
-        this._initFlowLoader()
+        })
       })
     },
     initData(obj = {}) {
-      this.$nextTick(() => {
-        const query = { ...this.params.query, ...obj }
-        this.$store.dispatch(
-          'flow/initData',
-          {
-            ...this.params,
-            ...{ query }
+      return new Promise((resolve, reject) => {
+        this.$nextTick(async () => {
+          const query = { ...this.params.query, ...obj }
+          try {
+            await this.$store.dispatch(
+              'flow/initData',
+              {
+                ...this.params,
+                ...{ query }
+              }
+            )
+            resolve()
+          } catch (e) {
+            reject()
           }
-        )
+        })
       })
     },
     loadBefore(obj = {}, force = false) {
@@ -364,7 +378,7 @@ export default {
       }
       const query = { ...this.params.query, ...obj }
       query.is_up = 1
-      this.$store.dispatch(
+      return this.$store.dispatch(
         'flow/loadMore',
         {
           ...this.params,
@@ -381,7 +395,7 @@ export default {
       }
       const query = { ...this.params.query, ...obj }
       query.is_up = 0
-      this.$store.dispatch(
+      return this.$store.dispatch(
         'flow/loadMore',
         {
           ...this.params,
@@ -394,9 +408,9 @@ export default {
     },
     retry() {
       if (this.source.fetched) {
-        this.loadMore()
+        return this.loadMore()
       } else {
-        this.initData({
+        return this.initData({
           __refresh__: true
         })
       }
