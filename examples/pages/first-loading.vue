@@ -9,14 +9,22 @@
       :query="query"
       :use-first-loading="true"
     >
-      <ul class="demo-list" slot-scope="{ flow }">
-        <li v-for="(item, index) in flow" :key="item.id">
+      <ul
+        slot-scope="{ flow }"
+        class="demo-list"
+      >
+        <li
+          v-for="(item, index) in flow"
+          :key="item.id"
+        >
           <div :style="{ backgroundColor: item.style.color }">
             count：{{ index + 1 }}，id：{{ item.id }}
           </div>
         </li>
       </ul>
-      <div slot="first-loading">第一次加载，可以设置独特的 loading…</div>
+      <div slot="first-loading">
+        第一次加载，可以设置独特的 loading…
+      </div>
     </FlowLoader>
   </div>
 </template>

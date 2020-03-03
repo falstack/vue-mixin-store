@@ -97,7 +97,7 @@ body {
           :slot="`tab-${index}`"
           :to="item.route"
           v-text="item.name"
-        ></router-link>
+        />
       </v-switcher>
     </div>
     <div id="main">
@@ -108,7 +108,7 @@ body {
 
 <script>
 export default {
-  name: 'app',
+  name: 'App',
   data() {
     return {
       headers: [

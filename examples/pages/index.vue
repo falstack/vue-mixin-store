@@ -10,8 +10,14 @@
 
 <template>
   <div id="index">
-    <button @click="changeRank">切换 rank</button>
-    <v-switcher :headers="headers" :swipe="true" @change="handleSwitch">
+    <button @click="changeRank">
+      切换 rank
+    </button>
+    <v-switcher
+      :headers="headers"
+      :swipe="true"
+      @change="handleSwitch"
+    >
       <FlowLoader
         slot="0"
         ref="loader0"
@@ -24,7 +30,10 @@
       >
         <template #default="{ flow }">
           <ul class="demo-list">
-            <li v-for="(item, index) in flow" :key="item.id">
+            <li
+              v-for="(item, index) in flow"
+              :key="item.id"
+            >
               <div :style="{ backgroundColor: item.style.color }">
                 count：{{ index + 1 }}，id：{{ item.id }}，like：{{ item.like }}，name：{{ item.data.name }}
               </div>
@@ -44,8 +53,14 @@
         }"
         :auto="0"
       >
-        <ul class="demo-list" slot-scope="{ flow }">
-          <li v-for="(item, index) in flow" :key="item.id">
+        <ul
+          slot-scope="{ flow }"
+          class="demo-list"
+        >
+          <li
+            v-for="(item, index) in flow"
+            :key="item.id"
+          >
             <div :style="{ backgroundColor: item.style.color }">
               count：{{ index + 1 }}，id：{{ item.data.number_id }}
             </div>

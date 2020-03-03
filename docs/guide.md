@@ -102,44 +102,58 @@ export const getListBySeenIds = ({ seen_ids, count }) => {
 
 ## 完全用例
 ```vue
-<FlowLoader
-  func="requestFuncName"
-  type="page"
-  :query="{}"
-  :auto="-1"
-  :display-no-more="false"
-  :use-first-error="false"
-  :use-first-loading="false"
-  :retry-on-error="true"
-  :preload="50"
-  :callback="callbackFn"
-  :cache-timeout="0"
->
-  <template #header="{ source }">
-    <header> ... </header>
-  </template>
-  <template #default="{ flow, total, count, extra }">
-    <ul>
-      <ItemComponent v-for="item in flow" :item="item" />
-    </ul>
-  </template>
-  <template #footer="{ source }">
-    <footer> ... </footer>  
-  </template>
-  <template #loading>
-     <LoadingComponent/>
-  </template>
-  <template #nothing>
-    <NothingComponent/>
-  </template>
-  <template #error="{ error }">
-    <ErrorComponent/>
-  </template>
-  <template #first-error="{ error }">
-     <FirstErrorComponent/> 
-  </template>
-  <template #first-loading>
-     <FirstLoadingComponent/> 
-  </template>
-</FlowLoader>
+<template>
+  <FlowLoader
+    func="requestFuncName"
+    type="page"
+    :query="{}"
+    :auto="-1"
+    :display-no-more="false"
+    :use-first-error="false"
+    :use-first-loading="false"
+    :retry-on-error="true"
+    :preload="50"
+    :callback="callbackFn"
+    :cache-timeout="0"
+  >
+    <template #header="{ source }">
+      <header> ... </header>
+    </template>
+    <template #default="{ flow, total, count, extra }">
+      <ul>
+        <ItemComponent v-for="item in flow" :item="item" />
+      </ul>
+    </template>
+    <template #footer="{ source }">
+      <footer> ... </footer>  
+    </template>
+    <template #loading>
+      <LoadingComponent/>
+    </template>
+    <template #nothing>
+      <NothingComponent/>
+    </template>
+    <template #error="{ error }">
+      <ErrorComponent/>
+    </template>
+    <template #first-error="{ error }">
+      <FirstErrorComponent/> 
+    </template>
+    <template #first-loading>
+      <FirstLoadingComponent/> 
+    </template>
+  </FlowLoader>
+</template>
+
+<script>
+export default {
+  asyncData({ store }) {
+    return store.dispatch('flow/initData', {
+      func: 'requestFuncName',
+      type: 'page',
+      query: {}
+    })
+  }
+}
+</script>
 ```
