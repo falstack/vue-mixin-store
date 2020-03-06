@@ -199,7 +199,9 @@ export default {
         if (this.source) {
           return
         }
-        this._initFlowLoader()
+        this.$nextTick(() => {
+          this._initFlowLoader()
+        })
       },
       deep: true
     }
