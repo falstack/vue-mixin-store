@@ -193,6 +193,17 @@ export default {
       return this.type === 'jump'
     }
   },
+  watch: {
+    query: {
+      handler: function () {
+        if (this.source) {
+          return
+        }
+        this._initFlowLoader()
+      },
+      deep: true
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       this._fireSSRCallback()
