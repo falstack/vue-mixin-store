@@ -14,7 +14,7 @@ import {
 } from './utils'
 
 export default (api, debug = false) => {
-  const printLog = (field, val) => debug && console.log(`[${field}]`, val) // eslint-disable-line
+  const printLog = (field, type, val) => debug && console.log(`[${field}]`, type, val) // eslint-disable-line
   const isClient = typeof window !== 'undefined'
   return {
     namespaced: true,
@@ -25,12 +25,12 @@ export default (api, debug = false) => {
         { func, type, query, callback, cacheTimeout }
       ) {
         return new Promise(async (resolve, reject) => {
-          printLog('initData', { func, type, query })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
           const initError = field && field.error && !field.result.length
           const refresh = !!query.__refresh__ || initError
           const reload = !!query.__reload__
+          printLog(fieldName, 'initData', { func, type, query })
           // 如果 error 了，就不再请求
           if (field && field.error && !refresh) {
             return resolve()
@@ -51,7 +51,7 @@ export default (api, debug = false) => {
           const params = generateRequestParams({ fetched: false }, query, type)
           params._extra = field ? field.extra : null
           try {
-            printLog('request', { func, params })
+            printLog(fieldName, 'request', { func, params })
             let data
             let fromLocal = false
             if (isClient && cacheTimeout) {
@@ -103,9 +103,9 @@ export default (api, debug = false) => {
         { type, func, query, callback, cacheTimeout, force }
       ) {
         return new Promise(async (resolve, reject) => {
-          printLog('loadMore', { type, func, query })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
+          printLog(fieldName, 'loadMore', { type, func, query })
           if (!field || field.loading || field.nothing || (field.noMore && !force)) {
             return resolve()
           }
@@ -119,7 +119,7 @@ export default (api, debug = false) => {
           const params = generateRequestParams(field, query, type)
           params._extra = field.extra
           try {
-            printLog('request', { func, params })
+            printLog(fieldName, 'request', { func, params })
             const data = await api[func](params)
             commit('SET_DATA', {
               fromLocal: false,
@@ -144,6 +144,7 @@ export default (api, debug = false) => {
             }
             resolve()
           } catch (error) {
+            printLog(fieldName, 'error', error)
             commit('SET_ERROR', { fieldName, error })
             reject(error)
           }
@@ -159,7 +160,6 @@ export default (api, debug = false) => {
         state[fieldName].error = null
       },
       SET_ERROR(state, { fieldName, error }) {
-        printLog('error', { fieldName, error })
         debug && console.log(error) // eslint-disable-line
         state[fieldName].error = error
         state[fieldName].loading = false
@@ -169,7 +169,7 @@ export default (api, debug = false) => {
         state[fieldName].extra = null
       },
       SET_DATA(state, { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout }) {
-        printLog('setData', { data, fieldName, type, page, insertBefore, fromLocal, cacheTimeout })
+        printLog(fieldName, 'setData', { data, type, page, insertBefore, fromLocal, cacheTimeout })
         if (fromLocal) {
           Vue.set(state, fieldName, data)
           return
@@ -201,9 +201,9 @@ export default (api, debug = false) => {
       },
       UPDATE_DATA(state, { type, func, query, id, method, key, value, cacheTimeout, changing }) {
         try {
-          printLog('updateData', { type, func, query, id, method, key, value, cacheTimeout, changing })
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
+          printLog(fieldName, 'updateData', { type, func, query, id, method, key, value, cacheTimeout, changing })
           if (!field) {
             return
           }

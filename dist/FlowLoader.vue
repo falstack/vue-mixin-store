@@ -205,7 +205,9 @@ export default {
         }
         this.$nextTick(() => {
           this._debug('query change')
-          this._initFlowLoader()
+          setTimeout(() => {
+            this._initFlowLoader()
+          }, 0)
         })
       },
       deep: true
@@ -456,10 +458,13 @@ export default {
     _initFlowLoader() {
       if (this.auto === 0) {
         this._initState()
+        this._debug('init flow 0')
       } else {
         if (this.$refs.state && checkInView(this.$refs.state, this.preload)) {
+          this._debug('init flow 1')
           this.initData()
         } else {
+          this._debug('init flow 2')
           this._initState()
         }
         on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)

@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.2.4
+ * vue-mixin-store v1.2.5
  * (c) 2020 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1248,8 +1248,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 /* harmony default export */ var flow = (function (api) {
   var debug = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  var printLog = function printLog(field, val) {
-    return debug && console.log("[".concat(field, "]"), val);
+  var printLog = function printLog(field, type, val) {
+    return debug && console.log("[".concat(field, "]"), type, val);
   }; // eslint-disable-line
 
 
@@ -1275,16 +1275,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
-                    printLog('initData', {
-                      func: func,
-                      type: type,
-                      query: query
-                    });
                     fieldName = generateFieldName(func, type, query);
                     field = state[fieldName];
                     initError = field && field.error && !field.result.length;
                     refresh = !!query.__refresh__ || initError;
-                    reload = !!query.__reload__; // 如果 error 了，就不再请求
+                    reload = !!query.__reload__;
+                    printLog(fieldName, 'initData', {
+                      func: func,
+                      type: type,
+                      query: query
+                    }); // 如果 error 了，就不再请求
 
                     if (!(field && field.error && !refresh)) {
                       _context.next = 8;
@@ -1323,7 +1323,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }, query, type);
                     params._extra = field ? field.extra : null;
                     _context.prev = 16;
-                    printLog('request', {
+                    printLog(fieldName, 'request', {
                       func: func,
                       params: params
                     });
@@ -1436,13 +1436,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               while (1) {
                 switch (_context2.prev = _context2.next) {
                   case 0:
-                    printLog('loadMore', {
+                    fieldName = generateFieldName(func, type, query);
+                    field = state[fieldName];
+                    printLog(fieldName, 'loadMore', {
                       type: type,
                       func: func,
                       query: query
                     });
-                    fieldName = generateFieldName(func, type, query);
-                    field = state[fieldName];
 
                     if (!(!field || field.loading || field.nothing || field.noMore && !force)) {
                       _context2.next = 5;
@@ -1469,7 +1469,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     params = generateRequestParams(field, query, type);
                     params._extra = field.extra;
                     _context2.prev = 11;
-                    printLog('request', {
+                    printLog(fieldName, 'request', {
                       func: func,
                       params: params
                     });
@@ -1502,19 +1502,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
 
                     resolve();
-                    _context2.next = 25;
+                    _context2.next = 26;
                     break;
 
                   case 21:
                     _context2.prev = 21;
                     _context2.t0 = _context2["catch"](11);
+                    printLog(fieldName, 'error', _context2.t0);
                     commit('SET_ERROR', {
                       fieldName: fieldName,
                       error: _context2.t0
                     });
                     reject(_context2.t0);
 
-                  case 25:
+                  case 26:
                   case "end":
                     return _context2.stop();
                 }
@@ -1539,10 +1540,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       SET_ERROR: function SET_ERROR(state, _ref7) {
         var fieldName = _ref7.fieldName,
             error = _ref7.error;
-        printLog('error', {
-          fieldName: fieldName,
-          error: error
-        });
         debug && console.log(error); // eslint-disable-line
 
         state[fieldName].error = error;
@@ -1560,9 +1557,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             insertBefore = _ref8.insertBefore,
             fromLocal = _ref8.fromLocal,
             cacheTimeout = _ref8.cacheTimeout;
-        printLog('setData', {
+        printLog(fieldName, 'setData', {
           data: data,
-          fieldName: fieldName,
           type: type,
           page: page,
           insertBefore: insertBefore,
@@ -1620,7 +1616,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             changing = _ref9.changing;
 
         try {
-          printLog('updateData', {
+          var fieldName = generateFieldName(func, type, query);
+          var field = state[fieldName];
+          printLog(fieldName, 'updateData', {
             type: type,
             func: func,
             query: query,
@@ -1631,8 +1629,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             cacheTimeout: cacheTimeout,
             changing: changing
           });
-          var fieldName = generateFieldName(func, type, query);
-          var field = state[fieldName];
 
           if (!field) {
             return;
@@ -1736,12 +1732,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"d3cdc854-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=2e5352ac&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4c0d8ee2-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f74ead88&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=2e5352ac&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=f74ead88&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
@@ -1975,7 +1971,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.$nextTick(function () {
           _this._debug('query change');
 
-          _this._initFlowLoader();
+          setTimeout(function () {
+            _this._initFlowLoader();
+          }, 0);
         });
       },
       deep: true
@@ -2234,10 +2232,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     _initFlowLoader: function _initFlowLoader() {
       if (this.auto === 0) {
         this._initState();
+
+        this._debug('init flow 0');
       } else {
         if (this.$refs.state && checkInView(this.$refs.state, this.preload)) {
+          this._debug('init flow 1');
+
           this.initData();
         } else {
+          this._debug('init flow 2');
+
           this._initState();
         }
 
