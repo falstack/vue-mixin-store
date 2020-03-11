@@ -162,6 +162,10 @@ export default {
       type: Number,
       default: 0,
       validator: val => val >= 0
+    },
+    debug: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -200,6 +204,7 @@ export default {
           return
         }
         this.$nextTick(() => {
+          this._debug('query change')
           this._initFlowLoader()
         })
       },
@@ -211,6 +216,11 @@ export default {
       this._fireSSRCallback()
       this._initFlowLoader()
     })
+    this._debug('mounted')
+  },
+  beforeDestroy() {
+    this._debug('beforeDestroy')
+    off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
   },
   methods: {
     modify({ key, value }) {
@@ -434,6 +444,9 @@ export default {
       }
       this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query))
     },
+    forceCallback() {
+      this._fireSSRCallback(true)
+    },
     _initState() {
       if (this.source) {
         return
@@ -463,9 +476,6 @@ export default {
           __refresh__: true
         })
       }
-    },
-    forceCallback() {
-      this._fireSSRCallback(true)
     },
     _fireSSRCallback(force = false) {
       if (!force && (!this.firstBind || !checkInView(this.$el, this.preload))) {
@@ -528,6 +538,14 @@ export default {
           this.initData()
         }
       }
+    },
+    _debug(message) {
+      if (!this.debug) {
+        return
+      }
+      const field = `[${generateFieldName(this.func, this.type, this.query)}]`
+      console.log(field, 'life cycle', message) // eslint-disable-line
+      console.log(field, 'check in view', checkInView(this.$refs.state, this.preload)) // eslint-disable-line
     }
   }
 }

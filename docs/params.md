@@ -14,6 +14,7 @@
 | preload | Number | false | 50 | >= 0 | 自动加载下一页的预加载高度（px） |
 | callback | Function | false | undefined | Function | 接口请求成功后可以调用一个 callback 函数 |
 | cacheTimeout | Number | false | 0 | >= 0 | 将数据缓存到 localStorage 里超时的秒数 |
+| debug | Boolean | false | false | - | 在控制台输出 FlowLoader 的生命周期调用 |
 
 ### query 中的一些关键字
 | 参数 | 作用 |
@@ -109,13 +110,19 @@
 - 参数：无
 - 强制调用 callback
 
+### callback 的参数
+1. params：请求的参数
+2. data：格式话后请求的响应值
+3. refresh：是否是刷新
+
 ## FlowStore 透传的参数
-| 类型 | 参数 | 默认值 | 翻页值 |
+| Flow类型 | 参数 | 默认值 | 翻页值 |
 | --- | --- | --- | --- |
 | page | page | 1 | 自动维护，+1 |
 | sinceId | since_id, is_up | is_up = 1, since_id = 999999999； is_up = 0, since_id = 0 | 根据翻页方向自动维护 |
 | jump | page | 1 | 手动传值 |
 | lastId | last_id | 0 | 当前列表最后一个元素的 id 值 |
 | seenIds | seen_ids | '' | 当前列表所有元素的 id 值的数组然后 join(',') |
+| - | _extra | null | field 里的附加数据 |
 
 > 当然也包括 query 里面提供的参数
