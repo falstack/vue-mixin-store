@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.2.5
+ * vue-mixin-store v1.2.6
  * (c) 2020 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1277,7 +1277,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   case 0:
                     fieldName = generateFieldName(func, type, query);
                     field = state[fieldName];
-                    initError = field && field.error && !field.result.length;
+                    initError = !!(field && field.error && !field.result.length);
                     refresh = !!query.__refresh__ || initError;
                     reload = !!query.__reload__;
                     printLog(fieldName, 'initData', {
@@ -1287,32 +1287,35 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }); // 如果 error 了，就不再请求
 
                     if (!(field && field.error && !refresh)) {
-                      _context.next = 8;
+                      _context.next = 9;
                       break;
                     }
 
+                    printLog(fieldName, 'initData', 'error return');
                     return _context.abrupt("return", resolve());
 
-                  case 8:
+                  case 9:
                     if (!(field && field.loading)) {
-                      _context.next = 10;
+                      _context.next = 12;
                       break;
                     }
 
+                    printLog(fieldName, 'initData', 'loading return');
                     return _context.abrupt("return", resolve());
 
-                  case 10:
+                  case 12:
                     // 这个 field 已经请求过了
                     notFetch = field && field.fetched && !refresh;
 
                     if (!notFetch) {
-                      _context.next = 13;
+                      _context.next = 16;
                       break;
                     }
 
+                    printLog(fieldName, 'initData', 'fetched return');
                     return _context.abrupt("return", resolve());
 
-                  case 13:
+                  case 16:
                     if (!notFetch && !reload) {
                       commit('INIT_STATE', fieldName);
                       commit('SET_LOADING', fieldName);
@@ -1322,7 +1325,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                       fetched: false
                     }, query, type);
                     params._extra = field ? field.extra : null;
-                    _context.prev = 16;
+                    _context.prev = 19;
                     printLog(fieldName, 'request', {
                       func: func,
                       params: params
@@ -1330,7 +1333,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     fromLocal = false;
 
                     if (!(isClient && cacheTimeout)) {
-                      _context.next = 30;
+                      _context.next = 33;
                       break;
                     }
 
@@ -1340,33 +1343,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     });
 
                     if (!data) {
-                      _context.next = 25;
+                      _context.next = 28;
                       break;
                     }
 
                     fromLocal = true;
-                    _context.next = 28;
+                    _context.next = 31;
                     break;
-
-                  case 25:
-                    _context.next = 27;
-                    return api[func](params);
-
-                  case 27:
-                    data = _context.sent;
 
                   case 28:
-                    _context.next = 33;
-                    break;
-
-                  case 30:
-                    _context.next = 32;
+                    _context.next = 30;
                     return api[func](params);
 
-                  case 32:
+                  case 30:
                     data = _context.sent;
 
+                  case 31:
+                    _context.next = 36;
+                    break;
+
                   case 33:
+                    _context.next = 35;
+                    return api[func](params);
+
+                  case 35:
+                    data = _context.sent;
+
+                  case 36:
                     if (reload) {
                       commit('INIT_STATE', fieldName);
                     }
@@ -1395,24 +1398,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
 
                     resolve();
-                    _context.next = 43;
+                    _context.next = 46;
                     break;
 
-                  case 39:
-                    _context.prev = 39;
-                    _context.t0 = _context["catch"](16);
+                  case 42:
+                    _context.prev = 42;
+                    _context.t0 = _context["catch"](19);
                     commit('SET_ERROR', {
                       fieldName: fieldName,
                       error: _context.t0
                     });
                     reject(_context.t0);
 
-                  case 43:
+                  case 46:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, _callee, null, [[16, 39]]);
+            }, _callee, null, [[19, 42]]);
           }));
 
           return function (_x, _x2) {
@@ -1445,21 +1448,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     });
 
                     if (!(!field || field.loading || field.nothing || field.noMore && !force)) {
-                      _context2.next = 5;
+                      _context2.next = 6;
                       break;
                     }
 
+                    printLog(fieldName, 'initData', 'state return');
                     return _context2.abrupt("return", resolve());
 
-                  case 5:
+                  case 6:
                     if (!(type === 'jump' && +query.page === field.page)) {
-                      _context2.next = 7;
+                      _context2.next = 9;
                       break;
                     }
 
+                    printLog(fieldName, 'initData', 'same return');
                     return _context2.abrupt("return", resolve());
 
-                  case 7:
+                  case 9:
                     commit('SET_LOADING', fieldName);
 
                     if (type === 'jump' || !isArray(field.result)) {
@@ -1468,15 +1473,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                     params = generateRequestParams(field, query, type);
                     params._extra = field.extra;
-                    _context2.prev = 11;
+                    _context2.prev = 13;
                     printLog(fieldName, 'request', {
                       func: func,
                       params: params
                     });
-                    _context2.next = 15;
+                    _context2.next = 17;
                     return api[func](params);
 
-                  case 15:
+                  case 17:
                     data = _context2.sent;
                     commit('SET_DATA', {
                       fromLocal: false,
@@ -1502,12 +1507,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     }
 
                     resolve();
-                    _context2.next = 26;
+                    _context2.next = 28;
                     break;
 
-                  case 21:
-                    _context2.prev = 21;
-                    _context2.t0 = _context2["catch"](11);
+                  case 23:
+                    _context2.prev = 23;
+                    _context2.t0 = _context2["catch"](13);
                     printLog(fieldName, 'error', _context2.t0);
                     commit('SET_ERROR', {
                       fieldName: fieldName,
@@ -1515,12 +1520,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     });
                     reject(_context2.t0);
 
-                  case 26:
+                  case 28:
                   case "end":
                     return _context2.stop();
                 }
               }
-            }, _callee2, null, [[11, 21]]);
+            }, _callee2, null, [[13, 23]]);
           }));
 
           return function (_x3, _x4) {
@@ -1568,12 +1573,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
         if (fromLocal) {
           external_commonjs_vue_commonjs2_vue_root_Vue_default.a.set(state, fieldName, data);
+          printLog(fieldName, 'setData', 'from local return');
           return;
         }
 
         var field = state[fieldName];
 
         if (!field) {
+          printLog(fieldName, 'setData', 'no field return');
           return;
         }
 
@@ -1631,6 +1638,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           });
 
           if (!field) {
+            printLog(fieldName, 'updateData', 'no field return');
             return;
           }
 
@@ -1732,12 +1740,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4c0d8ee2-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=f74ead88&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"113d5df6-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=902351e4&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=f74ead88&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=902351e4&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
@@ -1978,6 +1986,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       deep: true
     }
+  },
+  created: function created() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    this._debug('created');
   },
   mounted: function mounted() {
     var _this2 = this;
@@ -2289,6 +2304,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this5 = this;
 
       var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      this._debug('scroll');
 
       if (!force) {
         if (this.throttle) {

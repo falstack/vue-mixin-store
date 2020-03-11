@@ -213,6 +213,12 @@ export default {
       deep: true
     }
   },
+  created() {
+    if (typeof window === 'undefined') {
+      return
+    }
+    this._debug('created')
+  },
   mounted() {
     this.$nextTick(() => {
       this._fireSSRCallback()
@@ -506,6 +512,7 @@ export default {
       }
     },
     _onScreenScroll(event, force = false) {
+      this._debug('scroll')
       if (!force) {
         if (this.throttle) {
           return

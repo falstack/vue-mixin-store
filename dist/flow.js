@@ -27,21 +27,24 @@ export default (api, debug = false) => {
         return new Promise(async (resolve, reject) => {
           const fieldName = generateFieldName(func, type, query)
           const field = state[fieldName]
-          const initError = field && field.error && !field.result.length
+          const initError = !!(field && field.error && !field.result.length)
           const refresh = !!query.__refresh__ || initError
           const reload = !!query.__reload__
           printLog(fieldName, 'initData', { func, type, query })
           // 如果 error 了，就不再请求
           if (field && field.error && !refresh) {
+            printLog(fieldName, 'initData', 'error return')
             return resolve()
           }
           // 正在请求中，return
           if (field && field.loading) {
+            printLog(fieldName, 'initData', 'loading return')
             return resolve()
           }
           // 这个 field 已经请求过了
           const notFetch = field && field.fetched && !refresh
           if (notFetch) {
+            printLog(fieldName, 'initData', 'fetched return')
             return resolve()
           }
           if (!notFetch && !reload) {
@@ -107,9 +110,11 @@ export default (api, debug = false) => {
           const field = state[fieldName]
           printLog(fieldName, 'loadMore', { type, func, query })
           if (!field || field.loading || field.nothing || (field.noMore && !force)) {
+            printLog(fieldName, 'initData', 'state return')
             return resolve()
           }
           if (type === 'jump' && +query.page === field.page) {
+            printLog(fieldName, 'initData', 'same return')
             return resolve()
           }
           commit('SET_LOADING', fieldName)
@@ -172,10 +177,12 @@ export default (api, debug = false) => {
         printLog(fieldName, 'setData', { data, type, page, insertBefore, fromLocal, cacheTimeout })
         if (fromLocal) {
           Vue.set(state, fieldName, data)
+          printLog(fieldName, 'setData', 'from local return')
           return
         }
         const field = state[fieldName]
         if (!field) {
+          printLog(fieldName, 'setData', 'no field return')
           return
         }
         const { result, extra } = data
@@ -205,6 +212,7 @@ export default (api, debug = false) => {
           const field = state[fieldName]
           printLog(fieldName, 'updateData', { type, func, query, id, method, key, value, cacheTimeout, changing })
           if (!field) {
+            printLog(fieldName, 'updateData', 'no field return')
             return
           }
           const changingKey = changing || query.changing || 'id'
