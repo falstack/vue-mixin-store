@@ -197,6 +197,7 @@ export default {
       return this.type === 'jump'
     }
   },
+  /*
   watch: {
     query: {
       handler: function () {
@@ -219,6 +220,7 @@ export default {
     }
     this._debug('created')
   },
+  */
   mounted() {
     this.$nextTick(() => {
       this._fireSSRCallback()
