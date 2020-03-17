@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.2.7
+ * vue-mixin-store v1.3.0
  * (c) 2020 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1740,12 +1740,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"34bb73d2-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=4f58885c&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"1c0373fc-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=bb418458&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=4f58885c&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=bb418458&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
@@ -1953,7 +1953,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         type: this.type,
         query: this.query,
         callback: this.callback,
-        cacheTimeout: typeof window === 'undefined' ? 0 : this.cacheTimeout
+        cacheTimeout: this.$isServer ? 0 : this.cacheTimeout
       };
     },
     isAuto: function isAuto() {
@@ -1965,40 +1965,58 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     isPagination: function isPagination() {
       return this.type === 'jump';
-    }
-  },
+    },
+    observer: function observer() {
+      var _this = this;
 
-  /*
-  watch: {
-    query: {
-      handler: function () {
-        if (this.source) {
-          return
-        }
-        this.$nextTick(() => {
-          this._debug('query change')
-          setTimeout(() => {
-            this._initFlowLoader()
-          }, 0)
-        })
-      },
-      deep: true
+      if (this.$isServer) {
+        return null;
+      }
+
+      if (typeof window.IntersectionObserver !== 'function') {
+        return null;
+      }
+
+      return new window.IntersectionObserver(function (entries) {
+        entries.forEach(function (_ref) {
+          var intersectionRatio = _ref.intersectionRatio;
+
+          if (intersectionRatio <= 0) {
+            return;
+          }
+
+          if (!_this.source) {
+            _this._initState();
+
+            return;
+          }
+
+          if (_this.source.loading || _this.source.error) {
+            return;
+          }
+
+          if (!_this.isAuto || _this.source.noMore || _this.source.nothing || _this.isPagination && _this.source.fetched) {
+            return;
+          }
+
+          if (_this.source.fetched) {
+            _this.loadMore();
+          } else {
+            _this.initData();
+          }
+        });
+      }, {
+        rootMargin: this.preload ? "".concat(this.preload, "px 0px") : 0
+      });
     }
   },
-  created() {
-    if (typeof window === 'undefined') {
-      return
-    }
-    this._debug('created')
-  },
-  */
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     this.$nextTick(function () {
-      _this._fireSSRCallback();
+      _this2._fireSSRCallback();
 
-      _this._initFlowLoader();
+      _this2._initFlowLoader();
     });
 
     this._debug('mounted');
@@ -2006,23 +2024,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   beforeDestroy: function beforeDestroy() {
     this._debug('beforeDestroy');
 
-    off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
+    if (this.observer) {
+      this.observer.unobserve(this.$refs.state);
+      this.observer.disconnect();
+    } else {
+      off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
+    }
   },
   methods: {
-    modify: function modify(_ref) {
-      var key = _ref.key,
-          value = _ref.value;
+    modify: function modify(_ref2) {
+      var key = _ref2.key,
+          value = _ref2.value;
       this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'modify',
         key: key,
         value: value
       }));
     },
-    update: function update(_ref2) {
-      var id = _ref2.id,
-          key = _ref2.key,
-          value = _ref2.value,
-          changing = _ref2.changing;
+    update: function update(_ref3) {
+      var id = _ref3.id,
+          key = _ref3.key,
+          value = _ref3.value,
+          changing = _ref3.changing;
       this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'update',
         id: id,
@@ -2063,11 +2086,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         changing: changing
       }));
     },
-    insertBefore: function insertBefore(_ref3) {
-      var id = _ref3.id,
-          value = _ref3.value,
-          key = _ref3.key,
-          changing = _ref3.changing;
+    insertBefore: function insertBefore(_ref4) {
+      var id = _ref4.id,
+          value = _ref4.value,
+          key = _ref4.key,
+          changing = _ref4.changing;
       this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'insert-before',
         id: id,
@@ -2076,11 +2099,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         changing: changing
       }));
     },
-    insertAfter: function insertAfter(_ref4) {
-      var id = _ref4.id,
-          value = _ref4.value,
-          key = _ref4.key,
-          changing = _ref4.changing;
+    insertAfter: function insertAfter(_ref5) {
+      var id = _ref5.id,
+          value = _ref5.value,
+          key = _ref5.key,
+          changing = _ref5.changing;
       this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'insert-after',
         id: id,
@@ -2107,27 +2130,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     refresh: function refresh() {
-      var _this2 = this;
+      var _this3 = this;
 
       var reload = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       return new Promise(function (resolve, reject) {
-        _this2.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
+        _this3.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
           var query;
           return regenerator_default.a.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  query = _objectSpread({}, _this2.params.query);
+                  query = _objectSpread({}, _this3.params.query);
                   query.__refresh__ = true;
                   query.__reload__ = reload;
                   _context.prev = 3;
                   _context.next = 6;
-                  return _this2.$store.dispatch('flow/initData', _objectSpread({}, _this2.params, {}, {
+                  return _this3.$store.dispatch('flow/initData', _objectSpread({}, _this3.params, {}, {
                     query: query
                   }));
 
                 case 6:
-                  _this2._initFlowLoader();
+                  _this3._initFlowLoader();
 
                   resolve();
                   _context.next = 13;
@@ -2148,20 +2171,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     initData: function initData() {
-      var _this3 = this;
+      var _this4 = this;
 
       var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       return new Promise(function (resolve, reject) {
-        _this3.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee2() {
+        _this4.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee2() {
           var query;
           return regenerator_default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  query = _objectSpread({}, _this3.params.query, {}, obj);
+                  query = _objectSpread({}, _this4.params.query, {}, obj);
                   _context2.prev = 1;
                   _context2.next = 4;
-                  return _this3.$store.dispatch('flow/initData', _objectSpread({}, _this3.params, {}, {
+                  return _this4.$store.dispatch('flow/initData', _objectSpread({}, _this4.params, {}, {
                     query: query
                   }));
 
@@ -2243,23 +2266,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query));
     },
     _initFlowLoader: function _initFlowLoader() {
+      this._initState();
+
       if (this.auto === 0) {
-        this._initState();
-
-        this._debug('init flow 0');
-      } else {
-        if (this.$refs.state && checkInView(this.$refs.state, this.preload)) {
-          this._debug('init flow 1');
-
-          this.initData();
-        } else {
-          this._debug('init flow 2');
-
-          this._initState();
-        }
-
-        on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
+        return;
       }
+
+      var stateDom = this.$refs.state;
+
+      if (this.observer) {
+        this.observer.observe(stateDom);
+        return;
+      }
+
+      if (stateDom && checkInView(stateDom, this.preload)) {
+        this.initData();
+      }
+
+      on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
     },
     _retryData: function _retryData() {
       if (!this.retryOnError) {
@@ -2299,7 +2323,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     _onScreenScroll: function _onScreenScroll(event) {
-      var _this4 = this;
+      var _this5 = this;
 
       var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -2312,9 +2336,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         this.throttle = true;
         setTimeout(function () {
-          _this4.throttle = false;
+          _this5.throttle = false;
 
-          _this4._onScreenScroll(null, true);
+          _this5._onScreenScroll(null, true);
         }, 200);
         return;
       }

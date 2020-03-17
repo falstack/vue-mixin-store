@@ -184,7 +184,7 @@ export default {
         type: this.type,
         query: this.query,
         callback: this.callback,
-        cacheTimeout: typeof window === 'undefined' ? 0 : this.cacheTimeout
+        cacheTimeout: this.$isServer ? 0 : this.cacheTimeout
       }
     },
     isAuto() {
@@ -195,32 +195,48 @@ export default {
     },
     isPagination() {
       return this.type === 'jump'
-    }
-  },
-  /*
-  watch: {
-    query: {
-      handler: function () {
-        if (this.source) {
-          return
+    },
+    observer() {
+      if (this.$isServer) {
+        return null
+      }
+      if (typeof window.IntersectionObserver !== 'function') {
+        return null
+      }
+      return new window.IntersectionObserver(
+        (entries) => {
+          entries.forEach(({ intersectionRatio }) => {
+            if (intersectionRatio <= 0) {
+              return
+            }
+            if (!this.source) {
+              this._initState()
+              return
+            }
+            if (this.source.loading || this.source.error) {
+              return
+            }
+            if (
+              !this.isAuto ||
+              this.source.noMore ||
+              this.source.nothing ||
+              (this.isPagination && this.source.fetched)
+            ) {
+              return
+            }
+            if (this.source.fetched) {
+              this.loadMore()
+            } else {
+              this.initData()
+            }
+          })
+        },
+        {
+          rootMargin: this.preload ? `${this.preload}px 0px` : 0
         }
-        this.$nextTick(() => {
-          this._debug('query change')
-          setTimeout(() => {
-            this._initFlowLoader()
-          }, 0)
-        })
-      },
-      deep: true
+      )
     }
   },
-  created() {
-    if (typeof window === 'undefined') {
-      return
-    }
-    this._debug('created')
-  },
-  */
   mounted() {
     this.$nextTick(() => {
       this._fireSSRCallback()
@@ -230,7 +246,12 @@ export default {
   },
   beforeDestroy() {
     this._debug('beforeDestroy')
-    off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+    if (this.observer) {
+      this.observer.unobserve(this.$refs.state)
+      this.observer.disconnect()
+    } else {
+      off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+    }
   },
   methods: {
     modify({ key, value }) {
@@ -464,19 +485,19 @@ export default {
       this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query))
     },
     _initFlowLoader() {
+      this._initState()
       if (this.auto === 0) {
-        this._initState()
-        this._debug('init flow 0')
-      } else {
-        if (this.$refs.state && checkInView(this.$refs.state, this.preload)) {
-          this._debug('init flow 1')
-          this.initData()
-        } else {
-          this._debug('init flow 2')
-          this._initState()
-        }
-        on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+        return
       }
+      const stateDom = this.$refs.state
+      if (this.observer) {
+        this.observer.observe(stateDom)
+        return
+      }
+      if (stateDom && checkInView(stateDom, this.preload)) {
+        this.initData()
+      }
+      on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
     },
     _retryData() {
       if (!this.retryOnError) {
