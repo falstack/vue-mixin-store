@@ -230,9 +230,6 @@ export default {
               this.initData()
             }
           })
-        },
-        {
-          rootMargin: this.preload ? `${this.preload}px 0px` : 0
         }
       )
     }
