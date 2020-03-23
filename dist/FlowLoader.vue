@@ -155,7 +155,7 @@ export default {
     },
     preload: {
       type: Number,
-      default: 50,
+      default: 0,
       validator: val => val >= 0
     },
     cacheTimeout: {
@@ -197,7 +197,7 @@ export default {
       return this.type === 'jump'
     },
     observer() {
-      if (this.$isServer) {
+      if (!this.preload || this.$isServer) {
         return null
       }
       if (typeof window.IntersectionObserver !== 'function') {
