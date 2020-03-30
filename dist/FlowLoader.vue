@@ -487,14 +487,14 @@ export default {
         return
       }
       const stateDom = this.$refs.state
-      if (this.observer) {
-        this.observer.observe(stateDom)
-        return
-      }
       if (stateDom && checkInView(stateDom, this.preload)) {
         this.initData()
       }
-      on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+      if (this.observer) {
+        this.observer.observe(stateDom)
+      } else {
+        on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+      }
     },
     _retryData() {
       if (!this.retryOnError) {
