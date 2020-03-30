@@ -11,7 +11,7 @@
 | useFirstError | Boolean | false | false | - | 是否在首次加载失败时使用特殊的 slot |
 | useFirstLoading | Boolean | false | false | - | 是否在首次加载loading时使用特殊的 slot |
 | retryOnError | Boolean | false | true | - | 当展示 error 的时候是否点击后重试 |
-| preload | Number | false | 0 | >= 0 | 自动加载下一页的预加载高度（px） |
+| preload | Number | false | 50 | >= 0 | 自动加载下一页的预加载高度（px） |
 | callback | Function | false | undefined | Function | 接口请求成功后可以调用一个 callback 函数 |
 | cacheTimeout | Number | false | 0 | >= 0 | 将数据缓存到 localStorage 里超时的秒数 |
 | debug | Boolean | false | false | - | 在控制台输出 FlowLoader 的生命周期调用 |
