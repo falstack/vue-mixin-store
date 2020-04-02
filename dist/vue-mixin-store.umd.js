@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.3.5
+ * vue-mixin-store v1.3.6
  * (c) 2020 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1740,12 +1740,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"870cff7e-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=04478714&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"25166b94-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=2bc4fae8&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center', minHeight: '1px' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=04478714&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=2bc4fae8&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
@@ -2008,13 +2008,33 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     }
   },
+  watch: {
+    query: {
+      handler: function handler() {
+        var _this2 = this;
+
+        if (this.source) {
+          return;
+        }
+
+        this.$nextTick(function () {
+          _this2._debug('query change');
+
+          setTimeout(function () {
+            _this2._initFlowLoader();
+          }, 0);
+        });
+      },
+      deep: true
+    }
+  },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
     this.$nextTick(function () {
-      _this2._fireSSRCallback();
+      _this3._fireSSRCallback();
 
-      _this2._initFlowLoader();
+      _this3._initFlowLoader();
     });
 
     this._debug('mounted');
@@ -2128,27 +2148,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     refresh: function refresh() {
-      var _this3 = this;
+      var _this4 = this;
 
       var reload = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       return new Promise(function (resolve, reject) {
-        _this3.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
+        _this4.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
           var query;
           return regenerator_default.a.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  query = _objectSpread({}, _this3.params.query);
+                  query = _objectSpread({}, _this4.params.query);
                   query.__refresh__ = true;
                   query.__reload__ = reload;
                   _context.prev = 3;
                   _context.next = 6;
-                  return _this3.$store.dispatch('flow/initData', _objectSpread({}, _this3.params, {}, {
+                  return _this4.$store.dispatch('flow/initData', _objectSpread({}, _this4.params, {}, {
                     query: query
                   }));
 
                 case 6:
-                  _this3._initFlowLoader();
+                  _this4._initFlowLoader();
 
                   resolve();
                   _context.next = 13;
@@ -2169,20 +2189,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     initData: function initData() {
-      var _this4 = this;
+      var _this5 = this;
 
       var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       return new Promise(function (resolve, reject) {
-        _this4.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee2() {
+        _this5.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee2() {
           var query;
           return regenerator_default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  query = _objectSpread({}, _this4.params.query, {}, obj);
+                  query = _objectSpread({}, _this5.params.query, {}, obj);
                   _context2.prev = 1;
                   _context2.next = 4;
-                  return _this4.$store.dispatch('flow/initData', _objectSpread({}, _this4.params, {}, {
+                  return _this5.$store.dispatch('flow/initData', _objectSpread({}, _this5.params, {}, {
                     query: query
                   }));
 
@@ -2320,7 +2340,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     _onScreenScroll: function _onScreenScroll(event) {
-      var _this5 = this;
+      var _this6 = this;
 
       var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -2333,9 +2353,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         this.throttle = true;
         setTimeout(function () {
-          _this5.throttle = false;
+          _this6.throttle = false;
 
-          _this5._onScreenScroll(null, true);
+          _this6._onScreenScroll(null, true);
         }, 200);
         return;
       }

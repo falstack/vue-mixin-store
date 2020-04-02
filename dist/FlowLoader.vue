@@ -234,6 +234,22 @@ export default {
       )
     }
   },
+  watch: {
+    query: {
+      handler: function () {
+        if (this.source) {
+          return
+        }
+        this.$nextTick(() => {
+          this._debug('query change')
+          setTimeout(() => {
+            this._initFlowLoader()
+          }, 0)
+        })
+      },
+      deep: true
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       this._fireSSRCallback()
