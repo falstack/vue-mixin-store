@@ -23,7 +23,7 @@
     <div
       ref="state"
       class="flow-loader-state"
-      :style="{ textAlign: 'center' }"
+      :style="{ textAlign: 'center', minHeight: '1px' }"
     >
       <template v-if="source">
         <!--   error   -->
