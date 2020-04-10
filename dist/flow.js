@@ -52,7 +52,7 @@ export default (api, debug = false) => {
             commit('SET_LOADING', fieldName)
           }
           const params = generateRequestParams({ fetched: false }, query, type)
-          params._extra = field ? field.extra : null
+          params._extra = notFetch ? (field ? field.extra : null) : null
           try {
             printLog(fieldName, 'request', { func, params })
             let data
