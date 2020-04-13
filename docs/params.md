@@ -14,6 +14,7 @@
 | preload | Number | false | 50 | >= 0 | 自动加载下一页的预加载高度（px） |
 | callback | Function | false | undefined | Function | 接口请求成功后可以调用一个 callback 函数 |
 | cacheTimeout | Number | false | 0 | >= 0 | 将数据缓存到 localStorage 里超时的秒数 |
+| useRect | Boolean | false | false | - | 使用`getBoundingClientRect`来计算是否加载更多 |
 | debug | Boolean | false | false | - | 在控制台输出 FlowLoader 的生命周期调用 |
 
 ### query 中的一些关键字

@@ -163,6 +163,10 @@ export default {
       default: 0,
       validator: val => val >= 0
     },
+    useRect: {
+      type: Boolean,
+      default: false
+    },
     debug: {
       type: Boolean,
       default: false
@@ -197,7 +201,7 @@ export default {
       return this.type === 'jump'
     },
     observer() {
-      if (this.$isServer) {
+      if (this.$isServer || this.useRect) {
         return null
       }
       if (typeof window.IntersectionObserver !== 'function') {
@@ -432,6 +436,10 @@ export default {
                 ...{ query }
               }
             )
+            // 如果列表的数据没有撑满页面，就继续请求更多
+            if (this.$refs.state && checkInView(this.$refs.state, this.preload)) {
+              this.loadMore()
+            }
             resolve()
           } catch (e) {
             reject()
