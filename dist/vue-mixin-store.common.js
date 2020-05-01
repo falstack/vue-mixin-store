@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.3.8
+ * vue-mixin-store v1.3.9
  * (c) 2020 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1280,6 +1280,18 @@ var getScrollParentDom = function getScrollParentDom(dom) {
 
   return document;
 };
+var getObserver = typeof window === 'undefined' ? null : window.IntersectionObserver && new window.IntersectionObserver(function (entries) {
+  entries.forEach(function (_ref3) {
+    var intersectionRatio = _ref3.intersectionRatio,
+        target = _ref3.target;
+
+    if (intersectionRatio <= 0 || !target) {
+      return;
+    }
+
+    target.__flow_handler__ && target.__flow_handler__();
+  });
+});
 // CONCATENATED MODULE: ./src/flow.js
 
 
@@ -1784,12 +1796,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"578fb595-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=5e675672&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"4adf6085-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=178536a0&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader"},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{ref:"state",staticClass:"flow-loader-state",style:({ textAlign: 'center', minHeight: '1px' })},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2)],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=5e675672&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=178536a0&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
@@ -2015,61 +2027,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return this.type === 'jump';
     },
     observer: function observer() {
-      var _this = this;
-
       if (this.$isServer || this.useRect) {
         return null;
       }
 
-      if (typeof window.IntersectionObserver !== 'function') {
-        return null;
-      }
-
-      return new window.IntersectionObserver(function (entries) {
-        entries.forEach(function (_ref) {
-          var intersectionRatio = _ref.intersectionRatio;
-
-          if (intersectionRatio <= 0) {
-            return;
-          }
-
-          if (!_this.source) {
-            _this._initState();
-
-            return;
-          }
-
-          if (_this.source.loading || _this.source.error) {
-            return;
-          }
-
-          if (!_this.isAuto || _this.source.noMore || _this.source.nothing || _this.isPagination && _this.source.fetched) {
-            return;
-          }
-
-          if (_this.source.fetched) {
-            _this.loadMore();
-          } else {
-            _this.initData();
-          }
-        });
-      });
+      return getObserver;
     }
   },
   watch: {
     query: {
       handler: function handler() {
-        var _this2 = this;
+        var _this = this;
 
         if (this.source) {
           return;
         }
 
         this.$nextTick(function () {
-          _this2._debug('query change');
+          _this._debug('query change');
 
           setTimeout(function () {
-            _this2._initFlowLoader();
+            _this._initFlowLoader();
           }, 0);
         });
       },
@@ -2077,12 +2055,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this2 = this;
 
     this.$nextTick(function () {
-      _this3._fireSSRCallback();
+      _this2._fireSSRCallback();
 
-      _this3._initFlowLoader();
+      _this2._initFlowLoader();
     });
 
     this._debug('mounted');
@@ -2098,20 +2076,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: {
-    modify: function modify(_ref2) {
-      var key = _ref2.key,
-          value = _ref2.value;
+    modify: function modify(_ref) {
+      var key = _ref.key,
+          value = _ref.value;
       this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'modify',
         key: key,
         value: value
       }));
     },
-    update: function update(_ref3) {
-      var id = _ref3.id,
-          key = _ref3.key,
-          value = _ref3.value,
-          changing = _ref3.changing;
+    update: function update(_ref2) {
+      var id = _ref2.id,
+          key = _ref2.key,
+          value = _ref2.value,
+          changing = _ref2.changing;
       this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'update',
         id: id,
@@ -2152,11 +2130,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         changing: changing
       }));
     },
-    insertBefore: function insertBefore(_ref4) {
-      var id = _ref4.id,
-          value = _ref4.value,
-          key = _ref4.key,
-          changing = _ref4.changing;
+    insertBefore: function insertBefore(_ref3) {
+      var id = _ref3.id,
+          value = _ref3.value,
+          key = _ref3.key,
+          changing = _ref3.changing;
       this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'insert-before',
         id: id,
@@ -2165,11 +2143,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         changing: changing
       }));
     },
-    insertAfter: function insertAfter(_ref5) {
-      var id = _ref5.id,
-          value = _ref5.value,
-          key = _ref5.key,
-          changing = _ref5.changing;
+    insertAfter: function insertAfter(_ref4) {
+      var id = _ref4.id,
+          value = _ref4.value,
+          key = _ref4.key,
+          changing = _ref4.changing;
       this.$store.commit('flow/UPDATE_DATA', _objectSpread({}, this.params, {}, {
         method: 'insert-after',
         id: id,
@@ -2196,27 +2174,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     refresh: function refresh() {
-      var _this4 = this;
+      var _this3 = this;
 
       var reload = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       return new Promise(function (resolve, reject) {
-        _this4.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
+        _this3.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee() {
           var query;
           return regenerator_default.a.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  query = _objectSpread({}, _this4.params.query);
+                  query = _objectSpread({}, _this3.params.query);
                   query.__refresh__ = true;
                   query.__reload__ = reload;
                   _context.prev = 3;
                   _context.next = 6;
-                  return _this4.$store.dispatch('flow/initData', _objectSpread({}, _this4.params, {}, {
+                  return _this3.$store.dispatch('flow/initData', _objectSpread({}, _this3.params, {}, {
                     query: query
                   }));
 
                 case 6:
-                  _this4._initFlowLoader();
+                  _this3._initFlowLoader();
 
                   resolve();
                   _context.next = 13;
@@ -2237,27 +2215,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     initData: function initData() {
-      var _this5 = this;
+      var _this4 = this;
 
       var obj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       return new Promise(function (resolve, reject) {
-        _this5.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee2() {
+        _this4.$nextTick( /*#__PURE__*/FlowLoadervue_type_script_lang_js_asyncToGenerator( /*#__PURE__*/regenerator_default.a.mark(function _callee2() {
           var query;
           return regenerator_default.a.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  query = _objectSpread({}, _this5.params.query, {}, obj);
+                  query = _objectSpread({}, _this4.params.query, {}, obj);
                   _context2.prev = 1;
                   _context2.next = 4;
-                  return _this5.$store.dispatch('flow/initData', _objectSpread({}, _this5.params, {}, {
+                  return _this4.$store.dispatch('flow/initData', _objectSpread({}, _this4.params, {}, {
                     query: query
                   }));
 
                 case 4:
                   // 如果列表的数据没有撑满页面，就继续请求更多
-                  if (_this5.$refs.state && checkInView(_this5.$refs.state, _this5.preload)) {
-                    _this5.loadMore();
+                  if (_this4.$refs.state && checkInView(_this4.$refs.state, _this4.preload)) {
+                    _this4.loadMore();
                   }
 
                   resolve();
@@ -2350,6 +2328,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       if (this.observer) {
+        stateDom.__flow_handler__ = this._fetchDataFunc.bind(this);
         this.observer.observe(stateDom);
       } else {
         on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
@@ -2392,6 +2371,51 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       }
     },
+    _fetchDataFunc: function _fetchDataFunc() {
+      var _this5 = this;
+
+      if (!this.source) {
+        this._initState();
+
+        return;
+      }
+
+      if (this.source.loading || this.source.error) {
+        return;
+      }
+
+      if (!this.isAuto || this.source.noMore || this.source.nothing || this.isPagination && this.source.fetched) {
+        if (this.observer) {
+          var stateDom = this.$refs.state;
+          delete stateDom.__flow_handler__;
+          this.observer.unobserve(stateDom);
+        } else {
+          off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
+        }
+
+        return;
+      }
+
+      var fetcher = function fetcher() {
+        if (_this5.source.fetched) {
+          _this5.loadMore();
+        } else {
+          _this5.initData();
+        }
+      };
+
+      if (this.observer) {
+        fetcher();
+      } else {
+        if (!this.$refs.state) {
+          return;
+        }
+
+        if (this.isAuto && checkInView(this.$refs.state, this.preload)) {
+          fetcher();
+        }
+      }
+    },
     _onScreenScroll: function _onScreenScroll(event) {
       var _this6 = this;
 
@@ -2413,32 +2437,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return;
       }
 
-      if (!this.source) {
-        this._initState();
-
-        return;
-      }
-
-      if (this.source.loading || this.source.error) {
-        return;
-      }
-
-      if (!this.isAuto || this.source.noMore || this.source.nothing || this.isPagination && this.source.fetched) {
-        off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
-        return;
-      }
-
-      if (!this.$refs.state) {
-        return;
-      }
-
-      if (this.isAuto && checkInView(this.$refs.state, this.preload)) {
-        if (this.source.fetched) {
-          this.loadMore();
-        } else {
-          this.initData();
-        }
-      }
+      this._fetchDataFunc();
     },
     _debug: function _debug(message) {
       if (!this.debug) {

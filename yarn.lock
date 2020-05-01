@@ -1582,6 +1582,15 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/template@^7.3.3", "@babel/template@^7.8.6":
+  version "7.8.6"
+  resolved "https://registry.npm.taobao.org/@babel/template/download/@babel/template-7.8.6.tgz#86b22af15f828dfb086474f964dcc3e39c43ce2b"
+  integrity sha1-hrIq8V+CjfsIZHT5ZNzD45xDzis=
+  dependencies:
+    "@babel/code-frame" "^7.8.3"
+    "@babel/parser" "^7.8.6"
+    "@babel/types" "^7.8.6"
+
 "@babel/template@^7.4.0", "@babel/template@^7.7.4":
   version "7.7.4"
   resolved "https://registry.npm.taobao.org/@babel/template/download/@babel/template-7.7.4.tgz#428a7d9eecffe27deac0a98e23bf8e3675d2a77b"
@@ -1599,15 +1608,6 @@
     "@babel/code-frame" "^7.8.3"
     "@babel/parser" "^7.8.3"
     "@babel/types" "^7.8.3"
-
-"@babel/template@^7.8.6":
-  version "7.8.6"
-  resolved "https://registry.npm.taobao.org/@babel/template/download/@babel/template-7.8.6.tgz#86b22af15f828dfb086474f964dcc3e39c43ce2b"
-  integrity sha1-hrIq8V+CjfsIZHT5ZNzD45xDzis=
-  dependencies:
-    "@babel/code-frame" "^7.8.3"
-    "@babel/parser" "^7.8.6"
-    "@babel/types" "^7.8.6"
 
 "@babel/traverse@^7.1.0", "@babel/traverse@^7.4.3", "@babel/traverse@^7.7.4":
   version "7.7.4"
@@ -1675,6 +1675,15 @@
   integrity sha1-UWVw1TnkTd8wjAdWnCWP+U/ekZM=
   dependencies:
     esutils "^2.0.2"
+    lodash "^4.17.13"
+    to-fast-properties "^2.0.0"
+
+"@babel/types@^7.3.3":
+  version "7.9.6"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.9.6.tgz#2c5502b427251e9de1bd2dff95add646d95cc9f7"
+  integrity sha512-qxXzvBO//jO9ZnoasKF1uJzHd2+M6Q2ZPIVfnFps8JJvXy0ZBbwbNOmE6SGIY5XOY6d1Bo5lb9d9RJ8nv3WSeA==
+  dependencies:
+    "@babel/helper-validator-identifier" "^7.9.5"
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
@@ -1908,21 +1917,21 @@
     source-map "^0.6.1"
     write-file-atomic "2.4.1"
 
-"@jest/transform@^25.3.0":
-  version "25.3.0"
-  resolved "https://registry.npm.taobao.org/@jest/transform/download/@jest/transform-25.3.0.tgz#083c5447d5307d9b9494d6968115b647460e71f1"
-  integrity sha1-CDxUR9UwfZuUlNaWgRW2R0YOcfE=
+"@jest/transform@^25.5.1":
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/@jest/transform/-/transform-25.5.1.tgz#0469ddc17699dd2bf985db55fa0fb9309f5c2db3"
+  integrity sha512-Y8CEoVwXb4QwA6Y/9uDkn0Xfz0finGkieuV0xkdF9UtZGJeLukD5nLkaVrVsODB1ojRWlaoD0AJZpVHCSnJEvg==
   dependencies:
     "@babel/core" "^7.1.0"
-    "@jest/types" "^25.3.0"
+    "@jest/types" "^25.5.0"
     babel-plugin-istanbul "^6.0.0"
     chalk "^3.0.0"
     convert-source-map "^1.4.0"
     fast-json-stable-stringify "^2.0.0"
-    graceful-fs "^4.2.3"
-    jest-haste-map "^25.3.0"
+    graceful-fs "^4.2.4"
+    jest-haste-map "^25.5.1"
     jest-regex-util "^25.2.6"
-    jest-util "^25.3.0"
+    jest-util "^25.5.0"
     micromatch "^4.0.2"
     pirates "^4.0.1"
     realpath-native "^2.0.0"
@@ -1939,10 +1948,10 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@jest/types@^25.3.0":
-  version "25.3.0"
-  resolved "https://registry.npm.taobao.org/@jest/types/download/@jest/types-25.3.0.tgz#88f94b277a1d028fd7117bc1f74451e0fc2131e7"
-  integrity sha1-iPlLJ3odAo/XEXvB90RR4PwhMec=
+"@jest/types@^25.5.0":
+  version "25.5.0"
+  resolved "https://registry.yarnpkg.com/@jest/types/-/types-25.5.0.tgz#4d6a4793f7b9599fc3680877b856a97dbccf2a9d"
+  integrity sha512-OXD0RgQ86Tu3MazKo8bnrkDRaDXXMGUqd+kTtLtK1Zb7CRzQcaSRPPPV37SvYTdevXEBVxe0HXylEjs8ibkmCw==
   dependencies:
     "@types/istanbul-lib-coverage" "^2.0.0"
     "@types/istanbul-reports" "^1.1.1"
@@ -2049,6 +2058,13 @@
   dependencies:
     "@types/events" "*"
     "@types/minimatch" "*"
+    "@types/node" "*"
+
+"@types/graceful-fs@^4.1.2":
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.3.tgz#039af35fe26bec35003e8d86d2ee9c586354348f"
+  integrity sha512-AiHRaEB50LQg0pZmm659vNBb9f4SJ0qrAnteuzhSeAUcJKxoYgEnprg/83kppCnc2zvtCKbdZry1a5pVY3lOTQ==
+  dependencies:
     "@types/node" "*"
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
@@ -2431,18 +2447,18 @@
   resolved "https://registry.npm.taobao.org/@vue/web-component-wrapper/download/@vue/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha1-uw5G8VhafiibTuYGfcxaauYvHdE=
 
-"@vuepress/core@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/core/download/@vuepress/core-1.4.0.tgz#a9b09a2615b1f0bf183541d22e69a126b8220f16"
-  integrity sha1-qbCaJhWx8L8YNUHSLmmhJrgiDxY=
+"@vuepress/core@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/core/-/core-1.4.1.tgz#b6f75720d9b7132b90cce46f620bcdda5d07e581"
+  integrity sha512-R1oJeSiDQPw8sVo70mrP1Zn2H0nCqnAHb6DV9mpJBQ6ur4VT6qQnCpd2onKU+bZRLlEhm4G8IQNDEV+DuE7zZQ==
   dependencies:
     "@babel/core" "^7.8.4"
     "@vue/babel-preset-app" "^4.1.2"
-    "@vuepress/markdown" "^1.4.0"
-    "@vuepress/markdown-loader" "^1.4.0"
-    "@vuepress/plugin-last-updated" "^1.4.0"
-    "@vuepress/plugin-register-components" "^1.4.0"
-    "@vuepress/shared-utils" "^1.4.0"
+    "@vuepress/markdown" "1.4.1"
+    "@vuepress/markdown-loader" "1.4.1"
+    "@vuepress/plugin-last-updated" "1.4.1"
+    "@vuepress/plugin-register-components" "1.4.1"
+    "@vuepress/shared-utils" "1.4.1"
     autoprefixer "^9.5.1"
     babel-loader "^8.0.4"
     cache-loader "^3.0.0"
@@ -2475,21 +2491,21 @@
     webpack-merge "^4.1.2"
     webpackbar "3.2.0"
 
-"@vuepress/markdown-loader@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/markdown-loader/download/@vuepress/markdown-loader-1.4.0.tgz#974e9bdb62ad45c1614a6c3ef33eed276d27635a"
-  integrity sha1-l06b22KtRcFhSmw+8z7tJ20nY1o=
+"@vuepress/markdown-loader@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/markdown-loader/-/markdown-loader-1.4.1.tgz#7a97772ed5238c68eb1ab2921fc5ced21ff7e18e"
+  integrity sha512-FGtZ15rRwo9iVMcJ0eX4tf1bxWSKKpC4NGNLJuYzaPlO9ND/U04jsj4Xj454piokr2JzBSmaJlIZTAG1EuiTNw==
   dependencies:
-    "@vuepress/markdown" "^1.4.0"
+    "@vuepress/markdown" "1.4.1"
     loader-utils "^1.1.0"
     lru-cache "^5.1.1"
 
-"@vuepress/markdown@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/markdown/download/@vuepress/markdown-1.4.0.tgz#fe96e0c07ae3ce7562c21ea6f5ea4a5359ba4ea9"
-  integrity sha1-/pbgwHrjznViwh6m9epKU1m6Tqk=
+"@vuepress/markdown@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/markdown/-/markdown-1.4.1.tgz#cc507ce4a3447dfc459082105cb83909db4b54f1"
+  integrity sha512-5a69ufnu1A3NXqQtzAE5LiR7EbtsQ1qe8UcIr+KizNO4gCg8+E8/uu3hxvDOLs2ElS6b0AihKIuwmeIgZkfeKA==
   dependencies:
-    "@vuepress/shared-utils" "^1.4.0"
+    "@vuepress/shared-utils" "1.4.1"
     markdown-it "^8.4.1"
     markdown-it-anchor "^5.0.2"
     markdown-it-chain "^1.3.0"
@@ -2497,43 +2513,43 @@
     markdown-it-table-of-contents "^0.4.0"
     prismjs "^1.13.0"
 
-"@vuepress/plugin-active-header-links@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/plugin-active-header-links/download/@vuepress/plugin-active-header-links-1.4.0.tgz#b43fdad67ef42c383a84642f7914e22c56189089"
-  integrity sha1-tD/a1n70LDg6hGQveRTiLFYYkIk=
+"@vuepress/plugin-active-header-links@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/plugin-active-header-links/-/plugin-active-header-links-1.4.1.tgz#36c6952230f12056d18c63229e0e499c6ef74fe5"
+  integrity sha512-xv/qDY6S8rHzLGDHtwn3XV7Gi3Fnevp6d3H18PFK3sNwT2KGzKIe2c7lbn1qHDRUWcxY7+EoT7zmdJwIeG6dWQ==
   dependencies:
     lodash.debounce "^4.0.8"
 
-"@vuepress/plugin-last-updated@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/plugin-last-updated/download/@vuepress/plugin-last-updated-1.4.0.tgz#1657eee410ff5a7431b2a8e88d19e7e44bdc3951"
-  integrity sha1-Flfu5BD/WnQxsqjojRnn5EvcOVE=
+"@vuepress/plugin-last-updated@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/plugin-last-updated/-/plugin-last-updated-1.4.1.tgz#89a9a4cbc242f9e0c5d380f73edb85ac4a7186c6"
+  integrity sha512-67ouc9cB3C19zcDqeJwhwqO9CXjy8G67tcXUgPpL/GsuK11oQbnR4rkupILvNa9HoemtCcF2aaxXSGsi/1VEtA==
   dependencies:
     cross-spawn "^6.0.5"
 
-"@vuepress/plugin-nprogress@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/plugin-nprogress/download/@vuepress/plugin-nprogress-1.4.0.tgz#90bb16ab8d43321e5911dea489986de25adb56d1"
-  integrity sha1-kLsWq41DMh5ZEd6kiZht4lrbVtE=
+"@vuepress/plugin-nprogress@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/plugin-nprogress/-/plugin-nprogress-1.4.1.tgz#2a16217091102a2b4fddc1b09f5854ac4f80f992"
+  integrity sha512-CIhIuIgKtvk/ULENjefkZAJQqUstdZcqiM/Gs8CDyTKJITpwyqoZcgolFZ+1ZofUQuHuqDj1hKKm3AQ1cG3cBA==
   dependencies:
     nprogress "^0.2.0"
 
-"@vuepress/plugin-register-components@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/plugin-register-components/download/@vuepress/plugin-register-components-1.4.0.tgz#0dafefd3baed6cc50b53f9826e84b25d83fed763"
-  integrity sha1-Da/v07rtbMULU/mCboSyXYP+12M=
+"@vuepress/plugin-register-components@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/plugin-register-components/-/plugin-register-components-1.4.1.tgz#25d70834006960f54475da97255ebaca66ecc5a6"
+  integrity sha512-6yI4J/tMhOASSLmlP+5p4ccljlWuNBRsyYSKiD5jWAV181oMmN32LtuoCggXBhSvQUgn2grxyjmYw+tcSV5KGQ==
   dependencies:
-    "@vuepress/shared-utils" "^1.4.0"
+    "@vuepress/shared-utils" "1.4.1"
 
-"@vuepress/plugin-search@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/plugin-search/download/@vuepress/plugin-search-1.4.0.tgz#26a02e3409e6ea6830f9fc7e6d87fc45ba46c579"
-  integrity sha1-JqAuNAnm6mgw+fx+bYf8RbpGxXk=
+"@vuepress/plugin-search@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/plugin-search/-/plugin-search-1.4.1.tgz#5842f7ef0214c8f9f3cafa6ca2f4648f8dbc03d2"
+  integrity sha512-J4JyXD6M1oOU013s4ZLKMkKEGd7qEtSIsAw2nZY2mckZ7ETX49R5Pv2S5uCqLRQfUQSIGR5TEABL22q0B8uCVA==
 
-"@vuepress/shared-utils@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/shared-utils/download/@vuepress/shared-utils-1.4.0.tgz#ab4bfcd5c1e3d0e5e384e0c1d0bb86470430c87e"
-  integrity sha1-q0v81cHj0OXjhODB0LuGRwQwyH4=
+"@vuepress/shared-utils@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/shared-utils/-/shared-utils-1.4.1.tgz#d09fcd742111f2efeef93b9c9b353bcd8202ae97"
+  integrity sha512-FBUHFhvR7vk6glQy/qUntBz8bVeWiNYZ2/G16EKaerKKn15xAiD7tUFCQ3L/KjtQJ8TV38GK47UEXh7UTcRwQg==
   dependencies:
     chalk "^2.3.2"
     diacritics "^1.3.0"
@@ -2545,14 +2561,14 @@
     semver "^6.0.0"
     upath "^1.1.0"
 
-"@vuepress/theme-default@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/@vuepress/theme-default/download/@vuepress/theme-default-1.4.0.tgz#f0f70effa0ee863a2e25c7682612c8a808f3e156"
-  integrity sha1-8PcO/6DuhjouJcdoJhLIqAjz4VY=
+"@vuepress/theme-default@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@vuepress/theme-default/-/theme-default-1.4.1.tgz#8a0ddc51bee6f3c3b93fae059cac76fe63c51db3"
+  integrity sha512-QhU1ORj20xmGr9Gk5szWJyzHm8i+NqxotBTeOF4WsKewB/3SPamJUoipgX4VdChw9jVew1oJQw0TpyDZfiHx+A==
   dependencies:
-    "@vuepress/plugin-active-header-links" "^1.4.0"
-    "@vuepress/plugin-nprogress" "^1.4.0"
-    "@vuepress/plugin-search" "^1.4.0"
+    "@vuepress/plugin-active-header-links" "1.4.1"
+    "@vuepress/plugin-nprogress" "1.4.1"
+    "@vuepress/plugin-search" "1.4.1"
     docsearch.js "^2.5.2"
     lodash "^4.17.15"
     stylus "^0.54.5"
@@ -3176,17 +3192,18 @@ babel-jest@^24.9.0:
     chalk "^2.4.2"
     slash "^2.0.0"
 
-babel-jest@^25.3.0:
-  version "25.3.0"
-  resolved "https://registry.npm.taobao.org/babel-jest/download/babel-jest-25.3.0.tgz#999d0c19e8427f66b796bf9ea233eedf087b957c"
-  integrity sha1-mZ0MGehCf2a3lr+eojPu3wh7lXw=
+babel-jest@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-25.5.1.tgz#bc2e6101f849d6f6aec09720ffc7bc5332e62853"
+  integrity sha512-9dA9+GmMjIzgPnYtkhBg73gOo/RHqPmLruP3BaGL4KEX3Dwz6pI8auSN8G8+iuEG90+GSswyKvslN+JYSaacaQ==
   dependencies:
-    "@jest/transform" "^25.3.0"
-    "@jest/types" "^25.3.0"
+    "@jest/transform" "^25.5.1"
+    "@jest/types" "^25.5.0"
     "@types/babel__core" "^7.1.7"
     babel-plugin-istanbul "^6.0.0"
-    babel-preset-jest "^25.3.0"
+    babel-preset-jest "^25.5.0"
     chalk "^3.0.0"
+    graceful-fs "^4.2.4"
     slash "^3.0.0"
 
 babel-loader@^8.0.4:
@@ -3252,11 +3269,13 @@ babel-plugin-jest-hoist@^24.9.0:
   dependencies:
     "@types/babel__traverse" "^7.0.6"
 
-babel-plugin-jest-hoist@^25.2.6:
-  version "25.2.6"
-  resolved "https://registry.npm.taobao.org/babel-plugin-jest-hoist/download/babel-plugin-jest-hoist-25.2.6.tgz?cache=0&sync_timestamp=1585823441759&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fbabel-plugin-jest-hoist%2Fdownload%2Fbabel-plugin-jest-hoist-25.2.6.tgz#2af07632b8ac7aad7d414c1e58425d5fc8e84909"
-  integrity sha1-KvB2Mriseq19QUweWEJdX8joSQk=
+babel-plugin-jest-hoist@^25.5.0:
+  version "25.5.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-jest-hoist/-/babel-plugin-jest-hoist-25.5.0.tgz#129c80ba5c7fc75baf3a45b93e2e372d57ca2677"
+  integrity sha512-u+/W+WAjMlvoocYGTwthAiQSxDcJAyHpQ6oWlHdFZaaN+Rlk8Q7iiwDPg2lN/FyJtAYnKjFxbn7xus4HCFkg5g==
   dependencies:
+    "@babel/template" "^7.3.3"
+    "@babel/types" "^7.3.3"
     "@types/babel__traverse" "^7.0.6"
 
 babel-plugin-transform-es2015-modules-commonjs@^6.26.0, babel-plugin-transform-es2015-modules-commonjs@^6.26.2:
@@ -3301,12 +3320,12 @@ babel-preset-jest@^24.9.0:
     "@babel/plugin-syntax-object-rest-spread" "^7.0.0"
     babel-plugin-jest-hoist "^24.9.0"
 
-babel-preset-jest@^25.3.0:
-  version "25.3.0"
-  resolved "https://registry.npm.taobao.org/babel-preset-jest/download/babel-preset-jest-25.3.0.tgz#9ab40aee52a19bdc52b8b1ec2403d5914ac3d86b"
-  integrity sha1-mrQK7lKhm9xSuLHsJAPVkUrD2Gs=
+babel-preset-jest@^25.5.0:
+  version "25.5.0"
+  resolved "https://registry.yarnpkg.com/babel-preset-jest/-/babel-preset-jest-25.5.0.tgz#c1d7f191829487a907764c65307faa0e66590b49"
+  integrity sha512-8ZczygctQkBU+63DtSOKGh7tFL0CeCuz+1ieud9lJ1WPQ9O6A1a/r+LGn6Y705PA6whHQ3T1XuB/PmpfNYf8Fw==
   dependencies:
-    babel-plugin-jest-hoist "^25.2.6"
+    babel-plugin-jest-hoist "^25.5.0"
     babel-preset-current-node-syntax "^0.1.2"
 
 babel-runtime@^6.22.0, babel-runtime@^6.26.0:
@@ -5786,10 +5805,10 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-fibers@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.npm.taobao.org/fibers/download/fibers-4.0.2.tgz#d04f9ccd0aba179588202202faeb4fed65d497f5"
-  integrity sha1-0E+czQq6F5WIICIC+utP7WXUl/U=
+fibers@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/fibers/-/fibers-5.0.0.tgz#3a60e0695b3ee5f6db94e62726716fa7a59acc41"
+  integrity sha512-UpGv/YAZp7mhKHxDvC1tColrroGRX90sSvh8RMZV9leo+e5+EkRVgCEZPlmXeo3BUNQTZxUaVdLskq1Q2FyCPg==
   dependencies:
     detect-libc "^1.0.3"
 
@@ -6297,10 +6316,15 @@ got@^9.6.0:
     to-readable-stream "^1.0.0"
     url-parse-lax "^3.0.0"
 
-graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.2, graceful-fs@^4.2.3:
+graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.2:
   version "4.2.3"
   resolved "https://registry.npm.taobao.org/graceful-fs/download/graceful-fs-4.2.3.tgz#4a12ff1b60376ef09862c2093edd908328be8423"
   integrity sha1-ShL/G2A3bvCYYsIJPt2Qgyi+hCM=
+
+graceful-fs@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
+  integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
 
 gray-matter@^4.0.1:
   version "4.0.2"
@@ -7468,18 +7492,19 @@ jest-haste-map@^24.9.0:
   optionalDependencies:
     fsevents "^1.2.7"
 
-jest-haste-map@^25.3.0:
-  version "25.3.0"
-  resolved "https://registry.npm.taobao.org/jest-haste-map/download/jest-haste-map-25.3.0.tgz?cache=0&sync_timestamp=1586352147502&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fjest-haste-map%2Fdownload%2Fjest-haste-map-25.3.0.tgz#b7683031c9c9ddc0521d311564108b244b11e4c6"
-  integrity sha1-t2gwMcnJ3cBSHTEVZBCLJEsR5MY=
+jest-haste-map@^25.5.1:
+  version "25.5.1"
+  resolved "https://registry.yarnpkg.com/jest-haste-map/-/jest-haste-map-25.5.1.tgz#1df10f716c1d94e60a1ebf7798c9fb3da2620943"
+  integrity sha512-dddgh9UZjV7SCDQUrQ+5t9yy8iEgKc1AKqZR9YDww8xsVOtzPQSMVLDChc21+g29oTRexb9/B0bIlZL+sWmvAQ==
   dependencies:
-    "@jest/types" "^25.3.0"
+    "@jest/types" "^25.5.0"
+    "@types/graceful-fs" "^4.1.2"
     anymatch "^3.0.3"
     fb-watchman "^2.0.0"
-    graceful-fs "^4.2.3"
-    jest-serializer "^25.2.6"
-    jest-util "^25.3.0"
-    jest-worker "^25.2.6"
+    graceful-fs "^4.2.4"
+    jest-serializer "^25.5.0"
+    jest-util "^25.5.0"
+    jest-worker "^25.5.0"
     micromatch "^4.0.2"
     sane "^4.0.3"
     walker "^1.0.7"
@@ -7517,10 +7542,10 @@ jest-leak-detector@^24.9.0:
     jest-get-type "^24.9.0"
     pretty-format "^24.9.0"
 
-jest-localstorage-mock@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.npm.taobao.org/jest-localstorage-mock/download/jest-localstorage-mock-2.4.0.tgz#c6073810735dd3af74020ea6c3885ec1cc6d0d13"
-  integrity sha1-xgc4EHNd0690Ag6mw4hewcxtDRM=
+jest-localstorage-mock@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/jest-localstorage-mock/-/jest-localstorage-mock-2.4.2.tgz#31dd2916713eed3b8703196f60ec85ffd50c1a23"
+  integrity sha512-bywlhvs7RM2vpZ0EN12XOU5C2WAXRUbxl1VOxel4cqRUHD6zaUmh99UzwOTx0fWuqjfd0y/NDvEbewNaJaz+UQ==
 
 jest-matcher-utils@^24.9.0:
   version "24.9.0"
@@ -7654,10 +7679,12 @@ jest-serializer@^24.9.0:
   resolved "https://registry.npm.taobao.org/jest-serializer/download/jest-serializer-24.9.0.tgz#e6d7d7ef96d31e8b9079a714754c5d5c58288e73"
   integrity sha1-5tfX75bTHouQeacUdUxdXFgojnM=
 
-jest-serializer@^25.2.6:
-  version "25.2.6"
-  resolved "https://registry.npm.taobao.org/jest-serializer/download/jest-serializer-25.2.6.tgz?cache=0&sync_timestamp=1585823436505&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fjest-serializer%2Fdownload%2Fjest-serializer-25.2.6.tgz#3bb4cc14fe0d8358489dbbefbb8a4e708ce039b7"
-  integrity sha1-O7TMFP4Ng1hInbvvu4pOcIzgObc=
+jest-serializer@^25.5.0:
+  version "25.5.0"
+  resolved "https://registry.yarnpkg.com/jest-serializer/-/jest-serializer-25.5.0.tgz#a993f484e769b4ed54e70e0efdb74007f503072b"
+  integrity sha512-LxD8fY1lByomEPflwur9o4e2a5twSQ7TaVNLlFUuToIdoJuBt8tzHfCsZ42Ok6LkKXWzFWf3AGmheuLAA7LcCA==
+  dependencies:
+    graceful-fs "^4.2.4"
 
 jest-snapshot@^24.9.0:
   version "24.9.0"
@@ -7701,13 +7728,14 @@ jest-util@^24.0.0, jest-util@^24.9.0:
     slash "^2.0.0"
     source-map "^0.6.0"
 
-jest-util@^25.3.0:
-  version "25.3.0"
-  resolved "https://registry.npm.taobao.org/jest-util/download/jest-util-25.3.0.tgz?cache=0&sync_timestamp=1586352146172&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fjest-util%2Fdownload%2Fjest-util-25.3.0.tgz#e3b0064165818f10d78514696fd25efba82cf049"
-  integrity sha1-47AGQWWBjxDXhRRpb9Je+6gs8Ek=
+jest-util@^25.5.0:
+  version "25.5.0"
+  resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-25.5.0.tgz#31c63b5d6e901274d264a4fec849230aa3fa35b0"
+  integrity sha512-KVlX+WWg1zUTB9ktvhsg2PXZVdkI1NBevOJSkTKYAyXyH4QSvh+Lay/e/v+bmaFfrkfx43xD8QTfgobzlEXdIA==
   dependencies:
-    "@jest/types" "^25.3.0"
+    "@jest/types" "^25.5.0"
     chalk "^3.0.0"
+    graceful-fs "^4.2.4"
     is-ci "^2.0.0"
     make-dir "^3.0.0"
 
@@ -7765,10 +7793,10 @@ jest-worker@^25.1.0:
     merge-stream "^2.0.0"
     supports-color "^7.0.0"
 
-jest-worker@^25.2.6:
-  version "25.2.6"
-  resolved "https://registry.npm.taobao.org/jest-worker/download/jest-worker-25.2.6.tgz#d1292625326794ce187c38f51109faced3846c58"
-  integrity sha1-0SkmJTJnlM4YfDj1EQn6ztOEbFg=
+jest-worker@^25.5.0:
+  version "25.5.0"
+  resolved "https://registry.yarnpkg.com/jest-worker/-/jest-worker-25.5.0.tgz#2611d071b79cea0f43ee57a3d118593ac1547db1"
+  integrity sha512-/dsSmUkIy5EBGfv/IjjqmFxrNAUpBERfGs1oHROyD7yxjG/w+t0GOJDX8O1k32ySmd7+a5IhnJU2qQFcJ4n1vw==
   dependencies:
     merge-stream "^2.0.0"
     supports-color "^7.0.0"
@@ -8985,10 +9013,10 @@ node-releases@^1.1.53:
   resolved "https://registry.npm.taobao.org/node-releases/download/node-releases-1.1.53.tgz#2d821bfa499ed7c5dffc5e2f28c88e78a08ee3f4"
   integrity sha1-LYIb+kme18Xf/F4vKMiOeKCO4/Q=
 
-node-sass@^4.13.1:
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/node-sass/-/node-sass-4.13.1.tgz#9db5689696bb2eec2c32b98bfea4c7a2e992d0a3"
-  integrity sha512-TTWFx+ZhyDx1Biiez2nB0L3YrCZ/8oHagaDalbuBSlqXgUPsdkUSzJsVxeDO9LtPB49+Fh3WQl3slABo6AotNw==
+node-sass@^4.14.0:
+  version "4.14.0"
+  resolved "https://registry.yarnpkg.com/node-sass/-/node-sass-4.14.0.tgz#a8e9d7720f8e15b4a1072719dcf04006f5648eeb"
+  integrity sha512-AxqU+DFpk0lEz95sI6jO0hU0Rwyw7BXVEv6o9OItoXLyeygPeaSpiV4rwQb10JiTghHaa0gZeD21sz+OsQluaw==
   dependencies:
     async-foreach "^0.1.3"
     chalk "^1.1.1"
@@ -12625,10 +12653,10 @@ vue-template-es2015-compiler@^1.6.0, vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.npm.taobao.org/vue-template-es2015-compiler/download/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha1-HuO8mhbsv1EYvjNLsV+cRvgvWCU=
 
-vue-virtual-scroll-list@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npm.taobao.org/vue-virtual-scroll-list/download/vue-virtual-scroll-list-2.0.0.tgz#2a00ae810feb0f1db6eff00eb08a0e15e6160a00"
-  integrity sha1-KgCugQ/rDx227/AOsIoOFeYWCgA=
+vue-virtual-scroll-list@^2.1.5:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/vue-virtual-scroll-list/-/vue-virtual-scroll-list-2.1.5.tgz#f2f770b41cc5becda76fda7bda08a3e8f2e13aa9"
+  integrity sha512-OWTqzukRYU9uyHuxftjf9DuTREyq21JPOf7ZdP6KEpOQxDyobXm+5b3en2ASoqmeHnCH6h70bqpH30g4Y5eMcQ==
 
 vue@^2.6.10, vue@^2.6.6:
   version "2.6.10"
@@ -12667,22 +12695,22 @@ vuepress-plugin-smooth-scroll@^0.0.3:
   dependencies:
     smoothscroll-polyfill "^0.4.3"
 
-vuepress@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.npm.taobao.org/vuepress/download/vuepress-1.4.0.tgz#308037b15baec6e251b835fe1fff7da507302b6b"
-  integrity sha1-MIA3sVuuxuJRuDX+H/99pQcwK2s=
+vuepress@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/vuepress/-/vuepress-1.4.1.tgz#726885da5c569755b40fd795ef3aed3fae13f83c"
+  integrity sha512-vFePZLEx9FRJf5buDqSSBHHbTrPzBsL1u3Z4LX0HI9iQmHjkP+cGA8MMS0zVYy/xyYf28xWLWo3L/gj0rdMy7w==
   dependencies:
-    "@vuepress/core" "^1.4.0"
-    "@vuepress/theme-default" "^1.4.0"
+    "@vuepress/core" "1.4.1"
+    "@vuepress/theme-default" "1.4.1"
     cac "^6.5.6"
     envinfo "^7.2.0"
     opencollective-postinstall "^2.0.2"
     update-notifier "^4.0.0"
 
-vuex@^3.1.3:
-  version "3.1.3"
-  resolved "https://registry.npm.taobao.org/vuex/download/vuex-3.1.3.tgz#f2ad73e3fb73691698b38c93f66e58e267947180"
-  integrity sha1-8q1z4/tzaRaYs4yT9m5Y4meUcYA=
+vuex@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.3.0.tgz#665b4630ea1347317139fcc5cb495aab3ec5e513"
+  integrity sha512-1MfcBt+YFd20DPwKe0ThhYm1UEXZya4gVKUvCy7AtS11YAOUR+9a6u4fsv1Rr6ePZCDNxW/M1zuIaswp6nNv8Q==
 
 w3c-hr-time@^1.0.1:
   version "1.0.1"

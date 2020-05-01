@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { on, off, checkInView, generateRequestParams, isArray, generateFieldName, getScrollParentDom } from './utils'
+import { on, off, checkInView, generateRequestParams, isArray, generateFieldName, getScrollParentDom, getObserver } from './utils'
 
 export default {
   name: 'FlowLoader',
@@ -204,38 +204,7 @@ export default {
       if (this.$isServer || this.useRect) {
         return null
       }
-      if (typeof window.IntersectionObserver !== 'function') {
-        return null
-      }
-      return new window.IntersectionObserver(
-        (entries) => {
-          entries.forEach(({ intersectionRatio }) => {
-            if (intersectionRatio <= 0) {
-              return
-            }
-            if (!this.source) {
-              this._initState()
-              return
-            }
-            if (this.source.loading || this.source.error) {
-              return
-            }
-            if (
-              !this.isAuto ||
-              this.source.noMore ||
-              this.source.nothing ||
-              (this.isPagination && this.source.fetched)
-            ) {
-              return
-            }
-            if (this.source.fetched) {
-              this.loadMore()
-            } else {
-              this.initData()
-            }
-          })
-        }
-      )
+      return getObserver
     }
   },
   watch: {
@@ -515,6 +484,7 @@ export default {
         this.initData()
       }
       if (this.observer) {
+        stateDom.__flow_handler__ = this._fetchDataFunc.bind(this)
         this.observer.observe(stateDom)
       } else {
         on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
@@ -555,19 +525,7 @@ export default {
         })
       }
     },
-    _onScreenScroll(event, force = false) {
-      this._debug('scroll')
-      if (!force) {
-        if (this.throttle) {
-          return
-        }
-        this.throttle = true
-        setTimeout(() => {
-          this.throttle = false
-          this._onScreenScroll(null, true)
-        }, 200)
-        return
-      }
+    _fetchDataFunc() {
       if (!this.source) {
         this._initState()
         return
@@ -581,19 +539,47 @@ export default {
         this.source.nothing ||
         (this.isPagination && this.source.fetched)
       ) {
-        off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+        if (this.observer) {
+          const stateDom = this.$refs.state
+          delete stateDom.__flow_handler__
+          this.observer.unobserve(stateDom)
+        } else {
+          off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+        }
         return
       }
-      if (!this.$refs.state) {
-        return
-      }
-      if (this.isAuto && checkInView(this.$refs.state, this.preload)) {
+      const fetcher = () => {
         if (this.source.fetched) {
           this.loadMore()
         } else {
           this.initData()
         }
       }
+      if (this.observer) {
+        fetcher()
+      } else {
+        if (!this.$refs.state) {
+          return
+        }
+        if (this.isAuto && checkInView(this.$refs.state, this.preload)) {
+          fetcher()
+        }
+      }
+    },
+    _onScreenScroll(event, force = false) {
+      this._debug('scroll')
+      if (!force) {
+        if (this.throttle) {
+          return
+        }
+        this.throttle = true
+        setTimeout(() => {
+          this.throttle = false
+          this._onScreenScroll(null, true)
+        }, 200)
+        return
+      }
+      this._fetchDataFunc()
     },
     _debug(message) {
       if (!this.debug) {

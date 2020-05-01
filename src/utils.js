@@ -295,3 +295,14 @@ export const getScrollParentDom = dom => {
   }
   return document
 }
+
+export const getObserver = typeof window === 'undefined' ? null :
+  window.IntersectionObserver &&
+  new window.IntersectionObserver((entries) => {
+    entries.forEach(({ intersectionRatio, target }) => {
+      if (intersectionRatio <= 0 || !target) {
+        return
+      }
+      target.__flow_handler__ && target.__flow_handler__()
+    })
+  })
