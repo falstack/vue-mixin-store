@@ -406,7 +406,11 @@ export default {
               }
             )
             // 如果列表的数据没有撑满页面，就继续请求更多
-            if (this.$refs.state && checkInView(this.$refs.state, this.preload)) {
+            if (
+              this.isAuth &&
+              this.$refs.state &&
+              checkInView(this.$refs.state, this.preload)
+            ) {
               this.loadMore()
             }
             resolve()
