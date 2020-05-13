@@ -231,7 +231,7 @@ export const off = (elem, type, listener) => {
  * @param {int} preload
  * @return {boolean}
  */
-export const checkInView = (dom, preload) => {
+export const checkInView = (dom, preload = 0) => {
   if (!dom) {
     return false
   }

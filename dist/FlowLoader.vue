@@ -1,5 +1,8 @@
 <template>
-  <div class="flow-loader">
+  <div
+    :style="loaderStyle"
+    class="flow-loader"
+  >
     <template v-if="source">
       <!--  flow header  -->
       <slot
@@ -21,9 +24,8 @@
     </template>
     <!--  flow state  -->
     <div
-      ref="state"
+      :style="stateStyle"
       class="flow-loader-state"
-      :style="{ textAlign: 'center', minHeight: '1px' }"
     >
       <template v-if="source">
         <!--   error   -->
@@ -104,6 +106,11 @@
         </template>
       </template>
     </div>
+    <div
+      ref="state"
+      :style="detectStyle"
+      class="flow-loader-detect"
+    />
   </div>
 </template>
 
@@ -205,6 +212,27 @@ export default {
         return null
       }
       return getObserver
+    },
+    stateStyle() {
+      return {
+        textAlign: 'center'
+      }
+    },
+    loaderStyle() {
+      return {
+        position: 'relative'
+      }
+    },
+    detectStyle() {
+      return {
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        width: `${this.preload}px`,
+        height: `${this.preload}px`,
+        zIndex: '-1',
+        background: 'transparent'
+      }
     }
   },
   watch: {
@@ -409,7 +437,7 @@ export default {
             if (
               this.isAuth &&
               this.$refs.state &&
-              checkInView(this.$refs.state, this.preload)
+              checkInView(this.$refs.state)
             ) {
               this.loadMore()
             }
@@ -484,7 +512,7 @@ export default {
         return
       }
       const stateDom = this.$refs.state
-      if (stateDom && checkInView(stateDom, this.preload)) {
+      if (stateDom && checkInView(stateDom)) {
         this.initData()
       }
       if (this.observer) {
@@ -565,7 +593,7 @@ export default {
         if (!this.$refs.state) {
           return
         }
-        if (this.isAuto && checkInView(this.$refs.state, this.preload)) {
+        if (this.isAuto && checkInView(this.$refs.state)) {
           fetcher()
         }
       }
@@ -591,7 +619,7 @@ export default {
       }
       const field = `[${generateFieldName(this.func, this.type, this.query)}]`
       console.log(field, 'life cycle', message) // eslint-disable-line
-      console.log(field, 'check in view', checkInView(this.$refs.state, this.preload)) // eslint-disable-line
+      console.log(field, 'check in view', checkInView(this.$refs.state)) // eslint-disable-line
     }
   }
 }
