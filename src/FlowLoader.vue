@@ -513,19 +513,19 @@ export default {
         this._debug('_initFlowLoader return 0')
         return
       }
-      this.$nextTick(() => {
-        const stateDom = this.$refs.state
-        this._debug('_initFlowLoader dom', stateDom)
-        if (stateDom && checkInView(stateDom)) {
-          this.initData()
-        }
-        if (this.observer) {
-          stateDom.__flow_handler__ = this._fetchDataFunc.bind(this)
-          this.observer.observe(stateDom)
-        } else {
-          on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
-        }
-      })
+      const stateDom = this.$refs.state
+      this._debug(stateDom)
+      if (stateDom && checkInView(stateDom)) {
+        this.initData()
+      }
+      if (this.observer) {
+        this._debug('_initFlowLoader listen 0')
+        stateDom.__flow_handler__ = this._fetchDataFunc.bind(this)
+        this.observer.observe(stateDom)
+      } else {
+        this._debug('_initFlowLoader listen 1')
+        on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+      }
     },
     _retryData() {
       if (!this.retryOnError) {
@@ -565,9 +565,11 @@ export default {
     _fetchDataFunc() {
       if (!this.source) {
         this._initState()
+        this._debug('_fetchDataFunc return 0')
         return
       }
       if (this.source.loading || this.source.error) {
+        this._debug('_fetchDataFunc return 1')
         return
       }
       if (
@@ -584,6 +586,7 @@ export default {
         } else {
           off(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
         }
+        this._debug('_fetchDataFunc return 2')
         return
       }
       const fetcher = () => {
@@ -597,6 +600,7 @@ export default {
         fetcher()
       } else {
         if (!this.$refs.state) {
+          this._debug('_fetchDataFunc return 3')
           return
         }
         if (this.isAuto && checkInView(this.$refs.state)) {
