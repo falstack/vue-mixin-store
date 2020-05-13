@@ -177,6 +177,10 @@ export default {
     debug: {
       type: Boolean,
       default: false
+    },
+    duration: {
+      type: String,
+      default: 'v'
     }
   },
   data() {
@@ -224,12 +228,13 @@ export default {
       }
     },
     detectStyle() {
+      const isVer = this.duration === 'v'
       return {
         position: 'absolute',
         bottom: 0,
         right: 0,
-        width: `${this.preload}px`,
-        height: `${this.preload}px`,
+        width: isVer ? '100%' : `${this.preload}px`,
+        height: isVer ? `${this.preload}px` : '100%',
         zIndex: '-1',
         background: 'transparent'
       }
