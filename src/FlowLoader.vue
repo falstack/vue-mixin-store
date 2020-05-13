@@ -507,6 +507,7 @@ export default {
       this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query))
     },
     _initFlowLoader() {
+      this._debug('_initFlowLoader')
       this._initState()
       if (this.auto === 0) {
         return
@@ -571,6 +572,7 @@ export default {
         this.source.nothing ||
         (this.isPagination && this.source.fetched)
       ) {
+        this._debug('off handler', !this.isAuto, this.source.noMore, this.source.nothing, (this.isPagination && this.source.fetched))
         if (this.observer) {
           const stateDom = this.$refs.state
           delete stateDom.__flow_handler__
