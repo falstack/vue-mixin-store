@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.3.13
+ * vue-mixin-store v1.3.14
  * (c) 2020 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -1830,12 +1830,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"61bf443c-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=ef74ed4c&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"7684ffe8-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=19a7375e&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader",style:(_vm.loaderStyle)},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{staticClass:"flow-loader-state",style:(_vm.stateStyle)},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2),_c('div',{ref:"state",staticClass:"flow-loader-detect",style:(_vm.detectStyle)})],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=ef74ed4c&
+// CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=19a7375e&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
@@ -2377,26 +2377,35 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$store.commit('flow/INIT_STATE', generateFieldName(this.func, this.type, this.query));
     },
     _initFlowLoader: function _initFlowLoader() {
+      var _this5 = this;
+
       this._debug('_initFlowLoader');
 
       this._initState();
 
       if (this.auto === 0) {
+        this._debug('_initFlowLoader return 0');
+
         return;
       }
 
-      var stateDom = this.$refs.state;
+      this.$nextTick(function () {
+        var stateDom = _this5.$refs.state;
 
-      if (stateDom && checkInView(stateDom)) {
-        this.initData();
-      }
+        _this5._debug('_initFlowLoader dom', stateDom);
 
-      if (this.observer) {
-        stateDom.__flow_handler__ = this._fetchDataFunc.bind(this);
-        this.observer.observe(stateDom);
-      } else {
-        on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll);
-      }
+        if (stateDom && checkInView(stateDom)) {
+          _this5.initData();
+        }
+
+        if (_this5.observer) {
+          stateDom.__flow_handler__ = _this5._fetchDataFunc.bind(_this5);
+
+          _this5.observer.observe(stateDom);
+        } else {
+          on(getScrollParentDom(_this5.$el), 'scroll', _this5._onScreenScroll);
+        }
+      });
     },
     _retryData: function _retryData() {
       if (!this.retryOnError) {
@@ -2436,7 +2445,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     _fetchDataFunc: function _fetchDataFunc() {
-      var _this5 = this;
+      var _this6 = this;
 
       if (!this.source) {
         this._initState();
@@ -2463,10 +2472,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       var fetcher = function fetcher() {
-        if (_this5.source.fetched) {
-          _this5.loadMore();
+        if (_this6.source.fetched) {
+          _this6.loadMore();
         } else {
-          _this5.initData();
+          _this6.initData();
         }
       };
 
@@ -2483,7 +2492,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     _onScreenScroll: function _onScreenScroll(event) {
-      var _this6 = this;
+      var _this7 = this;
 
       var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -2496,9 +2505,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         this.throttle = true;
         setTimeout(function () {
-          _this6.throttle = false;
+          _this7.throttle = false;
 
-          _this6._onScreenScroll(null, true);
+          _this7._onScreenScroll(null, true);
         }, 200);
         return;
       }

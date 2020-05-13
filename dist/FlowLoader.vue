@@ -510,18 +510,22 @@ export default {
       this._debug('_initFlowLoader')
       this._initState()
       if (this.auto === 0) {
+        this._debug('_initFlowLoader return 0')
         return
       }
-      const stateDom = this.$refs.state
-      if (stateDom && checkInView(stateDom)) {
-        this.initData()
-      }
-      if (this.observer) {
-        stateDom.__flow_handler__ = this._fetchDataFunc.bind(this)
-        this.observer.observe(stateDom)
-      } else {
-        on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
-      }
+      this.$nextTick(() => {
+        const stateDom = this.$refs.state
+        this._debug('_initFlowLoader dom', stateDom)
+        if (stateDom && checkInView(stateDom)) {
+          this.initData()
+        }
+        if (this.observer) {
+          stateDom.__flow_handler__ = this._fetchDataFunc.bind(this)
+          this.observer.observe(stateDom)
+        } else {
+          on(getScrollParentDom(this.$el), 'scroll', this._onScreenScroll)
+        }
+      })
     },
     _retryData() {
       if (!this.retryOnError) {
