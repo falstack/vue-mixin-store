@@ -1,6 +1,6 @@
 {
   "name": "vue-mixin-store",
-  "version": "1.3.10",
+  "version": "1.3.11",
   "main": "dist/vue-mixin-store.umd.min.js",
   "files": [
     "dist"
@@ -34,25 +34,25 @@
     "@vue/cli-plugin-unit-jest": "^4.3.1",
     "@vue/cli-service": "^4.3.1",
     "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/test-utils": "^1.0.1",
+    "@vue/test-utils": "^1.0.2",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.0.1",
     "core-js": "3.6.5",
     "cross-env": "^7.0.2",
-    "eslint": "6.8.0",
+    "eslint": "7.0.0",
     "eslint-plugin-vue": "^6.2.2",
     "faker": "^4.1.0",
     "fibers": "^5.0.0",
     "jest-localstorage-mock": "^2.4.2",
     "node-sass": "^4.14.1",
     "sass-loader": "^8.0.2",
-    "v-switcher": "1.1.0",
+    "v-switcher": "1.1.2",
     "vue-router": "^3.1.6",
     "vue-server-renderer": "2.6.11",
     "vue-template-compiler": "^2.6.11",
-    "vue-virtual-scroll-list": "^2.1.9",
-    "vuepress": "^1.4.1",
-    "vuex": "^3.3.0"
+    "vue-virtual-scroll-list": "^2.2.1",
+    "vuepress": "^1.5.0",
+    "vuex": "^3.4.0"
   }
 }

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import {
-  defaultListObj,
+  generateDefaultField,
   generateFieldName,
   setDataToCache,
   getDateFromCache,
@@ -13,12 +13,14 @@ import {
   generateRequestParams
 } from './utils'
 
-export default (api, debug = false) => {
-  const printLog = (field, type, val) => debug && console.log(`[${field}]`, type, val) // eslint-disable-line
+export default (api, opts = {}) => {
+  const printLog = (field, type, val) => opts.debug && console.log(`[${field}]`, type, val) // eslint-disable-line
   const isClient = typeof window !== 'undefined'
   return {
     namespaced: true,
-    state: () => ({}),
+    state: () => ({
+      fields: []
+    }),
     actions: {
       initData(
         { state, commit },
@@ -158,14 +160,26 @@ export default (api, debug = false) => {
     },
     mutations: {
       INIT_STATE(state, fieldName) {
-        Vue.set(state, fieldName, Object.assign({}, defaultListObj))
+        Vue.set(state, fieldName, generateDefaultField())
+        if (!state.fields) {
+          return
+        }
+        if (!~state.fields.indexOf(fieldName)) {
+          state.fields.push(fieldName)
+        }
+        const maxCount = opts.max || 0
+        if (!maxCount || state.fields.length <= maxCount) {
+          return
+        }
+        const name = state.fields.shift()
+        delete state[name]
       },
       SET_LOADING(state, fieldName) {
         state[fieldName].loading = true
         state[fieldName].error = null
       },
       SET_ERROR(state, { fieldName, error }) {
-        debug && console.log(error) // eslint-disable-line
+        opts.debug && console.log(error) // eslint-disable-line
         state[fieldName].error = error
         state[fieldName].loading = false
       },
@@ -279,7 +293,7 @@ export default (api, debug = false) => {
           field.total = field.total + afterLength - beforeLength
           field.nothing = afterLength === 0
         } catch (error) {
-          debug && console.log(error) // eslint-disable-line
+          opts.debug && console.log(error) // eslint-disable-line
         }
       }
     },

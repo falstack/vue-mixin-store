@@ -22,7 +22,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    flow: MixinStore.FlowStore(api) // <-- 这里的 key 必须叫 flow
+    flow: MixinStore.FlowStore(api, { debug: false, max: 0 }) // <-- 这里的 key 必须叫 flow
   }
 })
 ```

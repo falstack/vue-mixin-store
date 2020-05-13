@@ -13,6 +13,20 @@ export const defaultListObj = {
   total: 0
 }
 
+export const generateDefaultField = () => {
+  return {
+    result: [],
+    noMore: false,
+    nothing: false,
+    loading: false,
+    fetched: false,
+    error: null,
+    extra: null,
+    page: 0,
+    total: 0
+  }
+}
+
 /**
  * 根据参数生成 field 的 namespace
  * @param {string} func
