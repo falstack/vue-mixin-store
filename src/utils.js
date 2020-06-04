@@ -121,10 +121,18 @@ export const isArray = data => Object.prototype.toString.call(data) === '[object
  */
 export const setReactivityField = (setter, field, key, value, type, insertBefore ) => {
   if (field[key]) {
-    if (type === 'jump' || !isArray(value)) {
-      setter(field, key, value)
-    } else {
+    if (isArray(value)) {
       field[key] = insertBefore ? value.concat(field[key]) : field[key].concat(value)
+    } else {
+      if (type === 'jump') {
+        setter(field, key, value)
+      } else {
+        const oldVal = { ...field[key] }
+        Object.keys(value).forEach(subKey => {
+          oldVal[subKey] = insertBefore ? value[subKey].concat(oldVal[subKey]) : oldVal[subKey].concat(value[subKey])
+        })
+        setter(field, key, oldVal)
+      }
     }
   } else {
     setter(field, key, value)
