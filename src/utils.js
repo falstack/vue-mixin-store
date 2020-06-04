@@ -129,11 +129,9 @@ export const setReactivityField = (setter, field, key, value, type, insertBefore
       } else {
         const oldVal = isArray(field[key]) ? {} : field[key]
         Object.keys(value).forEach(subKey => {
-          if (oldVal.hasOwnProperty(subKey)) {
-            oldVal[subKey] = oldVal[subKey]
-              ? insertBefore ? value[subKey].concat(oldVal[subKey]) : oldVal[subKey].concat(value[subKey])
-              : value[subKey]
-          }
+          oldVal[subKey] = oldVal[subKey]
+            ? insertBefore ? value[subKey].concat(oldVal[subKey]) : oldVal[subKey].concat(value[subKey])
+            : value[subKey]
         })
         setter(field, key, oldVal)
       }
