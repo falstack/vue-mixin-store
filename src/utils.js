@@ -127,7 +127,7 @@ export const setReactivityField = (setter, field, key, value, type, insertBefore
       if (type === 'jump') {
         setter(field, key, value)
       } else {
-        const oldVal = isArray(field[key]) ? {} : { ...field[key] }
+        const oldVal = { ...field[key] }
         Object.keys(value).forEach(subKey => {
           oldVal[subKey] = oldVal[subKey]
             ? insertBefore ? value[subKey].concat(oldVal[subKey]) : oldVal[subKey].concat(value[subKey])
