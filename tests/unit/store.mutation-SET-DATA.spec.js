@@ -119,7 +119,7 @@ describe('store mutation set data', () => {
     })
   })
 
-  it('type 是 jump，不缓存上一页', () => {
+  it('type 是 jump，result 是 array，缓存上一页', () => {
     Store.mutations.INIT_STATE(state, fieldName)
     const page1 = {
       result: [1, 2, 3, 4, 5],
@@ -155,7 +155,7 @@ describe('store mutation set data', () => {
     expect(state).toEqual({
       [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
-        result: page2.result,
+        result: page1.result.concat(page2.result),
         total: page2.total,
         page: 2,
         noMore: false
@@ -163,7 +163,7 @@ describe('store mutation set data', () => {
     })
   })
 
-  it('返回的 result 是 object-array，不缓存上一页', () => {
+  it('返回的 result 是 object-array，缓存上一页', () => {
     Store.mutations.INIT_STATE(state, fieldName)
     const page1 = {
       result: {
@@ -190,6 +190,7 @@ describe('store mutation set data', () => {
     })
     const page2 = {
       result: {
+        c: [{ id: 7 }],
         e: [{ id: 4 }],
         f: [{ id: 5 }],
         g: [{ id: 6 }]
@@ -205,7 +206,14 @@ describe('store mutation set data', () => {
     expect(state).toEqual({
       [fieldName]: Object.assign({}, defaultListObj, {
         fetched: true,
-        result: page2.result,
+        result: {
+          a: [{ id: 1 }],
+          b: [{ id: 2 }],
+          c: [{ id: 3 }, { id: 7 }],
+          e: [{ id: 4 }],
+          f: [{ id: 5 }],
+          g: [{ id: 6 }]
+        },
         total: page2.total,
         noMore: page2.no_more,
         page: 2
