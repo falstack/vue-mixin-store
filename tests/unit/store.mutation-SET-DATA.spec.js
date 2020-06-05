@@ -195,7 +195,7 @@ describe('store mutation set data', () => {
         f: [{ id: 5 }],
         g: [{ id: 6 }]
       },
-      no_more: true,
+      no_more: false,
       total: 4
     }
     Store.mutations.SET_DATA(state, {
@@ -217,6 +217,37 @@ describe('store mutation set data', () => {
         total: page2.total,
         noMore: page2.no_more,
         page: 2
+      })
+    })
+    const page3 = {
+      result: {
+        c: [{ id: 8 }],
+        e: [{ id: 9 }],
+        f: [{ id: 10 }],
+        g: [{ id: 11 }]
+      },
+      no_more: false,
+      total: 4
+    }
+    Store.mutations.SET_DATA(state, {
+      fieldName,
+      data: page3,
+      page: 3
+    })
+    expect(state).toEqual({
+      [fieldName]: Object.assign({}, defaultListObj, {
+        fetched: true,
+        result: {
+          a: [{ id: 1 }],
+          b: [{ id: 2 }],
+          c: [{ id: 3 }, { id: 7 }, { id: 8 }],
+          e: [{ id: 4 }, { id: 9 }],
+          f: [{ id: 5 }, { id: 10 }],
+          g: [{ id: 6 }, { id: 11 }]
+        },
+        total: page3.total,
+        noMore: page3.no_more,
+        page: 3
       })
     })
   })
