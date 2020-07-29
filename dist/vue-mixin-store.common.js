@@ -1,5 +1,5 @@
 /*!
- * vue-mixin-store v1.3.24
+ * vue-mixin-store v1.3.25
  * (c) 2020 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
@@ -139,7 +139,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   } else {}
 }(typeof self !== 'undefined' ? self : this, function () {
   function getCurrentScript () {
-    if (document.currentScript) {
+    var descriptor = Object.getOwnPropertyDescriptor(document, 'currentScript')
+    // for chrome
+    if (!descriptor && 'currentScript' in document && document.currentScript) {
+      return document.currentScript
+    }
+
+    // for other browsers with native support for currentScript
+    if (descriptor && descriptor.get !== getCurrentScript && document.currentScript) {
       return document.currentScript
     }
   
@@ -229,6 +236,25 @@ var runtime = function (exports) {
   var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
   var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
 
+  function define(obj, key, value) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+    return obj[key];
+  }
+
+  try {
+    // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+    define({}, "");
+  } catch (err) {
+    define = function define(obj, key, value) {
+      return obj[key] = value;
+    };
+  }
+
   function wrap(innerFn, outerFn, self, tryLocsList) {
     // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
     var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
@@ -302,14 +328,14 @@ var runtime = function (exports) {
   var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
   GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
   GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] = GeneratorFunction.displayName = "GeneratorFunction"; // Helper for defining the .next, .throw, and .return methods of the
+  GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"); // Helper for defining the .next, .throw, and .return methods of the
   // Iterator interface in terms of a single ._invoke method.
 
   function defineIteratorMethods(prototype) {
     ["next", "throw", "return"].forEach(function (method) {
-      prototype[method] = function (arg) {
+      define(prototype, method, function (arg) {
         return this._invoke(method, arg);
-      };
+      });
     });
   }
 
@@ -325,10 +351,7 @@ var runtime = function (exports) {
       Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
     } else {
       genFun.__proto__ = GeneratorFunctionPrototype;
-
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
+      define(genFun, toStringTagSymbol, "GeneratorFunction");
     }
 
     genFun.prototype = Object.create(Gp);
@@ -584,7 +607,7 @@ var runtime = function (exports) {
 
 
   defineIteratorMethods(Gp);
-  Gp[toStringTagSymbol] = "Generator"; // A Generator should always return itself as the iterator object when the
+  define(Gp, toStringTagSymbol, "Generator"); // A Generator should always return itself as the iterator object when the
   // @@iterator function is called on it. Some browsers' implementations of the
   // iterator prototype chain incorrectly implement this, causing the Generator
   // object to not be returned from this call. This ensures that doesn't happen.
@@ -932,6 +955,7 @@ module.exports = __webpack_require__("98b8");
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+// ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
@@ -967,6 +991,12 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 var external_commonjs_vue_commonjs2_vue_root_Vue_default = /*#__PURE__*/__webpack_require__.n(external_commonjs_vue_commonjs2_vue_root_Vue_);
 
 // CONCATENATED MODULE: ./src/utils.js
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /**
@@ -1104,11 +1134,14 @@ var setReactivityField = function setReactivityField(setter, field, key, value, 
       if (type === 'jump' || key !== 'result') {
         setter(field, key, value);
       } else {
-        var oldVal = isArray(field[key]) ? {} : field[key];
+        var oldVal = field[key];
+
+        var newVal = _objectSpread({}, oldVal);
+
         Object.keys(value).forEach(function (subKey) {
-          oldVal[subKey] = oldVal[subKey] ? insertBefore ? value[subKey].concat(oldVal[subKey]) : oldVal[subKey].concat(value[subKey]) : value[subKey];
+          newVal[subKey] = oldVal[subKey] ? insertBefore ? value[subKey].concat(oldVal[subKey]) : oldVal[subKey].concat(value[subKey]) : value[subKey];
         });
-        setter(field, key, oldVal);
+        setter(field, key, newVal);
       }
     }
   } else {
@@ -1312,7 +1345,7 @@ var getObserver = typeof window === 'undefined' ? null : window.IntersectionObse
       return;
     }
 
-    target.__flow_handler__ && target.__flow_handler__();
+    target && target.__flow_handler__ && target.__flow_handler__();
   });
 });
 // CONCATENATED MODULE: ./src/flow.js
@@ -1838,25 +1871,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"7ef311f6-vue-loader-template"}!./node_modules/@vue/cli-service/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=0e8328d8&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6e4750ba-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=0e8328d8&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader",style:(_vm.loaderStyle)},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{staticClass:"flow-loader-state",style:(_vm.stateStyle)},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2),_c('div',{ref:"state",staticClass:"flow-loader-detect",style:(_vm.detectStyle)})],2)}
 var staticRenderFns = []
 
 
 // CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=template&id=0e8328d8&
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=script&lang=js&
 
 
 function FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function FlowLoadervue_type_script_lang_js_asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { FlowLoadervue_type_script_lang_js_asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function FlowLoadervue_type_script_lang_js_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function FlowLoadervue_type_script_lang_js_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { FlowLoadervue_type_script_lang_js_ownKeys(Object(source), true).forEach(function (key) { FlowLoadervue_type_script_lang_js_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { FlowLoadervue_type_script_lang_js_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function FlowLoadervue_type_script_lang_js_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 //
 //
@@ -2154,7 +2187,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     modify: function modify(_ref) {
       var key = _ref.key,
           value = _ref.value;
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread(_objectSpread({}, this.params), {
+      this.$store.commit('flow/UPDATE_DATA', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         method: 'modify',
         key: key,
         value: value
@@ -2165,7 +2198,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           key = _ref2.key,
           value = _ref2.value,
           changing = _ref2.changing;
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread(_objectSpread({}, this.params), {
+      this.$store.commit('flow/UPDATE_DATA', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         method: 'update',
         id: id,
         key: key,
@@ -2174,7 +2207,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     delete: function _delete(id, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread(_objectSpread({}, this.params), {
+      this.$store.commit('flow/UPDATE_DATA', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         method: 'delete',
         id: id,
         key: key,
@@ -2182,7 +2215,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     prepend: function prepend(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread(_objectSpread({}, this.params), {
+      this.$store.commit('flow/UPDATE_DATA', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         method: isArray(value) ? 'merge' : 'unshift',
         key: key,
         value: value,
@@ -2190,7 +2223,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     append: function append(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread(_objectSpread({}, this.params), {
+      this.$store.commit('flow/UPDATE_DATA', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         method: isArray(value) ? 'concat' : 'push',
         key: key,
         value: value,
@@ -2198,7 +2231,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }));
     },
     patch: function patch(value, key, changing) {
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread(_objectSpread({}, this.params), {
+      this.$store.commit('flow/UPDATE_DATA', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         method: 'patch',
         key: key,
         value: value,
@@ -2210,7 +2243,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           value = _ref3.value,
           key = _ref3.key,
           changing = _ref3.changing;
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread(_objectSpread({}, this.params), {
+      this.$store.commit('flow/UPDATE_DATA', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         method: 'insert-before',
         id: id,
         key: key,
@@ -2223,7 +2256,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           value = _ref4.value,
           key = _ref4.key,
           changing = _ref4.changing;
-      this.$store.commit('flow/UPDATE_DATA', _objectSpread(_objectSpread({}, this.params), {
+      this.$store.commit('flow/UPDATE_DATA', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         method: 'insert-after',
         id: id,
         key: key,
@@ -2241,10 +2274,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return this.source[key];
     },
     jump: function jump(page) {
-      var query = _objectSpread({}, this.params.query);
+      var query = FlowLoadervue_type_script_lang_js_objectSpread({}, this.params.query);
 
       query.page = page;
-      return this.$store.dispatch('flow/loadMore', _objectSpread(_objectSpread({}, this.params), {
+      return this.$store.dispatch('flow/loadMore', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         query: query
       }));
     },
@@ -2259,12 +2292,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  query = _objectSpread({}, _this3.params.query);
+                  query = FlowLoadervue_type_script_lang_js_objectSpread({}, _this3.params.query);
                   query.__refresh__ = true;
                   query.__reload__ = reload;
                   _context.prev = 3;
                   _context.next = 6;
-                  return _this3.$store.dispatch('flow/initData', _objectSpread(_objectSpread({}, _this3.params), {
+                  return _this3.$store.dispatch('flow/initData', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, _this3.params), {
                     query: query
                   }));
 
@@ -2300,10 +2333,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  query = _objectSpread(_objectSpread({}, _this4.params.query), obj);
+                  query = FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, _this4.params.query), obj);
                   _context2.prev = 1;
                   _context2.next = 4;
-                  return _this4.$store.dispatch('flow/initData', _objectSpread(_objectSpread({}, _this4.params), {
+                  return _this4.$store.dispatch('flow/initData', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, _this4.params), {
                     query: query
                   }));
 
@@ -2339,10 +2372,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return;
       }
 
-      var query = _objectSpread(_objectSpread({}, this.params.query), obj);
+      var query = FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params.query), obj);
 
       query.is_up = 1;
-      return this.$store.dispatch('flow/loadMore', _objectSpread(_objectSpread({}, this.params), {
+      return this.$store.dispatch('flow/loadMore', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         query: query,
         force: force
       }));
@@ -2355,10 +2388,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return;
       }
 
-      var query = _objectSpread(_objectSpread({}, this.params.query), obj);
+      var query = FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params.query), obj);
 
       query.is_up = 0;
-      return this.$store.dispatch('flow/loadMore', _objectSpread(_objectSpread({}, this.params), {
+      return this.$store.dispatch('flow/loadMore', FlowLoadervue_type_script_lang_js_objectSpread(FlowLoadervue_type_script_lang_js_objectSpread({}, this.params), {
         query: query,
         force: force
       }));
@@ -2548,7 +2581,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 });
 // CONCATENATED MODULE: ./src/FlowLoader.vue?vue&type=script&lang=js&
  /* harmony default export */ var src_FlowLoadervue_type_script_lang_js_ = (FlowLoadervue_type_script_lang_js_); 
-// CONCATENATED MODULE: ./node_modules/@vue/cli-service/node_modules/vue-loader/lib/runtime/componentNormalizer.js
+// CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
 
 // IMPORTANT: Do NOT use ES2015 features in this file (except for modules).

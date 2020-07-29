@@ -328,6 +328,6 @@ export const getObserver = typeof window === 'undefined' ? null :
       if (intersectionRatio <= 0 || !target) {
         return
       }
-      target.__flow_handler__ && target.__flow_handler__()
+      target && target.__flow_handler__ && target.__flow_handler__()
     })
   })
