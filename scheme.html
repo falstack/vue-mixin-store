@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>返回值 | vue-mixin-store</title>
+    <meta name="generator" content="VuePress 1.5.2">
+    
+    <meta name="description" content="一套列表封装方案">
+    <link rel="preload" href="/vue-mixin-store/assets/css/0.styles.2f19c2b6.css" as="style"><link rel="preload" href="/vue-mixin-store/assets/js/app.2908b00b.js" as="script"><link rel="preload" href="/vue-mixin-store/assets/js/2.0d4d35d0.js" as="script"><link rel="preload" href="/vue-mixin-store/assets/js/8.68bc2a90.js" as="script"><link rel="prefetch" href="/vue-mixin-store/assets/js/3.c7ec8f0c.js"><link rel="prefetch" href="/vue-mixin-store/assets/js/4.8a5999d7.js"><link rel="prefetch" href="/vue-mixin-store/assets/js/5.a7ff0758.js"><link rel="prefetch" href="/vue-mixin-store/assets/js/6.3af4cc28.js"><link rel="prefetch" href="/vue-mixin-store/assets/js/7.1dcc5a90.js"><link rel="prefetch" href="/vue-mixin-store/assets/js/9.27eada26.js">
+    <link rel="stylesheet" href="/vue-mixin-store/assets/css/0.styles.2f19c2b6.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/vue-mixin-store/" class="home-link router-link-active"><!----> <span class="site-name">vue-mixin-store</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/vue-mixin-store/" class="nav-link">
+  简介
+</a></div><div class="nav-item"><a href="/vue-mixin-store/guide/" class="nav-link">
+  快速上手
+</a></div><div class="nav-item"><a href="/vue-mixin-store/params/" class="nav-link">
+  参数
+</a></div><div class="nav-item"><a href="/vue-mixin-store/scheme/" class="nav-link">
+  返回值
+</a></div><div class="nav-item"><a href="https://www.github.com/falstack/vue-mixin-store" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/vue-mixin-store/" class="nav-link">
+  简介
+</a></div><div class="nav-item"><a href="/vue-mixin-store/guide/" class="nav-link">
+  快速上手
+</a></div><div class="nav-item"><a href="/vue-mixin-store/params/" class="nav-link">
+  参数
+</a></div><div class="nav-item"><a href="/vue-mixin-store/scheme/" class="nav-link">
+  返回值
+</a></div><div class="nav-item"><a href="https://www.github.com/falstack/vue-mixin-store" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><a href="/vue-mixin-store/" aria-current="page" class="sidebar-link">简介</a></li><li><a href="/vue-mixin-store/guide.html" class="sidebar-link">快速上手</a></li><li><a href="/vue-mixin-store/params.html" class="sidebar-link">参数</a></li><li><a href="/vue-mixin-store/scheme.html" aria-current="page" class="active sidebar-link">返回值</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="返回值"><a href="#返回值" class="header-anchor">#</a> 返回值</h1> <h4 id="在了解返回值约束之前，我们先看一下flowstore的内部实现"><a href="#在了解返回值约束之前，我们先看一下flowstore的内部实现" class="header-anchor">#</a> 在了解返回值约束之前，我们先看一下<code>FlowStore</code>的内部实现</h4> <p>每个列表的默认属性如下：</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> defaultListObj <span class="token operator">=</span> <span class="token punctuation">{</span>
+  result<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>       <span class="token comment">// 列表数据</span>
+  page<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>          <span class="token comment">// 页码</span>
+  noMore<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>    <span class="token comment">// 是否还有更多</span>
+  nothing<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>   <span class="token comment">// 列表是否为空</span>
+  loading<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>   <span class="token comment">// 列表是否正在加载</span>
+  error<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span>      <span class="token comment">// 列表是否加载出错，默认为 null，错误时为 Error 对象</span>
+  fetched<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>   <span class="token comment">// 列表是否初始化过</span>
+  total<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>         <span class="token comment">// 整个列表的总条数</span>
+  extra<span class="token operator">:</span> <span class="token keyword">null</span>       <span class="token comment">// 接口返回的额外数据</span>
+<span class="token punctuation">}</span>
+</code></pre></div><div class="custom-block warning"><p class="custom-block-title">因为我们无法支持任意的接口返回模式，因此我们要约束 API 层的返回值</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> response <span class="token operator">=</span> <span class="token punctuation">{</span>
+  result<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>       <span class="token comment">// 数据的列表，必须</span>
+  no_more<span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>   <span class="token comment">// 是否还有更多，必须</span>
+  total<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>         <span class="token comment">// 列表的总数</span>
+  extra<span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>         <span class="token comment">// 额外数据</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <p>因此，如果你需要获取除了列表数据以外的其他数据，请在 API 层把它转化到 extra 中，如：</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">// api.js</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> <span class="token function-variable function">getListByPage</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> page<span class="token punctuation">,</span> count <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    axios<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">'...'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> params<span class="token operator">:</span> <span class="token punctuation">{</span> page<span class="token punctuation">,</span> count <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">data</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          result<span class="token operator">:</span> data<span class="token punctuation">.</span>list<span class="token punctuation">,</span>
+          no_more<span class="token operator">:</span> data<span class="token punctuation">.</span>noMoreKey<span class="token punctuation">,</span>
+          total<span class="token operator">:</span> data<span class="token punctuation">.</span>total_count<span class="token punctuation">,</span>
+          extra<span class="token operator">:</span> <span class="token punctuation">{</span>
+            key<span class="token operator">:</span> data<span class="token punctuation">.</span>otherValue
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span>reject<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/vue-mixin-store/params.html" class="prev">
+        参数
+      </a></span> <!----></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/vue-mixin-store/assets/js/app.2908b00b.js" defer></script><script src="/vue-mixin-store/assets/js/2.0d4d35d0.js" defer></script><script src="/vue-mixin-store/assets/js/8.68bc2a90.js" defer></script>
+  </body>
+</html>
