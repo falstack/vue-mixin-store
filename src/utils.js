@@ -125,7 +125,7 @@ export const setReactivityField = (setter, field, key, value, type, insertBefore
       field[key] = insertBefore ? value.concat(field[key]) : field[key].concat(value)
     } else {
       if (type === 'jump' || key !== 'result') {
-        setter(field, key, value)
+        field[key] = value
       } else {
         const oldVal = field[key]
         const newVal = { ...oldVal }
@@ -134,11 +134,11 @@ export const setReactivityField = (setter, field, key, value, type, insertBefore
             ? insertBefore ? value[subKey].concat(oldVal[subKey]) : oldVal[subKey].concat(value[subKey])
             : value[subKey]
         })
-        setter(field, key, newVal)
+        field[key] = newVal
       }
     }
   } else {
-    setter(field, key, value)
+    field[key] = value
   }
 }
 
@@ -295,7 +295,7 @@ export const generateRequestParams = (field, query, type) => {
       result.page = 1
     }
   }
-  return Object.assign(query, result)
+  return Object.assign({}, query, result)
 }
 
 export const getScrollParentDom = dom => {

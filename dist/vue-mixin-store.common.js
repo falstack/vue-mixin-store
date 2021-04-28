@@ -1,6 +1,6 @@
 /*!
- * vue-mixin-store v1.3.25
- * (c) 2020 falstack <icesilt@outlook.com>
+ * vue-mixin-store v1.3.26
+ * (c) 2021 falstack <icesilt@outlook.com>
  * https://github.com/falstack/vue-mixin-store
  */
 module.exports =
@@ -1132,7 +1132,7 @@ var setReactivityField = function setReactivityField(setter, field, key, value, 
       field[key] = insertBefore ? value.concat(field[key]) : field[key].concat(value);
     } else {
       if (type === 'jump' || key !== 'result') {
-        setter(field, key, value);
+        field[key] = value;
       } else {
         var oldVal = field[key];
 
@@ -1141,11 +1141,11 @@ var setReactivityField = function setReactivityField(setter, field, key, value, 
         Object.keys(value).forEach(function (subKey) {
           newVal[subKey] = oldVal[subKey] ? insertBefore ? value[subKey].concat(oldVal[subKey]) : oldVal[subKey].concat(value[subKey]) : value[subKey];
         });
-        setter(field, key, newVal);
+        field[key] = newVal;
       }
     }
   } else {
-    setter(field, key, value);
+    field[key] = value;
   }
 };
 /**
@@ -1311,7 +1311,7 @@ var generateRequestParams = function generateRequestParams(field, query, type) {
     }
   }
 
-  return Object.assign(query, result);
+  return Object.assign({}, query, result);
 };
 var getScrollParentDom = function getScrollParentDom(dom) {
   var el = dom;
@@ -1871,7 +1871,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   };
 });
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"6e4750ba-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=0e8328d8&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"d6d9e842-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/FlowLoader.vue?vue&type=template&id=0e8328d8&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"flow-loader",style:(_vm.loaderStyle)},[(_vm.source)?[_vm._t("header",null,{"source":_vm.source}),_vm._t("default",null,{"flow":_vm.source.result,"total":_vm.source.total,"count":_vm.source.result.length,"extra":_vm.source.extra}),_vm._t("footer",null,{"source":_vm.source})]:_vm._e(),_c('div',{staticClass:"flow-loader-state",style:(_vm.stateStyle)},[(_vm.source)?[(_vm.source.error)?_c('div',{staticClass:"flow-loader-state-error",on:{"click":_vm._retryData}},[(_vm.useFirstError && !_vm.source.result.length)?_vm._t("first-error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error}):_vm._t("error",[_c('span',[_vm._v("出错了，点击重试")])],{"error":_vm.source.error})],2):(_vm.source.loading)?_c('div',{staticClass:"flow-loader-state-loading"},[(_vm.useFirstLoading && !_vm.source.result.length)?_vm._t("first-loading",[_c('span',[_vm._v("加载中…")])]):_vm._t("loading",[_c('span',[_vm._v("加载中…")])])],2):(_vm.source.nothing)?_c('div',{staticClass:"flow-loader-state-nothing"},[_vm._t("nothing",[_c('span',[_vm._v("这里什么都没有")])])],2):(_vm.source.noMore)?_c('div',{staticClass:"flow-loader-state-no-more"},[(_vm.displayNoMore)?_vm._t("no-more",[_c('span',[_vm._v("没有更多了")])]):_vm._e()],2):(!_vm.isPagination)?[(_vm.isAuto)?_c('div',{staticClass:"flow-loader-state-shim"}):_c('div',{staticClass:"flow-loader-state-load",on:{"click":function($event){return _vm.loadMore()}}},[_vm._t("load",[_vm._v(" 点击加载更多 ")])],2)]:_vm._e()]:_vm._e()],2),_c('div',{ref:"state",staticClass:"flow-loader-detect",style:(_vm.detectStyle)})],2)}
 var staticRenderFns = []
 
