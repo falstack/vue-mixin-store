@@ -1,6 +1,6 @@
 {
   "name": "vue-mixin-store",
-  "version": "1.3.26",
+  "version": "1.4.0",
   "main": "dist/vue-mixin-store.umd.min.js",
   "files": [
     "dist"
@@ -26,7 +26,7 @@
     "deploy": "bash deploy.sh"
   },
   "dependencies": {
-    "vue": "^2.6.11"
+    "vue": "^2.6.14"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.4.6",
@@ -45,11 +45,11 @@
     "faker": "^4.1.0",
     "fibers": "^5.0.0",
     "jest-localstorage-mock": "^2.4.3",
-    "node-sass": "^4.14.1",
+    "sass": "^1.35.1",
     "sass-loader": "^9.0.2",
     "v-switcher": "1.1.2",
     "vue-router": "^3.3.4",
-    "vue-server-renderer": "2.6.11",
+    "vue-server-renderer": "2.6.14",
     "vue-template-compiler": "^2.6.11",
     "vue-virtual-scroll-list": "^2.3.0",
     "vuepress": "^1.5.2",
